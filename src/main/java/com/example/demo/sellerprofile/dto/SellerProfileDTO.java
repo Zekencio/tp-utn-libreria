@@ -1,33 +1,20 @@
-package com.example.demo.sellerprofile.model;
+package com.example.demo.sellerprofile.dto;
 
 import com.example.demo.book.model.Book;
 import com.example.demo.user.model.User;
-import jakarta.persistence.*;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "sellers")
-public class SellerProfile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SellerProfileDTO {
+
     private Long id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String address;
-
-    @OneToMany
     private List<Book> Inventory;
-
-    @OneToOne
     private User sellerUser;
 
-    public SellerProfile(Long id, String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfileDTO(Long id, String name, String address, List<Book> inventory, User sellerUser) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -35,14 +22,14 @@ public class SellerProfile {
         this.sellerUser = sellerUser;
     }
 
-    public SellerProfile(String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfileDTO(String name, String address, List<Book> inventory, User sellerUser) {
         this.name = name;
         this.address = address;
         Inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
-    public SellerProfile() {
+    public SellerProfileDTO() {
     }
 
     public Long getId() {
@@ -89,18 +76,18 @@ public class SellerProfile {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SellerProfile that = (SellerProfile) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(Inventory, that.Inventory) && Objects.equals(sellerUser, that.sellerUser);
+        SellerProfileDTO that = (SellerProfileDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, Inventory, sellerUser);
+        return Objects.hash(id, name, address, sellerUser);
     }
 
     @Override
     public String toString() {
-        return "SellerProfile{" +
+        return "SellerProfileDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +

@@ -1,47 +1,29 @@
-package com.example.demo.book.model;
+package com.example.demo.book.dto;
 
 import com.example.demo.author.model.Author;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.user.model.User;
-import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "books")
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class BookDTO {
 
-    @Column(nullable = false)
+    private Long id;
     private String name;
     private String description;
-    @Column(nullable = false)
     private Double price;
-    @Column(nullable = false)
     private Long stock;
-
-    @ManyToOne
     private Author author;
-
-    @ManyToMany(mappedBy = "genres")
     private Set<Genre> genres;
-
-    @ManyToMany(mappedBy = "sales")
     private List<Sale> sales;
-
-    @ManyToOne
     private SellerProfile seller;
-
-    @ManyToOne
     private User cartUser;
 
-    public Book(Long id, String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+    public BookDTO(Long id, String name, String description, Double price, Long stock, Author author,
+                   Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -54,7 +36,8 @@ public class Book {
         this.cartUser = cartUser;
     }
 
-    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+    public BookDTO(String name, String description, Double price, Long stock, Author author,
+                   Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -66,7 +49,7 @@ public class Book {
         this.cartUser = cartUser;
     }
 
-    public Book() {
+    public BookDTO() {
     }
 
     public Long getId() {
@@ -153,18 +136,18 @@ public class Book {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(name, book.name) && Objects.equals(description, book.description) && Objects.equals(author, book.author) && Objects.equals(genres, book.genres);
+        BookDTO bookDTO = (BookDTO) o;
+        return Objects.equals(name, bookDTO.name) && Objects.equals(author, bookDTO.author) && Objects.equals(genres, bookDTO.genres);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, author, genres);
+        return Objects.hash(name, author, genres);
     }
 
     @Override
     public String toString() {
-        return "Book{" +
+        return "BookDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

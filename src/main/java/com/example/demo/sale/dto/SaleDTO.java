@@ -1,40 +1,22 @@
-package com.example.demo.sale.model;
+package com.example.demo.sale.dto;
 
 import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.user.model.User;
-import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "sales")
-public class Sale {
+public class SaleDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private Date date;
-
-    @ManyToOne
     private User user;
-
-    @ManyToOne
     private Card card;
-
-    @ManyToMany
-    @JoinTable(
-            name = "sales_books",
-            joinColumns = @JoinColumn(name = "sale_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
     private List<Book> books;
 
-    public Sale(Long id, Date date, User user, Card card, List<Book> books) {
+    public SaleDTO(Long id, Date date, User user, Card card, List<Book> books) {
         this.id = id;
         this.date = date;
         this.user = user;
@@ -42,14 +24,14 @@ public class Sale {
         this.books = books;
     }
 
-    public Sale(Date date, User user, Card card, List<Book> books) {
+    public SaleDTO(Date date, User user, Card card, List<Book> books) {
         this.date = date;
         this.user = user;
         this.card = card;
         this.books = books;
     }
 
-    public Sale() {
+    public SaleDTO() {
     }
 
     public Long getId() {
@@ -96,8 +78,8 @@ public class Sale {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Sale sale = (Sale) o;
-        return Objects.equals(id, sale.id) && Objects.equals(date, sale.date) && Objects.equals(user, sale.user) && Objects.equals(card, sale.card) && Objects.equals(books, sale.books);
+        SaleDTO saleDTO = (SaleDTO) o;
+        return Objects.equals(id, saleDTO.id) && Objects.equals(date, saleDTO.date) && Objects.equals(user, saleDTO.user) && Objects.equals(card, saleDTO.card) && Objects.equals(books, saleDTO.books);
     }
 
     @Override
@@ -107,7 +89,7 @@ public class Sale {
 
     @Override
     public String toString() {
-        return "Sale{" +
+        return "SaleDTO{" +
                 "id=" + id +
                 ", date=" + date +
                 ", user=" + user +

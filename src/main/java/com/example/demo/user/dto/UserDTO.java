@@ -1,41 +1,24 @@
-package com.example.demo.user.model;
+package com.example.demo.user.dto;
 
 import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.model.SellerProfile;
-import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "users")
-public class User {
+public class UserDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String password;
-
-    @OneToMany
     private List<Book> cart;
-
-    @OneToMany
     private List<Sale> sales;
-
-    @OneToOne
     private SellerProfile sellerProfile;
-
-    @OneToMany
     private List<Card> cards;
 
-    public User(Long id, String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public UserDTO(Long id, String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -45,7 +28,7 @@ public class User {
         this.cards = cards;
     }
 
-    public User(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public UserDTO(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
         this.name = name;
         this.password = password;
         this.cart = cart;
@@ -54,7 +37,7 @@ public class User {
         this.cards = cards;
     }
 
-    public User() {
+    public UserDTO() {
     }
 
     public Long getId() {
@@ -117,18 +100,18 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(cart, user.cart) && Objects.equals(sales, user.sales) && Objects.equals(sellerProfile, user.sellerProfile) && Objects.equals(cards, user.cards);
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(name, userDTO.name) && Objects.equals(password, userDTO.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, cart, sales, sellerProfile, cards);
+        return Objects.hash(id, name, password);
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +

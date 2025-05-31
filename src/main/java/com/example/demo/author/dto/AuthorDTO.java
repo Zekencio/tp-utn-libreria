@@ -1,38 +1,32 @@
-package com.example.demo.author.model;
+package com.example.demo.author.dto;
 
 import com.example.demo.book.model.Book;
-import jakarta.persistence.*;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "authors")
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AuthorDTO {
+
     private Long id;
-    @Column(nullable = false)
     private String name;
     private Date birthDate;
-
-    @OneToMany
     private List<Book> bookslist;
 
-    public Author(Long id, String name, Date birthDate, List<Book> bookslist) {
+    public AuthorDTO(Long id, String name, Date birthDate, List<Book> bookslist) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
         this.bookslist = bookslist;
     }
 
-    public Author(String name, Date birthDate, List<Book> bookslist) {
+    public AuthorDTO(String name, Date birthDate, List<Book> bookslist) {
         this.name = name;
         this.birthDate = birthDate;
         this.bookslist = bookslist;
     }
 
-    public Author() {
+    public AuthorDTO() {
     }
 
     public Long getId() {
@@ -71,8 +65,8 @@ public class Author {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return Objects.equals(id, author.id) && Objects.equals(name, author.name) && Objects.equals(birthDate, author.birthDate) && Objects.equals(bookslist, author.bookslist);
+        AuthorDTO authorDTO = (AuthorDTO) o;
+        return Objects.equals(id, authorDTO.id) && Objects.equals(name, authorDTO.name) && Objects.equals(birthDate, authorDTO.birthDate) && Objects.equals(bookslist, authorDTO.bookslist);
     }
 
     @Override
@@ -82,7 +76,7 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author{" +
+        return "AuthorDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", birthDate=" + birthDate +

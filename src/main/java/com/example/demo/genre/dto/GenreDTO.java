@@ -1,45 +1,31 @@
-package com.example.demo.genre.model;
+package com.example.demo.genre.dto;
 
 import com.example.demo.book.model.Book;
-import jakarta.persistence.*;
 
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "genres")
-public class Genre {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class GenreDTO {
+
     private Long id;
-
-    @Column(nullable = false)
     private String name;
-
     private String description;
-
-    @ManyToMany
-    @JoinTable(
-            name = "books_genres",
-            joinColumns = @JoinColumn(name = "genre_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
     private Set<Book> books;
 
-    public Genre(Long id, String name, String description, Set<Book> books) {
+    public GenreDTO(Long id, String name, String description, Set<Book> books) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.books = books;
     }
 
-    public Genre(String name, String description, Set<Book> books) {
+    public GenreDTO(String name, String description, Set<Book> books) {
         this.name = name;
         this.description = description;
         this.books = books;
     }
 
-    public Genre() {
+    public GenreDTO() {
     }
 
     public Long getId() {
@@ -78,22 +64,21 @@ public class Genre {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Genre genre = (Genre) o;
-        return Objects.equals(id, genre.id) && Objects.equals(name, genre.name) && Objects.equals(description, genre.description) && Objects.equals(books, genre.books);
+        GenreDTO genreDTO = (GenreDTO) o;
+        return Objects.equals(id, genreDTO.id) && Objects.equals(name, genreDTO.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, books);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return "Genre{" +
+        return "GenreDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", books=" + books +
+                ", description='" + description +
                 '}';
     }
 }
