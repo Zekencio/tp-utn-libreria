@@ -16,7 +16,7 @@ public class Author {
     private String name;
     private Date birthDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "books")
     private List<Book> bookslist;
 
     public Author(Long id, String name, Date birthDate, List<Book> bookslist) {

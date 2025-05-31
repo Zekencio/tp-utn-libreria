@@ -17,7 +17,7 @@ public class Card {
     @Column(nullable = false)
     private String cardNumber;
     @Column(nullable = false)
-    private String Bank;
+    private String bank;
     @Column(nullable = false)
     private String cvv;
 
@@ -30,7 +30,7 @@ public class Card {
     public Card(Long id, String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
         this.id = id;
         this.cardNumber = cardNumber;
-        Bank = bank;
+        this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
         this.sales = sales;
@@ -38,7 +38,7 @@ public class Card {
 
     public Card(String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
         this.cardNumber = cardNumber;
-        Bank = bank;
+        this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
         this.sales = sales;
@@ -64,11 +64,11 @@ public class Card {
     }
 
     public String getBank() {
-        return Bank;
+        return bank;
     }
 
     public void setBank(String bank) {
-        Bank = bank;
+        this.bank = bank;
     }
 
     public String getCvv() {
@@ -100,12 +100,12 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(id, card.id) && Objects.equals(cardNumber, card.cardNumber) && Objects.equals(Bank, card.Bank) && Objects.equals(cvv, card.cvv) && Objects.equals(owner, card.owner) && Objects.equals(sales, card.sales);
+        return Objects.equals(id, card.id) && Objects.equals(cardNumber, card.cardNumber) && Objects.equals(bank, card.bank) && Objects.equals(cvv, card.cvv) && Objects.equals(owner, card.owner) && Objects.equals(sales, card.sales);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cardNumber, Bank, cvv, owner, sales);
+        return Objects.hash(id, cardNumber, bank, cvv, owner, sales);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class Card {
         return "Card{" +
                 "id=" + id +
                 ", cardNumber='" + cardNumber + '\'' +
-                ", Bank='" + Bank + '\'' +
+                ", Bank='" + bank + '\'' +
                 ", cvv='" + cvv + '\'' +
                 ", owner=" + owner +
                 ", sales=" + sales +

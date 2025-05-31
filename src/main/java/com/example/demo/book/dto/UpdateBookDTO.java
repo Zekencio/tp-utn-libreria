@@ -1,51 +1,35 @@
-package com.example.demo.book.model;
+package com.example.demo.book.dto;
 
 import com.example.demo.author.model.Author;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.user.model.User;
-import jakarta.persistence.*;
-
+import jakarta.validation.constraints.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "books")
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+public class UpdateBookDTO {
+    @Size(min = 1, max = 255, message = "The name of the book must have between 1 and 255 characters")
     private String name;
 
     private String description;
 
-    @Column(nullable = false)
+    @Min(value = 0, message = "The price cannot be a negative value")
     private Double price;
 
-    @Column(nullable = false)
+    @Min(value = 0, message = "The stock cannot be a negative value")
     private Long stock;
 
-    @ManyToOne
+    @NotNull(message = "The author can't be null")
     private Author author;
-
-    @ManyToMany(mappedBy = "genres")
     private Set<Genre> genres;
-
-    @ManyToMany(mappedBy = "sales")
     private List<Sale> sales;
-
-    @ManyToOne
     private SellerProfile seller;
-
-    @ManyToOne
     private User cartUser;
 
-    public Book(Long id, String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
-        this.id = id;
+    public UpdateBookDTO(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -57,34 +41,14 @@ public class Book {
         this.cartUser = cartUser;
     }
 
-    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock = stock;
-        this.author = author;
-        this.genres = genres;
-        this.sales = sales;
-        this.seller = seller;
-        this.cartUser = cartUser;
+    public UpdateBookDTO() {
     }
 
-    public Book() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public @Size(min = 1, max = 255, message = "The name of the book must have between 1 and 255 characters") String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Size(min = 1, max = 255, message = "The name of the book must have between 1 and 255 characters") String name) {
         this.name = name;
     }
 
@@ -96,27 +60,27 @@ public class Book {
         this.description = description;
     }
 
-    public Double getPrice() {
+    public @Min(value = 0, message = "The price cannot be a negative value") Double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(@Min(value = 0, message = "The price cannot be a negative value") Double price) {
         this.price = price;
     }
 
-    public Long getStock() {
+    public @Min(value = 0, message = "The stock cannot be a negative value") Long getStock() {
         return stock;
     }
 
-    public void setStock(Long stock) {
+    public void setStock(@Min(value = 0, message = "The stock cannot be a negative value") Long stock) {
         this.stock = stock;
     }
 
-    public Author getAuthor() {
+    public @NotNull(message = "The author can't be null") Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(@NotNull(message = "The author can't be null") Author author) {
         this.author = author;
     }
 
@@ -156,25 +120,29 @@ public class Book {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(name, book.name) && Objects.equals(description, book.description) && Objects.equals(author, book.author) && Objects.equals(genres, book.genres);
+        UpdateBookDTO that = (UpdateBookDTO) o;
+        return  Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) &&
+                Objects.equals(stock, that.stock) && Objects.equals(author, that.author) && Objects.equals(genres, that.genres) &&
+                Objects.equals(sales, that.sales) && Objects.equals(seller, that.seller) && Objects.equals(cartUser, that.cartUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, author, genres);
+        return Objects.hash(name, description, price, stock, author, genres, sales, seller, cartUser);
     }
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+        return "UpdateBookDTO{" +
+                "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +
                 ", author=" + author +
                 ", genres=" + genres +
+                ", sales=" + sales +
+                ", seller=" + seller +
+                ", cartUser=" + cartUser +
                 '}';
     }
 }

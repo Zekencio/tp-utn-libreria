@@ -22,7 +22,7 @@ public class SellerProfile {
     private String address;
 
     @OneToMany
-    private List<Book> Inventory;
+    private List<Book> inventory;
 
     @OneToOne
     private User sellerUser;
@@ -31,14 +31,14 @@ public class SellerProfile {
         this.id = id;
         this.name = name;
         this.address = address;
-        Inventory = inventory;
+        this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
     public SellerProfile(String name, String address, List<Book> inventory, User sellerUser) {
         this.name = name;
         this.address = address;
-        Inventory = inventory;
+        this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
@@ -70,11 +70,11 @@ public class SellerProfile {
     }
 
     public List<Book> getInventory() {
-        return Inventory;
+        return inventory;
     }
 
     public void setInventory(List<Book> inventory) {
-        Inventory = inventory;
+        this.inventory = inventory;
     }
 
     public User getSellerUser() {
@@ -90,12 +90,12 @@ public class SellerProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfile that = (SellerProfile) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(Inventory, that.Inventory) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(inventory, that.inventory) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, Inventory, sellerUser);
+        return Objects.hash(id, name, address, inventory, sellerUser);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class SellerProfile {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", Inventory=" + Inventory +
+                ", Inventory=" + inventory +
                 ", sellerUser=" + sellerUser +
                 '}';
     }

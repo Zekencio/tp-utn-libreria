@@ -9,7 +9,7 @@ public class CardDTO {
 
     private Long id;
     private String cardNumber;
-    private String Bank;
+    private String bank;
     private String cvv;
     private User owner;
     private List<Sale> sales;
@@ -17,7 +17,7 @@ public class CardDTO {
     public CardDTO(Long id, String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
         this.id = id;
         this.cardNumber = cardNumber;
-        Bank = bank;
+        this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
         this.sales = sales;
@@ -25,7 +25,7 @@ public class CardDTO {
 
     public CardDTO(String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
         this.cardNumber = cardNumber;
-        Bank = bank;
+        this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
         this.sales = sales;
@@ -51,11 +51,11 @@ public class CardDTO {
     }
 
     public String getBank() {
-        return Bank;
+        return bank;
     }
 
     public void setBank(String bank) {
-        Bank = bank;
+        this.bank = bank;
     }
 
     public String getCvv() {
@@ -87,13 +87,13 @@ public class CardDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CardDTO cardDTO = (CardDTO) o;
-        return Objects.equals(id, cardDTO.id) && Objects.equals(cardNumber, cardDTO.cardNumber) && Objects.equals(Bank, cardDTO.Bank)
+        return Objects.equals(id, cardDTO.id) && Objects.equals(cardNumber, cardDTO.cardNumber) && Objects.equals(bank, cardDTO.bank)
                 && Objects.equals(cvv, cardDTO.cvv) && Objects.equals(owner, cardDTO.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cardNumber, Bank, cvv, owner);
+        return Objects.hash(id, cardNumber, bank, cvv, owner);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CardDTO {
         return "CardDTO{" +
                 "id=" + id +
                 ", cardNumber='" + cardNumber + '\'' +
-                ", Bank='" + Bank + '\'' +
+                ", Bank='" + bank + '\'' +
                 ", owner=" + owner +
                 '}';
     }
