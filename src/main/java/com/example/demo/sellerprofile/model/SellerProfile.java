@@ -35,10 +35,9 @@ public class SellerProfile {
         this.sellerUser = sellerUser;
     }
 
-    public SellerProfile(String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfile(String name, String address, User sellerUser) {
         this.name = name;
         this.address = address;
-        this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 

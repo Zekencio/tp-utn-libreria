@@ -8,15 +8,13 @@ import java.util.Set;
 
 public class CreateGenreDTO {
 
-    @NotNull(message = "The gender name can't be null")
+    @NotNull(message = "The genre name can't be null")
     private String name;
     private String description;
-    private Set<Book> books;
 
-    public CreateGenreDTO(String name, String description, Set<Book> books) {
+    public CreateGenreDTO(String name, String description) {
         this.name = name;
         this.description = description;
-        this.books = books;
     }
 
     public CreateGenreDTO() {
@@ -38,25 +36,17 @@ public class CreateGenreDTO {
         this.description = description;
     }
 
-    public Set<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(Set<Book> books) {
-        this.books = books;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateGenreDTO that = (CreateGenreDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(books, that.books);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, books);
+        return Objects.hash(name, description);
     }
 
     @Override
@@ -64,7 +54,6 @@ public class CreateGenreDTO {
         return "CreateGenreDTO{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", books=" + books +
                 '}';
     }
 }

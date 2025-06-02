@@ -14,13 +14,11 @@ public class CreateSellerProfileDTO {
     private String name;
     @NotBlank(message = "The address cannot be empty")
     private String address;
-    private List<Book> Inventory;
     private User sellerUser;
 
-    public CreateSellerProfileDTO(String name, String address, List<Book> inventory, User sellerUser) {
+    public CreateSellerProfileDTO(String name, String address, User sellerUser) {
         this.name = name;
         this.address = address;
-        Inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
@@ -43,14 +41,6 @@ public class CreateSellerProfileDTO {
         this.address = address;
     }
 
-    public List<Book> getInventory() {
-        return Inventory;
-    }
-
-    public void setInventory(List<Book> inventory) {
-        Inventory = inventory;
-    }
-
     public User getSellerUser() {
         return sellerUser;
     }
@@ -64,12 +54,12 @@ public class CreateSellerProfileDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateSellerProfileDTO that = (CreateSellerProfileDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(Inventory, that.Inventory) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, address, Inventory, sellerUser);
+        return Objects.hash(name, address, sellerUser);
     }
 
     @Override
@@ -77,7 +67,6 @@ public class CreateSellerProfileDTO {
         return "CreateSellerProfileDTO{" +
                 "name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", Inventory=" + Inventory +
                 ", sellerUser=" + sellerUser +
                 '}';
     }

@@ -18,12 +18,10 @@ public class BookDTO {
     private Long stock;
     private Author author;
     private Set<Genre> genres;
-    private List<Sale> sales;
     private SellerProfile seller;
-    private User cartUser;
 
     public BookDTO(Long id, String name, String description, Double price, Long stock, Author author,
-                   Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+                   Set<Genre> genres, SellerProfile seller) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,22 +29,18 @@ public class BookDTO {
         this.stock = stock;
         this.author = author;
         this.genres = genres;
-        this.sales = sales;
         this.seller = seller;
-        this.cartUser = cartUser;
     }
 
     public BookDTO(String name, String description, Double price, Long stock, Author author,
-                   Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+                   Set<Genre> genres, SellerProfile seller) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.author = author;
         this.genres = genres;
-        this.sales = sales;
         this.seller = seller;
-        this.cartUser = cartUser;
     }
 
     public BookDTO() {
@@ -108,28 +102,12 @@ public class BookDTO {
         this.genres = genres;
     }
 
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
-
     public SellerProfile getSeller() {
         return seller;
     }
 
     public void setSeller(SellerProfile seller) {
         this.seller = seller;
-    }
-
-    public User getCartUser() {
-        return cartUser;
-    }
-
-    public void setCartUser(User cartUser) {
-        this.cartUser = cartUser;
     }
 
     @Override

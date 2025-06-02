@@ -10,19 +10,16 @@ public class GenreDTO {
     private Long id;
     private String name;
     private String description;
-    private Set<Book> books;
 
-    public GenreDTO(Long id, String name, String description, Set<Book> books) {
+    public GenreDTO(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.books = books;
     }
 
-    public GenreDTO(String name, String description, Set<Book> books) {
+    public GenreDTO(String name, String description) {
         this.name = name;
         this.description = description;
-        this.books = books;
     }
 
     public GenreDTO() {
@@ -50,14 +47,6 @@ public class GenreDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Set<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(Set<Book> books) {
-        this.books = books;
     }
 
     @Override

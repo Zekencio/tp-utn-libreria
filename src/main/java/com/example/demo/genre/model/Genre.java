@@ -33,10 +33,9 @@ public class Genre {
         this.books = books;
     }
 
-    public Genre(String name, String description, Set<Book> books) {
+    public Genre(String name, String description) {
         this.name = name;
         this.description = description;
-        this.books = books;
     }
 
     public Genre() {

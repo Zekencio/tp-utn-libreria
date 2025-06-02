@@ -26,10 +26,9 @@ public class Author {
         this.bookslist = bookslist;
     }
 
-    public Author(String name, Date birthDate, List<Book> bookslist) {
+    public Author(String name, Date birthDate) {
         this.name = name;
         this.birthDate = birthDate;
-        this.bookslist = bookslist;
     }
 
     public Author() {

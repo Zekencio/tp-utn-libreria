@@ -15,13 +15,11 @@ public class UpdateSellerProfileDTO {
     @NotBlank(message = "The address cannot be empty")
     @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters")
     private String address;
-    private List<Book> Inventory;
     private User sellerUser;
 
-    public UpdateSellerProfileDTO(String name, String address, List<Book> inventory, User sellerUser) {
+    public UpdateSellerProfileDTO(String name, String address, User sellerUser) {
         this.name = name;
         this.address = address;
-        Inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
@@ -44,14 +42,6 @@ public class UpdateSellerProfileDTO {
         this.address = address;
     }
 
-    public List<Book> getInventory() {
-        return Inventory;
-    }
-
-    public void setInventory(List<Book> inventory) {
-        Inventory = inventory;
-    }
-
     public User getSellerUser() {
         return sellerUser;
     }
@@ -65,12 +55,12 @@ public class UpdateSellerProfileDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpdateSellerProfileDTO that = (UpdateSellerProfileDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(Inventory, that.Inventory) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, address, Inventory, sellerUser);
+        return Objects.hash(name, address, sellerUser);
     }
 
     @Override
@@ -78,7 +68,6 @@ public class UpdateSellerProfileDTO {
         return "UpdateSellerProfileDTO{" +
                 "name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", Inventory=" + Inventory +
                 ", sellerUser=" + sellerUser +
                 '}';
     }

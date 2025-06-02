@@ -13,28 +13,16 @@ public class UserDTO {
     private Long id;
     private String name;
     private String password;
-    private List<Book> cart;
-    private List<Sale> sales;
-    private SellerProfile sellerProfile;
-    private List<Card> cards;
 
-    public UserDTO(Long id, String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public UserDTO(Long id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.cart = cart;
-        this.sales = sales;
-        this.sellerProfile = sellerProfile;
-        this.cards = cards;
     }
 
-    public UserDTO(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public UserDTO(String name, String password) {
         this.name = name;
         this.password = password;
-        this.cart = cart;
-        this.sales = sales;
-        this.sellerProfile = sellerProfile;
-        this.cards = cards;
     }
 
     public UserDTO() {
@@ -64,37 +52,6 @@ public class UserDTO {
         this.password = password;
     }
 
-    public List<Book> getCart() {
-        return cart;
-    }
-
-    public void setCart(List<Book> cart) {
-        this.cart = cart;
-    }
-
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
-
-    public SellerProfile getSellerProfile() {
-        return sellerProfile;
-    }
-
-    public void setSellerProfile(SellerProfile sellerProfile) {
-        this.sellerProfile = sellerProfile;
-    }
-
-    public List<Card> getCards() {
-        return cards;
-    }
-
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -115,10 +72,6 @@ public class UserDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", cart=" + cart +
-                ", sales=" + sales +
-                ", sellerProfile=" + sellerProfile +
-                ", cards=" + cards +
                 '}';
     }
 }

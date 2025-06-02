@@ -11,21 +11,18 @@ public class SellerProfileDTO {
     private Long id;
     private String name;
     private String address;
-    private List<Book> inventory;
     private User sellerUser;
 
-    public SellerProfileDTO(Long id, String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfileDTO(Long id, String name, String address, User sellerUser) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
     public SellerProfileDTO(String name, String address, List<Book> inventory, User sellerUser) {
         this.name = name;
         this.address = address;
-        this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
@@ -56,14 +53,6 @@ public class SellerProfileDTO {
         this.address = address;
     }
 
-    public List<Book> getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(List<Book> inventory) {
-        this.inventory = inventory;
-    }
-
     public User getSellerUser() {
         return sellerUser;
     }
@@ -91,7 +80,6 @@ public class SellerProfileDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", Inventory=" + inventory +
                 ", sellerUser=" + sellerUser +
                 '}';
     }

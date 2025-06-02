@@ -12,23 +12,20 @@ public class CardDTO {
     private String bank;
     private String cvv;
     private User owner;
-    private List<Sale> sales;
 
-    public CardDTO(Long id, String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
+    public CardDTO(Long id, String cardNumber, String bank, String cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
-        this.sales = sales;
     }
 
-    public CardDTO(String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
+    public CardDTO(String cardNumber, String bank, String cvv, User owner) {
         this.cardNumber = cardNumber;
         this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
-        this.sales = sales;
     }
 
     public CardDTO() {
@@ -74,13 +71,6 @@ public class CardDTO {
         this.owner = owner;
     }
 
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
 
     @Override
     public boolean equals(Object o) {

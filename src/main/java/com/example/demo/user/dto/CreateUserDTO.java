@@ -15,18 +15,10 @@ public class CreateUserDTO {
     private String name;
     @NotBlank(message = "The password cannot be blank")
     private String password;
-    private List<Book> cart;
-    private List<Sale> sales;
-    private SellerProfile sellerProfile;
-    private List<Card> cards;
 
-    public CreateUserDTO(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public CreateUserDTO(String name, String password) {
         this.name = name;
         this.password = password;
-        this.cart = cart;
-        this.sales = sales;
-        this.sellerProfile = sellerProfile;
-        this.cards = cards;
     }
 
     public CreateUserDTO() {
@@ -48,49 +40,18 @@ public class CreateUserDTO {
         this.password = password;
     }
 
-    public List<Book> getCart() {
-        return cart;
-    }
-
-    public void setCart(List<Book> cart) {
-        this.cart = cart;
-    }
-
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
-
-    public SellerProfile getSellerProfile() {
-        return sellerProfile;
-    }
-
-    public void setSellerProfile(SellerProfile sellerProfile) {
-        this.sellerProfile = sellerProfile;
-    }
-
-    public List<Card> getCards() {
-        return cards;
-    }
-
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateUserDTO that = (CreateUserDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(password, that.password) && Objects.equals(cart, that.cart) && Objects.equals(sales, that.sales) && Objects.equals(sellerProfile, that.sellerProfile) && Objects.equals(cards, that.cards);
+        return Objects.equals(name, that.name) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, password, cart, sales, sellerProfile, cards);
+        return Objects.hash(name, password);
     }
 
     @Override
@@ -98,10 +59,6 @@ public class CreateUserDTO {
         return "CreateUserDTO{" +
                 "name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", cart=" + cart +
-                ", sales=" + sales +
-                ", sellerProfile=" + sellerProfile +
-                ", cards=" + cards +
                 '}';
     }
 }

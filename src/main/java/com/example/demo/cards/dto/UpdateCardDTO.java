@@ -17,14 +17,12 @@ public class UpdateCardDTO {
     private String cvv;
     @NotNull(message = "The owner can't be null")
     private User owner;
-    private List<Sale> sales;
 
-    public UpdateCardDTO(String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
+    public UpdateCardDTO(String cardNumber, String bank, String cvv, User owner) {
         this.cardNumber = cardNumber;
         this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
-        this.sales = sales;
     }
 
     public UpdateCardDTO() {
@@ -62,25 +60,18 @@ public class UpdateCardDTO {
         this.owner = owner;
     }
 
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpdateCardDTO that = (UpdateCardDTO) o;
-        return Objects.equals(cardNumber, that.cardNumber) && Objects.equals(bank, that.bank) && Objects.equals(cvv, that.cvv) && Objects.equals(owner, that.owner) && Objects.equals(sales, that.sales);
+        return Objects.equals(cardNumber, that.cardNumber) && Objects.equals(bank, that.bank) && Objects.equals(cvv, that.cvv) && Objects.equals(owner, that.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cardNumber, bank, cvv, owner, sales);
+        return Objects.hash(cardNumber, bank, cvv, owner);
     }
 
     @Override
@@ -90,7 +81,6 @@ public class UpdateCardDTO {
                 ", bank='" + bank + '\'' +
                 ", cvv='" + cvv + '\'' +
                 ", owner=" + owner +
-                ", sales=" + sales +
                 '}';
     }
 }

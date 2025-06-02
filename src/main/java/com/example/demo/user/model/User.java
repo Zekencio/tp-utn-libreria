@@ -45,13 +45,9 @@ public class User {
         this.cards = cards;
     }
 
-    public User(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
+    public User(String name, String password) {
         this.name = name;
         this.password = password;
-        this.cart = cart;
-        this.sales = sales;
-        this.sellerProfile = sellerProfile;
-        this.cards = cards;
     }
 
     public User() {

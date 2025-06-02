@@ -69,6 +69,16 @@ public class Book {
         this.cartUser = cartUser;
     }
 
+    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, SellerProfile seller) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.author = author;
+        this.genres = genres;
+        this.seller = seller;
+    }
+
     public Book() {
     }
 

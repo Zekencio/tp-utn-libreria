@@ -32,20 +32,16 @@ public class CreateBookDTO {
     private Author author;
 
     private Set<Genre> genres;
-    private List<Sale> sales;
     private SellerProfile seller;
-    private User cartUser;
 
-    public CreateBookDTO(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+    public CreateBookDTO(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, SellerProfile seller) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.author = author;
         this.genres = genres;
-        this.sales = sales;
         this.seller = seller;
-        this.cartUser = cartUser;
     }
 
     public CreateBookDTO() {
@@ -99,13 +95,6 @@ public class CreateBookDTO {
         this.genres = genres;
     }
 
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
 
     public SellerProfile getSeller() {
         return seller;
@@ -115,13 +104,6 @@ public class CreateBookDTO {
         this.seller = seller;
     }
 
-    public User getCartUser() {
-        return cartUser;
-    }
-
-    public void setCartUser(User cartUser) {
-        this.cartUser = cartUser;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -129,13 +111,12 @@ public class CreateBookDTO {
         if (o == null || getClass() != o.getClass()) return false;
         CreateBookDTO that = (CreateBookDTO) o;
         return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price)
-                && Objects.equals(stock, that.stock) && Objects.equals(author, that.author) && Objects.equals(genres, that.genres) &&
-                Objects.equals(sales, that.sales) && Objects.equals(seller, that.seller) && Objects.equals(cartUser, that.cartUser);
+                && Objects.equals(stock, that.stock) && Objects.equals(author, that.author) && Objects.equals(genres, that.genres) && Objects.equals(seller, that.seller);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, price, stock, author, genres, sales, seller, cartUser);
+        return Objects.hash(name, description, price, stock, author, genres,seller);
     }
 
     @Override
@@ -147,9 +128,7 @@ public class CreateBookDTO {
                 ", stock=" + stock +
                 ", author=" + author +
                 ", genres=" + genres +
-                ", sales=" + sales +
                 ", seller=" + seller +
-                ", cartUser=" + cartUser +
                 '}';
     }
 }

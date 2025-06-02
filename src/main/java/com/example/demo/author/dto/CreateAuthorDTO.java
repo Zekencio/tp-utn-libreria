@@ -15,12 +15,9 @@ public class CreateAuthorDTO {
     @NotNull(message = "A date of birth is required")
     private Date birthDate;
 
-    private List<Book> bookslist;
-
-    public CreateAuthorDTO(String name, Date birthDate, List<Book> bookslist) {
+    public CreateAuthorDTO(String name, Date birthDate) {
         this.name = name;
         this.birthDate = birthDate;
-        this.bookslist = bookslist;
     }
 
     public CreateAuthorDTO() {
@@ -42,25 +39,17 @@ public class CreateAuthorDTO {
         this.birthDate = birthDate;
     }
 
-    public List<Book> getBookslist() {
-        return bookslist;
-    }
-
-    public void setBookslist(List<Book> bookslist) {
-        this.bookslist = bookslist;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateAuthorDTO that = (CreateAuthorDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(birthDate, that.birthDate) && Objects.equals(bookslist, that.bookslist);
+        return Objects.equals(name, that.name) && Objects.equals(birthDate, that.birthDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, birthDate, bookslist);
+        return Objects.hash(name, birthDate);
     }
 
     @Override
@@ -68,7 +57,6 @@ public class CreateAuthorDTO {
         return "CreateAuthorDTO{" +
                 "name='" + name + '\'' +
                 ", birthDate=" + birthDate +
-                ", bookslist=" + bookslist +
                 '}';
     }
 }

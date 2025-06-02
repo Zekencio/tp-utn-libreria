@@ -36,12 +36,11 @@ public class Card {
         this.sales = sales;
     }
 
-    public Card(String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {
+    public Card(String cardNumber, String bank, String cvv, User owner) {
         this.cardNumber = cardNumber;
         this.bank = bank;
         this.cvv = cvv;
         this.owner = owner;
-        this.sales = sales;
     }
 
     public Card() {
