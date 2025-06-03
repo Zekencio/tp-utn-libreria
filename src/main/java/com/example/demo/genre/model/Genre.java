@@ -18,12 +18,7 @@ public class Genre {
 
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "books_genres",
-            joinColumns = @JoinColumn(name = "genre_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(mappedBy = "genres")
     private Set<Book> books;
 
     public Genre(Long id, String name, String description, Set<Book> books) {

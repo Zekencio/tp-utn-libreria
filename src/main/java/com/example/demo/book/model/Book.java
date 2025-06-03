@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "books")
+@Table (name = "books")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +32,20 @@ public class Book {
     @ManyToOne
     private Author author;
 
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany
+    @JoinTable(
+            name = "books_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
     private Set<Genre> genres;
 
-    @ManyToMany(mappedBy = "sales")
+    @ManyToMany
+    @JoinTable(
+            name = "sales_books",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "sale_id")
+    )
     private List<Sale> sales;
 
     @ManyToOne

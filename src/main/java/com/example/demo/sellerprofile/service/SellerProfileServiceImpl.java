@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SellerServiceImpl implements SellerProfileService{
+public class SellerProfileServiceImpl implements SellerProfileService{
 
     private final SellerProfileRepository repository;
 
-    public SellerServiceImpl(SellerProfileRepository repository) {
+    public SellerProfileServiceImpl(SellerProfileRepository repository) {
         this.repository = repository;
     }
 

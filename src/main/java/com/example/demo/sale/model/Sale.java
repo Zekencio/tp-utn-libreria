@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "sales")
+@Table (name = "sales")
 public class Sale {
 
     @Id
@@ -26,12 +26,7 @@ public class Sale {
     @ManyToOne
     private Card card;
 
-    @ManyToMany
-    @JoinTable(
-            name = "sales_books",
-            joinColumns = @JoinColumn(name = "sale_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(mappedBy = "sales")
     private List<Book> books;
 
     public Sale(Long id, Date date, User user, Card card, List<Book> books) {
