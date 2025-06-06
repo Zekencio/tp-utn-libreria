@@ -2,6 +2,7 @@ package com.example.demo.genre.model;
 
 import com.example.demo.book.model.Book;
 import jakarta.persistence.*;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
 import java.util.Set;

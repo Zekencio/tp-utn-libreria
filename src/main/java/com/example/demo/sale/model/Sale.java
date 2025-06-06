@@ -4,13 +4,14 @@ import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.user.model.User;
 import jakarta.persistence.*;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table (name = "sales")
+@Table(name = "sales")
 public class Sale {
 
     @Id

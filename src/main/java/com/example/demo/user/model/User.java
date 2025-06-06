@@ -5,6 +5,7 @@ import com.example.demo.cards.model.Card;
 import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import jakarta.persistence.*;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 import java.util.Objects;

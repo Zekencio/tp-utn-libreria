@@ -50,7 +50,7 @@ public class UserControler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         boolean deleted = userService.delteUser(id);
         if (deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

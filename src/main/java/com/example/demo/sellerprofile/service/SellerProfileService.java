@@ -1,7 +1,6 @@
 package com.example.demo.sellerprofile.service;
 
-import com.example.demo.author.dto.AuthorDTO;
-import com.example.demo.author.model.Author;
+
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
