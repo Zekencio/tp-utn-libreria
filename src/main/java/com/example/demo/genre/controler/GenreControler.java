@@ -1,0 +1,61 @@
+package com.example.demo.genre.controler;
+
+import com.example.demo.book.dto.BookDTO;
+import com.example.demo.book.dto.CreateBookDTO;
+import com.example.demo.book.dto.UpdateBookDTO;
+import com.example.demo.genre.dto.CreateGenreDTO;
+import com.example.demo.genre.dto.GenreDTO;
+import com.example.demo.genre.dto.UpdateGenreDTO;
+import com.example.demo.genre.service.GenreServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/genres")
+public class GenreControler {
+
+    private final GenreServiceImpl genreService;
+
+    public GenreControler(GenreServiceImpl genreService) {
+        this.genreService = genreService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GenreDTO>> getAllGenre () {
+        List<GenreDTO> genres = genreService.getAll();
+        return ResponseEntity.ok(genres);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GenreDTO> getGenreById (@PathVariable Long id) {
+        Optional<GenreDTO> genre = genreService.getById(id);
+        return genre.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<GenreDTO> createGenre(@RequestBody CreateGenreDTO createGenreDTO){
+        GenreDTO genreDTO = genreService.createGenre(createGenreDTO);
+        return new ResponseEntity<>(genreDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id, @RequestBody UpdateGenreDTO updateGenreDTO){
+        Optional<GenreDTO> updatedGenre = genreService.updateGenre(id, updateGenreDTO);
+        return updatedGenre.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGenre(@PathVariable Long id){
+        boolean deleted = genreService.delteGenre(id);
+        if (deleted){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
