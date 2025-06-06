@@ -42,10 +42,10 @@ public class SaleServiceImpl implements SaleService{
     public boolean delteSale(Long id) {
         Optional<Sale> sale = repository.findById(id);
         if (sale.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 

@@ -43,10 +43,10 @@ public class CardServiceImpl implements CardService{
     public boolean delteCard(Long id) {
         Optional<Card> card = repository.findById(id);
         if (card.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 

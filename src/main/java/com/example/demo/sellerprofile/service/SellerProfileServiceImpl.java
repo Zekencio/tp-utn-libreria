@@ -35,10 +35,10 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     public boolean delteSellerProfile(Long id) {
         Optional<SellerProfile> seller = repository.findById(id);
         if (seller.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 

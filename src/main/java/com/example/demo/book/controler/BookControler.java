@@ -4,10 +4,12 @@ import com.example.demo.book.dto.BookDTO;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.service.BookServiceImpl;
+import com.example.demo.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,17 @@ public class BookControler {
     public ResponseEntity<List<BookDTO>> getAllBooks () {
         List<BookDTO> books = bookService.getAll();
         return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/author/{id}")
+    public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable Long id){
+        List<BookDTO> books= new ArrayList<>();
+        try {
+            books= bookService.getByAuthor(id);
+            return ResponseEntity.ok(books);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")

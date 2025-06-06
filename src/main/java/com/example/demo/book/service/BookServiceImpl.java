@@ -1,10 +1,13 @@
 package com.example.demo.book.service;
 
+import com.example.demo.author.model.Author;
+import com.example.demo.author.repository.AuthorRepository;
 import com.example.demo.book.dto.BookDTO;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
+import com.example.demo.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +18,11 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService{
 
     private final BookRepository repository;
+    private final AuthorRepository authorRepository;
 
-    public BookServiceImpl(BookRepository repository) {
+    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository) {
         this.repository = repository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
@@ -42,10 +47,10 @@ public class BookServiceImpl implements BookService{
     public boolean delteBook(Long id) {
         Optional<Book> book = repository.findById(id);
         if (book.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 
@@ -78,6 +83,17 @@ public class BookServiceImpl implements BookService{
                     return convertToDTO(saved);
                 });
     }
+
+    @Override
+    public List<BookDTO> getByAuthor(Long id) throws NotFoundException {
+        Optional<Author> autor= authorRepository.findById(id);
+        if (autor.isPresent()) {
+            return repository.findAll().stream().filter(book -> book.getAuthor().equals(autor.get())).map(this::convertToDTO).collect(Collectors.toList());
+        }else {
+            throw new NotFoundException("autor inexistente");
+        }
+    }
+
 
     @Override
     public Book convertToEntity(CreateBookDTO createBookDTO) {

@@ -42,10 +42,10 @@ public class GenreServiceImpl implements GenreService{
     public boolean delteGenre(Long id) {
         Optional<Genre> genre = repository.findById(id);
         if (genre.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 

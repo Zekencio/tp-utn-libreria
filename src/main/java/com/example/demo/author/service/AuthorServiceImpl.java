@@ -36,10 +36,10 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean delteAuthor(Long id) {
         Optional<Author> author = repository.findById(id);
         if (author.isPresent()){
-            return false;
-        }else {
             repository.deleteById(id);
             return true;
+        }else {
+            return false;
         }
     }
 
