@@ -13,11 +13,13 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     private Date birthDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
     private List<Book> bookslist;
 
     public Author(Long id, String name, Date birthDate, List<Book> bookslist) {

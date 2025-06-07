@@ -48,7 +48,7 @@ public class SellerProfileControler {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id){
-        boolean deleted = sellerProfileService.delteSellerProfile(id);
+        boolean deleted = sellerProfileService.deleteSellerProfile(id);
         if (deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{

@@ -14,7 +14,7 @@ public interface BookService {
     List<BookDTO> getAll();
     BookDTO createBook(CreateBookDTO createBookDTO);
     Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
-    boolean delteBook(Long id);
+    boolean deleteBook(Long id);
 
     List<BookDTO> getByAuthor(Long id) throws NotFoundException;
 

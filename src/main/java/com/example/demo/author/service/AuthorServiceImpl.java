@@ -33,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public boolean delteAuthor(Long id) {
+    public boolean deleteAuthor(Long id) {
         Optional<Author> author = repository.findById(id);
         if (author.isPresent()){
             repository.deleteById(id);

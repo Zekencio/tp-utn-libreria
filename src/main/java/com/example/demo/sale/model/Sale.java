@@ -22,12 +22,19 @@ public class Sale {
     private Date date;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "card_id")
     private Card card;
 
-    @ManyToMany(mappedBy = "sales")
+    @ManyToMany
+    @JoinTable(
+            name = "sales_books",
+            joinColumns = @JoinColumn(name = "sale_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
     private List<Book> books;
 
     public Sale(Long id, Date date, User user, Card card, List<Book> books) {

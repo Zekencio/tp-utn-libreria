@@ -21,10 +21,11 @@ public class SellerProfile {
     @Column(nullable = false)
     private String address;
 
-    @OneToMany
+    @OneToMany(mappedBy = "seller")
     private List<Book> inventory;
 
     @OneToOne
+    @JoinColumn(name = "seller_user_id", unique = true)
     private User sellerUser;
 
     public SellerProfile(Long id, String name, String address, List<Book> inventory, User sellerUser) {

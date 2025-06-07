@@ -13,7 +13,7 @@ public interface AuthorService {
     List<AuthorDTO> getAll();
     AuthorDTO createAuthor(CreateAuthorDTO createAuthorDTO);
     Optional<AuthorDTO> updateAuthor (Long id, UpdateAuthorDTO updateAuthorDTO);
-    boolean delteAuthor(Long id);
+    boolean deleteAuthor(Long id);
 
     Author convertToEntity(CreateAuthorDTO createAuthorDTO);
     AuthorDTO convertToDTO(Author author);

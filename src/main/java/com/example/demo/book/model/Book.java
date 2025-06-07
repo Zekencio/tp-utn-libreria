@@ -31,6 +31,7 @@ public class Book {
     private Long stock;
 
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private Author author;
 
     @ManyToMany
@@ -41,18 +42,15 @@ public class Book {
     )
     private Set<Genre> genres;
 
-    @ManyToMany
-    @JoinTable(
-            name = "sales_books",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "sale_id")
-    )
+    @ManyToMany(mappedBy = "books")
     private List<Sale> sales;
 
     @ManyToOne
+    @JoinColumn(name = "seller_id")
     private SellerProfile seller;
 
     @ManyToOne
+    @JoinColumn(name = "cart_user_id")
     private User cartUser;
 
     public Book(Long id, String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {

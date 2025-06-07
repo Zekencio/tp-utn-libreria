@@ -8,24 +8,27 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.List;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "cards")
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String cardNumber;
+
     @Column(nullable = false)
     private String bank;
+
     @Column(nullable = false)
     private String cvv;
 
     @ManyToOne
+    @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany
+    @OneToMany(mappedBy = "card")
     private List<Sale> sales;
 
     public Card(Long id, String cardNumber, String bank, String cvv, User owner, List<Sale> sales) {

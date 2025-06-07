@@ -39,7 +39,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
-    public boolean delteGenre(Long id) {
+    public boolean deleteGenre(Long id) {
         Optional<Genre> genre = repository.findById(id);
         if (genre.isPresent()){
             repository.deleteById(id);

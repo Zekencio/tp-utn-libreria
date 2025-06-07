@@ -1,8 +1,5 @@
 package com.example.demo.user.controler;
 
-import com.example.demo.book.dto.BookDTO;
-import com.example.demo.book.dto.CreateBookDTO;
-import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
@@ -51,7 +48,7 @@ public class UserControler {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
-        boolean deleted = userService.delteUser(id);
+        boolean deleted = userService.deleteUser(id);
         if (deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{

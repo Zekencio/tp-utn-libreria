@@ -1,8 +1,5 @@
 package com.example.demo.genre.controler;
 
-import com.example.demo.book.dto.BookDTO;
-import com.example.demo.book.dto.CreateBookDTO;
-import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.genre.dto.CreateGenreDTO;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.dto.UpdateGenreDTO;
@@ -51,7 +48,7 @@ public class GenreControler {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id){
-        boolean deleted = genreService.delteGenre(id);
+        boolean deleted = genreService.deleteGenre(id);
         if (deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{

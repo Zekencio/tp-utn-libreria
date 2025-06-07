@@ -39,7 +39,7 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public boolean delteSale(Long id) {
+    public boolean deleteSale(Long id) {
         Optional<Sale> sale = repository.findById(id);
         if (sale.isPresent()){
             repository.deleteById(id);

@@ -1,4 +1,4 @@
-package com.example.demo.configration;
+package com.example.demo.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

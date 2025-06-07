@@ -1,9 +1,5 @@
 package com.example.demo.sale.service;
 
-import com.example.demo.genre.dto.CreateGenreDTO;
-import com.example.demo.genre.dto.GenreDTO;
-import com.example.demo.genre.dto.UpdateGenreDTO;
-import com.example.demo.genre.model.Genre;
 import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
@@ -17,7 +13,7 @@ public interface SaleService {
     List<SaleDTO> getAll();
     SaleDTO createSale(CreateSaleDTO createSaleDTO);
     Optional<SaleDTO> updateSale (Long id, UpdateSaleDTO updateSaleDTO);
-    boolean delteSale(Long id);
+    boolean deleteSale(Long id);
 
     Sale convertToEntity(CreateSaleDTO createSaleDTO);
     SaleDTO convertToDTO(Sale sale);

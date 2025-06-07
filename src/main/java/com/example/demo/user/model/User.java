@@ -24,20 +24,29 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "cartUser")
     private List<Book> cart;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Sale> sales;
 
-    @OneToOne
+    @OneToOne(mappedBy = "sellerUser")
     private SellerProfile sellerProfile;
 
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private List<Card> cards;
 
     public User(Long id, String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
         this.id = id;
+        this.name = name;
+        this.password = password;
+        this.cart = cart;
+        this.sales = sales;
+        this.sellerProfile = sellerProfile;
+        this.cards = cards;
+    }
+
+    public User(String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
         this.name = name;
         this.password = password;
         this.cart = cart;

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean delteUser(Long id) {
+    public boolean deleteUser(Long id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()){
             repository.deleteById(id);

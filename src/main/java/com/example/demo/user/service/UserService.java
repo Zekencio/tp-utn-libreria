@@ -1,9 +1,5 @@
 package com.example.demo.user.service;
 
-import com.example.demo.author.dto.AuthorDTO;
-import com.example.demo.author.dto.CreateAuthorDTO;
-import com.example.demo.author.dto.UpdateAuthorDTO;
-import com.example.demo.author.model.Author;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
@@ -17,7 +13,7 @@ public interface UserService {
     List<UserDTO> getAll();
     UserDTO createUser(CreateUserDTO createUserDTO);
     Optional<UserDTO> updateUser (Long id, UpdateUserDTO updateUserDTO);
-    boolean delteUser(Long id);
+    boolean deleteUser(Long id);
 
     User convertToEntity(CreateUserDTO createUserDTO);
     UserDTO convertToDTO(User user);

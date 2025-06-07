@@ -14,7 +14,7 @@ public interface SellerProfileService {
     List<SellerProfileDTO> getAll();
     SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO);
     Optional<SellerProfileDTO> updateSellerProfile (Long id, UpdateSellerProfileDTO updateSellerProfileDTO);
-    boolean delteSellerProfile(Long id);
+    boolean deleteSellerProfile(Long id);
 
     SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO);
     SellerProfileDTO convertToDTO(SellerProfile sellerProfile);

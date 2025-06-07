@@ -40,7 +40,7 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public boolean delteCard(Long id) {
+    public boolean deleteCard(Long id) {
         Optional<Card> card = repository.findById(id);
         if (card.isPresent()){
             repository.deleteById(id);

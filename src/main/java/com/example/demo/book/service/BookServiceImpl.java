@@ -44,7 +44,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public boolean delteBook(Long id) {
+    public boolean deleteBook(Long id) {
         Optional<Book> book = repository.findById(id);
         if (book.isPresent()){
             repository.deleteById(id);

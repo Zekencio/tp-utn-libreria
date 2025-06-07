@@ -32,7 +32,7 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public boolean delteSellerProfile(Long id) {
+    public boolean deleteSellerProfile(Long id) {
         Optional<SellerProfile> seller = repository.findById(id);
         if (seller.isPresent()){
             repository.deleteById(id);
