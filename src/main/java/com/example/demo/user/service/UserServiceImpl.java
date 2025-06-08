@@ -1,10 +1,12 @@
 package com.example.demo.user.service;
 
+import com.example.demo.configuration.PasswordConfig;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.model.User;
 import com.example.demo.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +18,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,6 +39,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDTO createUser(CreateUserDTO createUserDTO) {
         User newUser = convertToEntity(createUserDTO);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         User savedUser = repository.save(newUser);
         return convertToDTO(savedUser);
     }
@@ -58,7 +63,7 @@ public class UserServiceImpl implements UserService{
                         existing.setName(updateUserDTO.getName());
                     }
                     if (updateUserDTO.getPassword() != null){
-                        existing.setPassword(updateUserDTO.getPassword());
+                        existing.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
                     }
                     User saved = repository.save(existing);
                     return convertToDTO(saved);
