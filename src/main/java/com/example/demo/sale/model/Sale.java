@@ -100,7 +100,7 @@ public class Sale {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sale sale = (Sale) o;
-        return Objects.equals(id, sale.id) && Objects.equals(date, sale.date) && Objects.equals(user, sale.user) && Objects.equals(card, sale.card) && Objects.equals(books, sale.books);
+        return Objects.equals(date, sale.date) && Objects.equals(user, sale.user) && Objects.equals(card, sale.card) && Objects.equals(books, sale.books);
     }
 
     @Override

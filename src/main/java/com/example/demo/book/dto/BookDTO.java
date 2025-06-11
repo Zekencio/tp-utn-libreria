@@ -1,5 +1,7 @@
 package com.example.demo.book.dto;
 
+import com.example.demo.author.dto.AuthorDTO;
+import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.model.Author;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.sale.model.Sale;
@@ -16,11 +18,11 @@ public class BookDTO {
     private String description;
     private Double price;
     private Long stock;
-    private Author author;
+    private AuthorDTOReduced author;
     private Set<Genre> genres;
     private SellerProfile seller;
 
-    public BookDTO(Long id, String name, String description, Double price, Long stock, Author author,
+    public BookDTO(Long id, String name, String description, Double price, Long stock, AuthorDTOReduced author,
                    Set<Genre> genres, SellerProfile seller) {
         this.id = id;
         this.name = name;
@@ -32,7 +34,7 @@ public class BookDTO {
         this.seller = seller;
     }
 
-    public BookDTO(String name, String description, Double price, Long stock, Author author,
+    public BookDTO(String name, String description, Double price, Long stock, AuthorDTOReduced author,
                    Set<Genre> genres, SellerProfile seller) {
         this.name = name;
         this.description = description;
@@ -86,11 +88,11 @@ public class BookDTO {
         this.stock = stock;
     }
 
-    public Author getAuthor() {
+    public AuthorDTOReduced getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(AuthorDTOReduced author) {
         this.author = author;
     }
 

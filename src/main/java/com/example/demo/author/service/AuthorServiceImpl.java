@@ -1,10 +1,13 @@
 package com.example.demo.author.service;
 
 import com.example.demo.author.dto.AuthorDTO;
+import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.dto.CreateAuthorDTO;
 import com.example.demo.author.dto.UpdateAuthorDTO;
 import com.example.demo.author.model.Author;
 import com.example.demo.author.repository.AuthorRepository;
+import com.example.demo.book.dto.BookDTOReduced;
+import com.example.demo.book.model.Book;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +31,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDTO> getAll() {
-        return repository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<AuthorDTOReduced> getAll() {
+        return repository.findAll().stream().map(this::reduceAuthor).collect(Collectors.toList());
     }
 
     @Override
@@ -71,6 +74,13 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDTO convertToDTO(Author author) {
-        return new AuthorDTO(author.getId(),author.getName(),author.getBirthDate(),author.getBookslist());
+        return new AuthorDTO(author.getId(),author.getName(),author.getBirthDate(),author.getBookslist().stream().map(this::reduceBook).toList());
+    }
+
+    private AuthorDTOReduced reduceAuthor(Author author){
+        return new AuthorDTOReduced(author.getId(), author.getName(),author.getBirthDate());
+    }
+    private BookDTOReduced reduceBook(Book book){
+        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
     }
 }

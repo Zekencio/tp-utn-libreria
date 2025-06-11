@@ -77,7 +77,7 @@ public class CardDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CardDTO cardDTO = (CardDTO) o;
-        return Objects.equals(id, cardDTO.id) && Objects.equals(cardNumber, cardDTO.cardNumber) && Objects.equals(bank, cardDTO.bank)
+        return  Objects.equals(cardNumber, cardDTO.cardNumber) && Objects.equals(bank, cardDTO.bank)
                 && Objects.equals(cvv, cardDTO.cvv) && Objects.equals(owner, cardDTO.owner);
     }
 

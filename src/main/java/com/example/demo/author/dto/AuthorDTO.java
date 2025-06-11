@@ -1,5 +1,6 @@
 package com.example.demo.author.dto;
 
+import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.model.Book;
 
 import java.sql.Date;
@@ -11,16 +12,16 @@ public class AuthorDTO {
     private Long id;
     private String name;
     private Date birthDate;
-    private List<Book> bookslist;
+    private List<BookDTOReduced> bookslist;
 
-    public AuthorDTO(Long id, String name, Date birthDate, List<Book> bookslist) {
+    public AuthorDTO(Long id, String name, Date birthDate, List<BookDTOReduced> bookslist) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
         this.bookslist = bookslist;
     }
 
-    public AuthorDTO(String name, Date birthDate, List<Book> bookslist) {
+    public AuthorDTO(String name, Date birthDate, List<BookDTOReduced> bookslist) {
         this.name = name;
         this.birthDate = birthDate;
         this.bookslist = bookslist;
@@ -53,11 +54,11 @@ public class AuthorDTO {
         this.birthDate = birthDate;
     }
 
-    public List<Book> getBookslist() {
+    public List<BookDTOReduced> getBookslist() {
         return bookslist;
     }
 
-    public void setBookslist(List<Book> bookslist) {
+    public void setBookslist(List<BookDTOReduced> bookslist) {
         this.bookslist = bookslist;
     }
 
@@ -66,7 +67,7 @@ public class AuthorDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthorDTO authorDTO = (AuthorDTO) o;
-        return Objects.equals(id, authorDTO.id) && Objects.equals(name, authorDTO.name) && Objects.equals(birthDate, authorDTO.birthDate) && Objects.equals(bookslist, authorDTO.bookslist);
+        return Objects.equals(name, authorDTO.name) && Objects.equals(birthDate, authorDTO.birthDate) && Objects.equals(bookslist, authorDTO.bookslist);
     }
 
     @Override

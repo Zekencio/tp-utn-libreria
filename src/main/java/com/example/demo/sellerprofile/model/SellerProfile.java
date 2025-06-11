@@ -90,7 +90,7 @@ public class SellerProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfile that = (SellerProfile) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(inventory, that.inventory) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(inventory, that.inventory) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override

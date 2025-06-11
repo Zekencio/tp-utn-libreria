@@ -1,28 +1,25 @@
-package com.example.demo.genre.dto;
+package com.example.demo.author.dto;
 
-import com.example.demo.book.model.Book;
-
+import java.sql.Date;
 import java.util.Objects;
-import java.util.Set;
 
-public class GenreDTO {
-
+public class AuthorDTOReduced {
     private Long id;
     private String name;
-    private String description;
+    private Date birthDate;
 
-    public GenreDTO(Long id, String name, String description) {
+    public AuthorDTOReduced(Long id, String name, Date birthDate) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.birthDate = birthDate;
     }
 
-    public GenreDTO(String name, String description) {
+    public AuthorDTOReduced(String name, Date birthDate) {
         this.name = name;
-        this.description = description;
+        this.birthDate = birthDate;
     }
 
-    public GenreDTO() {
+    public AuthorDTOReduced() {
     }
 
     public Long getId() {
@@ -41,33 +38,33 @@ public class GenreDTO {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenreDTO genreDTO = (GenreDTO) o;
-        return Objects.equals(name, genreDTO.name) ;
+        AuthorDTOReduced authorDTO = (AuthorDTOReduced) o;
+        return Objects.equals(name, authorDTO.name) && Objects.equals(birthDate, authorDTO.birthDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, birthDate);
     }
 
     @Override
     public String toString() {
-        return "GenreDTO{" +
+        return "AuthorDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description +
+                ", birthDate=" + birthDate +
                 '}';
     }
 }

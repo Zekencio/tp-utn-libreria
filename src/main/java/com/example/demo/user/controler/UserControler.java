@@ -21,6 +21,7 @@ public class UserControler {
         this.userService = userService;
     }
 
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers () {
         List<UserDTO> users = userService.getAll();
@@ -39,6 +40,7 @@ public class UserControler {
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
+    //solo modifiar o editar  solo tu propio perfil
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
         Optional<UserDTO> updatedUser = userService.updateUser(id, updateUserDTO);

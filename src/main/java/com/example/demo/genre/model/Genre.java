@@ -74,7 +74,7 @@ public class Genre {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Genre genre = (Genre) o;
-        return Objects.equals(id, genre.id) && Objects.equals(name, genre.name) && Objects.equals(description, genre.description) && Objects.equals(books, genre.books);
+        return Objects.equals(name, genre.name) && Objects.equals(description, genre.description) && Objects.equals(books, genre.books);
     }
 
     @Override

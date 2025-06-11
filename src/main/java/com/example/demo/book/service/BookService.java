@@ -1,6 +1,7 @@
 package com.example.demo.book.service;
 
 import com.example.demo.book.dto.BookDTO;
+import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface BookService {
     Optional<BookDTO> getById(Long id);
-    List<BookDTO> getAll();
+    List<BookDTOReduced> getAll();
     BookDTO createBook(CreateBookDTO createBookDTO);
     Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
     boolean deleteBook(Long id);

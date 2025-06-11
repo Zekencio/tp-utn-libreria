@@ -4,10 +4,13 @@ import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
 import com.example.demo.sale.service.SaleServiceImpl;
+import com.example.demo.user.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,7 @@ public class SaleControler {
         this.saleService = saleService;
     }
 
+    //validacion para solo verlas ventas vinculadas al usuario que lo esta usando
     @GetMapping
     public ResponseEntity<List<SaleDTO>> getAllSales () {
         List<SaleDTO> sales = saleService.getAll();
@@ -32,12 +36,13 @@ public class SaleControler {
         Optional<SaleDTO> sale = saleService.getById(id);
         return sale.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-
-    @PostMapping
-    public ResponseEntity<SaleDTO> createSale(@RequestBody CreateSaleDTO createSaleDTO){
-        SaleDTO saleDTO = saleService.createSale(createSaleDTO);
-        return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
-    }
+    //fix me :(
+//    @PostMapping
+//    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardnumber){
+//        CreateSaleDTO sale = new CreateSaleDTO(Date.valueOf(LocalDate.now()))
+//        SaleDTO saleDTO = saleService.createSale(createSaleDTO);
+//        return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<SaleDTO> updateSale(@PathVariable Long id, @RequestBody UpdateSaleDTO updateSaleDTO){

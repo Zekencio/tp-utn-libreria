@@ -20,7 +20,7 @@ public class SellerProfileControler {
     public SellerProfileControler(SellerProfileServiceImpl sellerProfileService) {
         this.sellerProfileService = sellerProfileService;
     }
-
+     // modificar la muestra de libros para evitar una muestra infinita
     @GetMapping
     public ResponseEntity<List<SellerProfileDTO>> getAllSellers () {
         List<SellerProfileDTO> sellers = sellerProfileService.getAll();
@@ -33,6 +33,7 @@ public class SellerProfileControler {
         return seller.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    // la relacion con el usuario deberia ser automatica
     @PostMapping
     public ResponseEntity<SellerProfileDTO> createSellerProfile(@RequestBody CreateSellerProfileDTO createSellerProfileDTO){
         SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);

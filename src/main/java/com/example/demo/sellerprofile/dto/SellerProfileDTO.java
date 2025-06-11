@@ -66,7 +66,7 @@ public class SellerProfileDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfileDTO that = (SellerProfileDTO) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override

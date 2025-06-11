@@ -1,6 +1,7 @@
 package com.example.demo.author.controler;
 
 import com.example.demo.author.dto.AuthorDTO;
+import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.dto.CreateAuthorDTO;
 import com.example.demo.author.dto.UpdateAuthorDTO;
 import com.example.demo.author.service.AuthorService;
@@ -22,8 +23,8 @@ public class AuthorControler {
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorDTO>> getAllAuthors () {
-        List<AuthorDTO> authors = authorService.getAll();
+    public ResponseEntity<List<AuthorDTOReduced>> getAllAuthors () {
+        List<AuthorDTOReduced> authors = authorService.getAll();
         return ResponseEntity.ok(authors);
     }
 

@@ -1,8 +1,10 @@
 package com.example.demo.book.service;
 
+import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.model.Author;
 import com.example.demo.author.repository.AuthorRepository;
 import com.example.demo.book.dto.BookDTO;
+import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
@@ -33,8 +35,8 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public List<BookDTO> getAll() {
-        return repository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<BookDTOReduced> getAll() {
+        return repository.findAll().stream().map(this::reduceBook).collect(Collectors.toList());
     }
 
     @Override
@@ -102,6 +104,14 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public BookDTO convertToDTO(Book book) {
-        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(), book.getAuthor(),book.getGenres(),book.getSeller());
+        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),book.getGenres(),book.getSeller());
     }
+
+    private AuthorDTOReduced reduceAuthor(Author author){
+        return new AuthorDTOReduced(author.getId(), author.getName(),author.getBirthDate());
+    }
+    private BookDTOReduced reduceBook(Book book){
+        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
+    }
+
 }

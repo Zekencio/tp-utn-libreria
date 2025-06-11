@@ -79,7 +79,7 @@ public class SaleDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SaleDTO saleDTO = (SaleDTO) o;
-        return Objects.equals(id, saleDTO.id) && Objects.equals(date, saleDTO.date) && Objects.equals(user, saleDTO.user) && Objects.equals(card, saleDTO.card) && Objects.equals(books, saleDTO.books);
+        return Objects.equals(date, saleDTO.date) && Objects.equals(user, saleDTO.user) && Objects.equals(card, saleDTO.card) && Objects.equals(books, saleDTO.books);
     }
 
     @Override

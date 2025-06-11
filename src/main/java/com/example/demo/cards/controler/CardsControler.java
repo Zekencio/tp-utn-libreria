@@ -21,6 +21,8 @@ public class CardsControler {
         this.cardService = cardService;
     }
 
+    //solo podes modificar, ver o borrar las tarjetas que correspondan al usuario actual
+
     @GetMapping
     public ResponseEntity<List<CardDTO>> getAllcards () {
         List<CardDTO> cards = cardService.getAll();

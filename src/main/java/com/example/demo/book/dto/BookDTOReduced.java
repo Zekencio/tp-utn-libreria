@@ -1,28 +1,19 @@
-package com.example.demo.genre.dto;
+package com.example.demo.book.dto;
 
-import com.example.demo.book.model.Book;
-
-import java.util.Objects;
-import java.util.Set;
-
-public class GenreDTO {
-
+public class BookDTOReduced {
     private Long id;
     private String name;
     private String description;
 
-    public GenreDTO(Long id, String name, String description) {
+    public BookDTOReduced(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public GenreDTO(String name, String description) {
+    public BookDTOReduced(String name, String description) {
         this.name = name;
         this.description = description;
-    }
-
-    public GenreDTO() {
     }
 
     public Long getId() {
@@ -50,24 +41,11 @@ public class GenreDTO {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GenreDTO genreDTO = (GenreDTO) o;
-        return Objects.equals(name, genreDTO.name) ;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    @Override
     public String toString() {
-        return "GenreDTO{" +
+        return "BookDTOReduced{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

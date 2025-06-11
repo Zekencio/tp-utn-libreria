@@ -1,6 +1,7 @@
 package com.example.demo.book.controler;
 
 import com.example.demo.book.dto.BookDTO;
+import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.service.BookServiceImpl;
@@ -23,9 +24,10 @@ public class BookControler {
         this.bookService = bookService;
     }
 
+    //No funciona la ruta
     @GetMapping
-    public ResponseEntity<List<BookDTO>> getAllBooks () {
-        List<BookDTO> books = bookService.getAll();
+    public ResponseEntity<List<BookDTOReduced>> getAllBooks () {
+        List<BookDTOReduced> books = bookService.getAll();
         return ResponseEntity.ok(books);
     }
 
@@ -40,12 +42,16 @@ public class BookControler {
         }
     }
 
+    //to do: buscar libros por genero
+
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getbookById (@PathVariable Long id) {
         Optional<BookDTO> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    //solo podes modificar los libros que correspondan al usuario actual post, pt ,delete
+    // autocompletar vendedor
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO){
         BookDTO bookDTO = bookService.createBook(createBookDTO);

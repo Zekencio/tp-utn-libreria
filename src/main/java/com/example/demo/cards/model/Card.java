@@ -103,7 +103,7 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(id, card.id) && Objects.equals(cardNumber, card.cardNumber) && Objects.equals(bank, card.bank) && Objects.equals(cvv, card.cvv) && Objects.equals(owner, card.owner) && Objects.equals(sales, card.sales);
+        return Objects.equals(cardNumber, card.cardNumber) && Objects.equals(bank, card.bank) && Objects.equals(cvv, card.cvv) && Objects.equals(owner, card.owner) && Objects.equals(sales, card.sales);
     }
 
     @Override

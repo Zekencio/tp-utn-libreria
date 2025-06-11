@@ -79,4 +79,6 @@ public class SaleServiceImpl implements SaleService{
     public SaleDTO convertToDTO(Sale sale) {
         return new SaleDTO(sale.getId(),sale.getDate(),sale.getUser(),sale.getCard(),sale.getBooks());
     }
+
+
 }
