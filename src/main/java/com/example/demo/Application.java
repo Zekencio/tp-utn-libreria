@@ -12,11 +12,11 @@ public class Application {
 
 // evitar duplicados
 // crear un editar perfil para admins
-// cuando se realiza una venta reducir stock o interrumpir la transaccion si no hay disponibles
-// agrgar rutas a generos y libros que debuelban estadisicas generales
+// cuando se realiza una venta reducir stock o interrumpir la transacción si no hay disponibles
+// agregar rutas a géneros y libros que devuelvan estadísticas generales
 
 // donde y como reducimos stock
 // conseguir el usuario desde el sistema
 // error en la ruta de get libros
-// deberiamos gregar algo mas
-// consulta sobre lo entrgable
+// consultar si deberíamos agregar algo más
+// consultar sobre lo entregable

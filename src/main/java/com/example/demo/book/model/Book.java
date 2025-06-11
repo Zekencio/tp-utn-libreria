@@ -53,7 +53,8 @@ public class Book {
     @JoinColumn(name = "cart_user_id")
     private User cartUser;
 
-    public Book(Long id, String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+    public Book(Long id, String name, String description, Double price, Long stock, Author author,
+                Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -66,7 +67,8 @@ public class Book {
         this.cartUser = cartUser;
     }
 
-    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres,
+                List<Sale> sales, SellerProfile seller, User cartUser) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -78,7 +80,8 @@ public class Book {
         this.cartUser = cartUser;
     }
 
-    public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres, SellerProfile seller) {
+    public Book(String name, String description, Double price, Long stock, Author author,
+                Set<Genre> genres, SellerProfile seller) {
         this.name = name;
         this.description = description;
         this.price = price;

@@ -4,7 +4,7 @@ USE book_store;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
 
@@ -75,3 +75,4 @@ CREATE TABLE sales_books (
     CONSTRAINT fk_sb_book FOREIGN KEY (book_id) REFERENCES books(id),
     CONSTRAINT fk_sb_sale FOREIGN KEY (sale_id) REFERENCES sales(id)
 );
+

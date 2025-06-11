@@ -19,13 +19,11 @@ public class SecurityConfig {
     //dudosa funcionalidad
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-
         http.authorizeHttpRequests(auth ->
         auth.requestMatchers("/api/cards").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/genres","/api/authors").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/books","api/books/**").permitAll()
-
-                .requestMatchers(HttpMethod.POST,"/api/genres","/api/books","/api/authors").authenticated())
+                .requestMatchers(HttpMethod.GET,"/api/genres", "/api/authors", "/api/authors/**", "/api/books", "/api/books/**", "api/users", "/api/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/genres", "/api/books", "/api/authors", "/api/users").authenticated()
+                .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
         return http.build();

@@ -1,9 +1,4 @@
 package com.example.demo.user.dto;
-
-import com.example.demo.book.model.Book;
-import com.example.demo.cards.model.Card;
-import com.example.demo.sale.model.Sale;
-import com.example.demo.sellerprofile.model.SellerProfile;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;

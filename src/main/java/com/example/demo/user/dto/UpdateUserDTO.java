@@ -1,13 +1,7 @@
 package com.example.demo.user.dto;
 
-import com.example.demo.book.model.Book;
-import com.example.demo.cards.model.Card;
-import com.example.demo.sale.model.Sale;
-import com.example.demo.sellerprofile.model.SellerProfile;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
 import java.util.Objects;
 
 public class UpdateUserDTO {
