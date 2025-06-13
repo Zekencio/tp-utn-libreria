@@ -1,5 +1,6 @@
 package com.example.demo.user.controler;
 
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
@@ -36,11 +37,16 @@ public class UserControler {
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO){
-        UserDTO userDTO = userService.createUser(createUserDTO);
-        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        try {
+            UserDTO userDTO = userService.createUser(createUserDTO);
+            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        }catch (AlreadyExistingException e){
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     //solo modifiar o editar  solo tu propio perfil
+    // eliminar PathVarible
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
         Optional<UserDTO> updatedUser = userService.updateUser(id, updateUserDTO);

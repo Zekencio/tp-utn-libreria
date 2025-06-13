@@ -1,5 +1,6 @@
 package com.example.demo.genre.controler;
 
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.genre.dto.CreateGenreDTO;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.dto.UpdateGenreDTO;
@@ -35,8 +36,13 @@ public class GenreControler {
 
     @PostMapping
     public ResponseEntity<GenreDTO> createGenre(@RequestBody CreateGenreDTO createGenreDTO){
-        GenreDTO genreDTO = genreService.createGenre(createGenreDTO);
-        return new ResponseEntity<>(genreDTO, HttpStatus.CREATED);
+        try {
+            GenreDTO genreDTO = genreService.createGenre(createGenreDTO);
+            return new ResponseEntity<>(genreDTO, HttpStatus.CREATED);
+        } catch (AlreadyExistingException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @PutMapping("/{id}")

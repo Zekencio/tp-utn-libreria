@@ -1,5 +1,6 @@
 package com.example.demo.genre.service;
 
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.genre.dto.CreateGenreDTO;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.dto.UpdateGenreDTO;
@@ -21,8 +22,11 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
-    public GenreDTO createGenre(CreateGenreDTO createGenreDTO) {
+    public GenreDTO createGenre(CreateGenreDTO createGenreDTO) throws AlreadyExistingException {
         Genre newGenre = convertToEntity(createGenreDTO);
+        if (repository.findAll().contains(newGenre)){
+            throw new AlreadyExistingException("El genreo ya existe");
+        }
         Genre savedGenre = repository.save(newGenre);
         return convertToDTO(savedGenre);
     }

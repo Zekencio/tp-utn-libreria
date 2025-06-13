@@ -9,6 +9,7 @@ import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public BookDTO createBook(CreateBookDTO createBookDTO) {
+    public BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException {
         Book newBook = convertToEntity(createBookDTO);
+        if(repository.findAll().contains(newBook)){
+            throw new AlreadyExistingException("Este libro ye existe");
+        }
         Book savedBook= repository.save(newBook);
         return convertToDTO(savedBook);
     }

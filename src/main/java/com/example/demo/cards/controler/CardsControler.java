@@ -4,6 +4,8 @@ import com.example.demo.cards.dto.CardDTO;
 import com.example.demo.cards.dto.CreateCardDTO;
 import com.example.demo.cards.dto.UpdateCardDTO;
 import com.example.demo.cards.service.CardServiceImpl;
+import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +39,13 @@ public class CardsControler {
 
     @PostMapping
     public ResponseEntity<CardDTO> createCard(@RequestBody CreateCardDTO createCardDTO){
-        CardDTO cardDTO = cardService.createCard(createCardDTO);
-        return new ResponseEntity<>(cardDTO, HttpStatus.CREATED);
+        try {
+            CardDTO cardDTO = cardService.createCard(createCardDTO);
+            return new ResponseEntity<>(cardDTO, HttpStatus.CREATED);
+        } catch (AlreadyExistingException | NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @PutMapping("/{id}")

@@ -124,7 +124,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(cart, user.cart) && Objects.equals(sales, user.sales) && Objects.equals(sellerProfile, user.sellerProfile) && Objects.equals(cards, user.cards);
+        return Objects.equals(name, user.name);
     }
 
     @Override

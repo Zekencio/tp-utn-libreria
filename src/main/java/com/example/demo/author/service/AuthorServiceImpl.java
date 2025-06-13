@@ -8,8 +8,10 @@ import com.example.demo.author.model.Author;
 import com.example.demo.author.repository.AuthorRepository;
 import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.model.Book;
+import com.example.demo.exceptions.AlreadyExistingException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +26,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDTO createAuthor(CreateAuthorDTO createAuthorDTO) {
+    public AuthorDTO createAuthor(CreateAuthorDTO createAuthorDTO) throws AlreadyExistingException {
         Author newAuthor = convertToEntity(createAuthorDTO);
+        if (repository.findAll().contains(newAuthor)){
+            throw new AlreadyExistingException("el autor ya existe");
+        }
         Author savedAuthor= repository.save(newAuthor);
         return convertToDTO(savedAuthor);
     }
@@ -74,6 +79,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDTO convertToDTO(Author author) {
+        if(author.getBookslist() == null){
+            return new AuthorDTO(author.getId(),author.getName(),author.getBirthDate(),new ArrayList<>());
+        }
         return new AuthorDTO(author.getId(),author.getName(),author.getBirthDate(),author.getBookslist().stream().map(this::reduceBook).toList());
     }
 

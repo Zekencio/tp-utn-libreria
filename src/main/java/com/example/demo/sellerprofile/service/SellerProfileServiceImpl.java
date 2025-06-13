@@ -1,5 +1,6 @@
 package com.example.demo.sellerprofile.service;
 
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
@@ -61,8 +62,11 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) {
+    public SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) throws AlreadyExistingException {
         SellerProfile newSeller = convertToEntity(createSellerProfileDTO);
+        if (repository.findAll().contains(newSeller)){
+            throw new AlreadyExistingException("El vendedor ya esta registrado");
+        }
         SellerProfile savedSeller = repository.save(newSeller);
         return convertToDTO(savedSeller);
     }

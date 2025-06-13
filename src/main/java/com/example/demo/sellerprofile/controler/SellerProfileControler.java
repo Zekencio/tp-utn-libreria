@@ -1,5 +1,6 @@
 package com.example.demo.sellerprofile.controler;
 
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
@@ -20,7 +21,8 @@ public class SellerProfileControler {
     public SellerProfileControler(SellerProfileServiceImpl sellerProfileService) {
         this.sellerProfileService = sellerProfileService;
     }
-     // modificar la muestra de libros para evitar una muestra infinita
+
+    // modificar la muestra de libros para evitar una muestra infinita
     @GetMapping
     public ResponseEntity<List<SellerProfileDTO>> getAllSellers () {
         List<SellerProfileDTO> sellers = sellerProfileService.getAll();
@@ -36,8 +38,13 @@ public class SellerProfileControler {
     // la relacion con el usuario deberia ser automatica
     @PostMapping
     public ResponseEntity<SellerProfileDTO> createSellerProfile(@RequestBody CreateSellerProfileDTO createSellerProfileDTO){
-        SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);
-        return new ResponseEntity<>(sellerDTO, HttpStatus.CREATED);
+        try {
+            SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);
+
+            return new ResponseEntity<>(sellerDTO, HttpStatus.CREATED);
+        } catch (AlreadyExistingException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{id}")

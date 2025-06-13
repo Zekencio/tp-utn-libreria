@@ -6,6 +6,10 @@ import com.example.demo.cards.dto.CreateCardDTO;
 import com.example.demo.cards.dto.UpdateCardDTO;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.repository.CardsRepository;
+import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.user.model.User;
+import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +20,11 @@ import java.util.stream.Collectors;
 public class CardServiceImpl implements CardService{
 
     private final CardsRepository repository;
+    private final UserServiceImpl userService;
 
-    public CardServiceImpl(CardsRepository repository) {
+    public CardServiceImpl(CardsRepository repository, UserServiceImpl userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Override
@@ -33,8 +39,18 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public CardDTO createCard(CreateCardDTO createCardDTO) {
+    public CardDTO createCard(CreateCardDTO createCardDTO) throws AlreadyExistingException, NotFoundException {
         Card newCard = convertToEntity(createCardDTO);
+        Optional<User> user =userService.getByname();
+        if (user.isPresent()){
+            newCard.setOwner(user.get());
+        }else{
+            throw new NotFoundException("Necesitas iniciar sesion");
+        }
+
+        if (repository.findAll().contains(newCard)){
+            throw new AlreadyExistingException("La tarjeta ya existe");
+        }
         Card savedCard = repository.save(newCard);
         return convertToDTO(savedCard);
     }

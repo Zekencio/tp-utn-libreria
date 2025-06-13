@@ -5,6 +5,7 @@ import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.dto.CreateAuthorDTO;
 import com.example.demo.author.dto.UpdateAuthorDTO;
 import com.example.demo.author.service.AuthorService;
+import com.example.demo.exceptions.AlreadyExistingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +36,14 @@ public class AuthorControler {
     }
 
     @PostMapping
-    public ResponseEntity<AuthorDTO> createAuthor(@RequestBody CreateAuthorDTO createAuthorDTO){
-        AuthorDTO authorDTO = authorService.createAuthor(createAuthorDTO);
-        return new ResponseEntity<>(authorDTO, HttpStatus.CREATED);
+    public ResponseEntity<AuthorDTO> createAuthor(@RequestBody CreateAuthorDTO createAuthorDTO) {
+        try {
+            AuthorDTO authorDTO = authorService.createAuthor(createAuthorDTO);
+            return new ResponseEntity<>(authorDTO, HttpStatus.CREATED);
+        } catch (AlreadyExistingException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @PutMapping("/{id}")

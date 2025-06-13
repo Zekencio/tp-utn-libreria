@@ -5,6 +5,7 @@ import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.service.BookServiceImpl;
+import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +55,12 @@ public class BookControler {
     // autocompletar vendedor
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO){
-        BookDTO bookDTO = bookService.createBook(createBookDTO);
-        return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
+        try {
+            BookDTO bookDTO = bookService.createBook(createBookDTO);
+            return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
+        }catch (AlreadyExistingException e){
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{id}")
