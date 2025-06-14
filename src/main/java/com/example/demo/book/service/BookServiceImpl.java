@@ -61,6 +61,13 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    public double calculateAveragePrice() {
+        return repository.findAll().stream()
+                .mapToDouble(Book::getPrice)
+                .average().orElse(0.0);
+    }
+
+    @Override
     public Optional<BookDTO> updateBook(Long id, UpdateBookDTO updateBookDTO) {
         return repository.findById(id)
                 .map(existing ->{
@@ -99,7 +106,6 @@ public class BookServiceImpl implements BookService{
             throw new NotFoundException("autor inexistente");
         }
     }
-
 
     @Override
     public Book convertToEntity(CreateBookDTO createBookDTO) {

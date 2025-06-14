@@ -17,6 +17,7 @@ public interface BookService {
     BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException;
     Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
     boolean deleteBook(Long id);
+    double calculateAveragePrice ();
 
     List<BookDTO> getByAuthor(Long id) throws NotFoundException;
 

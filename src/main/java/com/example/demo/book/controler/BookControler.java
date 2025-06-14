@@ -79,4 +79,10 @@ public class BookControler {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/estadisticas/precio_promedio")
+    public ResponseEntity<Double> getAveragePrice(){
+        return ResponseEntity.ok(bookService.calculateAveragePrice());
+    }
+
 }
