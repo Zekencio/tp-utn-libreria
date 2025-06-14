@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface BookService {
     Optional<BookDTO> getById(Long id);
     List<BookDTOReduced> getAll();
-    BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException;
+    BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException, NotFoundException;
     Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
     boolean deleteBook(Long id);
     double calculateAveragePrice ();

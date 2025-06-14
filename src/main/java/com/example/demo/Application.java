@@ -13,7 +13,3 @@ public class Application {
 // crear un editar perfil para admins
 // cuando se realiza una venta reducir stock o interrumpir la transacción si no hay disponibles
 // agregar rutas a géneros y libros que devuelvan estadísticas generales
-
-
-// consultar si deberíamos agregar algo más
-// consultar sobre lo entregable

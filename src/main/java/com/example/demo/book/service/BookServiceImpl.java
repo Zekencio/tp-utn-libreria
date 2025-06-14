@@ -11,6 +11,8 @@ import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.user.model.User;
+import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +25,19 @@ public class BookServiceImpl implements BookService{
 
     private final BookRepository repository;
     private final AuthorRepository authorRepository;
+    private final UserServiceImpl userService;
 
-    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository) {
+    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository, UserServiceImpl userService) {
         this.repository = repository;
         this.authorRepository = authorRepository;
+        this.userService = userService;
     }
 
     @Override
-    public BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException {
+    public BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException, NotFoundException {
         Book newBook = convertToEntity(createBookDTO);
+        User user =userService.getCurrentUser();
+        newBook.setSeller(user.getSellerProfile());
         if(repository.findAll().contains(newBook)){
             throw new AlreadyExistingException("Este libro ye existe");
         }
@@ -59,6 +65,14 @@ public class BookServiceImpl implements BookService{
         }else {
             return false;
         }
+    }
+
+    public void addToCart (Long id, Integer cant) throws NotFoundException {
+        Optional<Book> book = repository.findById(id);
+        if(book.isEmpty()){
+            throw new NotFoundException("Libro no encontrado");
+        }
+        userService.addToUserCart(book.get(),cant);
     }
 
     @Override

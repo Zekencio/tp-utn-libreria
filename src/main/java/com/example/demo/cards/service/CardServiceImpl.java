@@ -1,6 +1,5 @@
 package com.example.demo.cards.service;
 
-import com.example.demo.author.model.Author;
 import com.example.demo.cards.dto.CardDTO;
 import com.example.demo.cards.dto.CreateCardDTO;
 import com.example.demo.cards.dto.UpdateCardDTO;
@@ -41,12 +40,8 @@ public class CardServiceImpl implements CardService{
     @Override
     public CardDTO createCard(CreateCardDTO createCardDTO) throws AlreadyExistingException, NotFoundException {
         Card newCard = convertToEntity(createCardDTO);
-        Optional<User> user =userService.getByname();
-        if (user.isPresent()){
-            newCard.setOwner(user.get());
-        }else{
-            throw new NotFoundException("Necesitas iniciar sesion");
-        }
+        User user =userService.getCurrentUser();
+        newCard.setOwner(user);
 
         if (repository.findAll().contains(newCard)){
             throw new AlreadyExistingException("La tarjeta ya existe");

@@ -45,7 +45,6 @@ public class BookControler {
     }
 
     //to do: buscar libros por genero
-
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getbookById (@PathVariable Long id) {
         Optional<BookDTO> book = bookService.getById(id);
@@ -59,7 +58,7 @@ public class BookControler {
         try {
             BookDTO bookDTO = bookService.createBook(createBookDTO);
             return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
-        }catch (AlreadyExistingException e){
+        }catch (AlreadyExistingException | NotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
@@ -81,6 +80,16 @@ public class BookControler {
         }
     }
 
+    @PutMapping("/add/{id}")
+    public ResponseEntity<Void> addBookToCart(@PathVariable Long id,@RequestBody Integer cant){
+        try{
+            bookService.addToCart(id,cant);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/statistics/averageprice")
     public ResponseEntity<Double> getAveragePrice(){
         return ResponseEntity.ok(bookService.calculateAveragePrice());
@@ -90,4 +99,6 @@ public class BookControler {
     public ResponseEntity<Map<String, Long>> getBooksPerAuthor(){
         return ResponseEntity.ok(bookService.countBooksPerAuthor());
     }
+
+
 }

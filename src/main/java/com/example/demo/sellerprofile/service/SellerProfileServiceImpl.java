@@ -1,11 +1,14 @@
 package com.example.demo.sellerprofile.service;
 
 import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.sellerprofile.repository.SellerProfileRepository;
+import com.example.demo.user.model.User;
+import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +19,11 @@ import java.util.stream.Collectors;
 public class SellerProfileServiceImpl implements SellerProfileService{
 
     private final SellerProfileRepository repository;
+    private final UserServiceImpl userService;
 
-    public SellerProfileServiceImpl(SellerProfileRepository repository) {
+    public SellerProfileServiceImpl(SellerProfileRepository repository, UserServiceImpl userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Override
@@ -62,8 +67,13 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) throws AlreadyExistingException {
+    public SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) throws AlreadyExistingException, NotFoundException {
         SellerProfile newSeller = convertToEntity(createSellerProfileDTO);
+        User user =userService.getCurrentUser();
+        if(user.getSellerProfile() != null){
+            throw new AlreadyExistingException("El usuario ya esta registrado como vendedor");
+        }
+        newSeller.setSellerUser(user);
         if (repository.findAll().contains(newSeller)){
             throw new AlreadyExistingException("El vendedor ya esta registrado");
         }

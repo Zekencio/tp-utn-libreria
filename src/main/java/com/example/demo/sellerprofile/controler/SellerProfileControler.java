@@ -1,6 +1,7 @@
 package com.example.demo.sellerprofile.controler;
 
 import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
@@ -35,14 +36,13 @@ public class SellerProfileControler {
         return seller.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // la relacion con el usuario deberia ser automatica
     @PostMapping
     public ResponseEntity<SellerProfileDTO> createSellerProfile(@RequestBody CreateSellerProfileDTO createSellerProfileDTO){
         try {
             SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);
 
             return new ResponseEntity<>(sellerDTO, HttpStatus.CREATED);
-        } catch (AlreadyExistingException e) {
+        } catch (AlreadyExistingException | NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }

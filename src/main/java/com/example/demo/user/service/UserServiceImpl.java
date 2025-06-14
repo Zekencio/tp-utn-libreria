@@ -1,7 +1,9 @@
 package com.example.demo.user.service;
 
+import com.example.demo.book.model.Book;
 import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,9 +45,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-    public Optional<User> getByname() {
+    public User getCurrentUser() throws NotFoundException {
         String name= CurrentUserUtils.obtenerUsername();
-        return repository.findByName(name);
+        Optional<User> user =repository.findByName(name);
+        if (user.isEmpty()){
+            throw new NotFoundException("Necesitas iniciar sesion");
+        }
+        return user.get();
     }
 
     @Override
@@ -82,6 +89,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     User saved = repository.save(existing);
                     return convertToDTO(saved);
                 });
+    }
+
+    public void addToUserCart(Book book, Integer cant) throws NotFoundException {
+        User user = getCurrentUser();
+        List<Book> bookList = user.getCart();
+        if (bookList == null){
+            bookList=new ArrayList<>();
+        }
+        for (int i =0; i<cant; i++){
+            bookList.add(book);
+        }
+        user.setCart(bookList);
+        repository.save(user);
     }
 
     @Override
