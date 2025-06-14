@@ -9,6 +9,7 @@ import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface BookService {
@@ -18,6 +19,7 @@ public interface BookService {
     Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
     boolean deleteBook(Long id);
     double calculateAveragePrice ();
+    Map<String, Long> countBooksPerAuthor();
 
     List<BookDTO> getByAuthor(Long id) throws NotFoundException;
 

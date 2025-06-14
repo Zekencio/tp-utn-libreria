@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -80,9 +81,13 @@ public class BookControler {
         }
     }
 
-    @GetMapping("/estadisticas/precio_promedio")
+    @GetMapping("/statistics/averageprice")
     public ResponseEntity<Double> getAveragePrice(){
         return ResponseEntity.ok(bookService.calculateAveragePrice());
     }
 
+    @GetMapping("/statistics/books-per-author")
+    public ResponseEntity<Map<String, Long>> getBooksPerAuthor(){
+        return ResponseEntity.ok(bookService.countBooksPerAuthor());
+    }
 }

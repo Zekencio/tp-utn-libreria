@@ -14,6 +14,7 @@ import com.example.demo.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,13 @@ public class BookServiceImpl implements BookService{
         return repository.findAll().stream()
                 .mapToDouble(Book::getPrice)
                 .average().orElse(0.0);
+    }
+
+    @Override
+    public Map<String, Long> countBooksPerAuthor() {
+        return repository.findAll().stream()
+                .collect(Collectors.groupingBy(book -> book.getAuthor().getName(),
+                        Collectors.counting()));
     }
 
     @Override
