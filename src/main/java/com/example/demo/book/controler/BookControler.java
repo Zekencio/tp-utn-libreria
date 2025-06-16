@@ -86,6 +86,20 @@ public class BookControler {
             bookService.addToCart(id,cant);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        }catch (ArithmeticException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/remove/{id}")
+    public ResponseEntity<Void> removeBookfromCart(@PathVariable Long id,@RequestBody Integer cant){
+        try{
+            bookService.removeFromCart(id,cant);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }catch (ArithmeticException e){
+            return ResponseEntity.badRequest().build();
         }
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

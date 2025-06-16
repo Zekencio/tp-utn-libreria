@@ -1,5 +1,7 @@
 package com.example.demo.sale.service;
 
+import com.example.demo.exceptions.InsufficientStockException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
@@ -11,7 +13,7 @@ import java.util.Optional;
 public interface SaleService {
     Optional<SaleDTO> getById(Long id);
     List<SaleDTO> getAll();
-    SaleDTO createSale(CreateSaleDTO createSaleDTO);
+    SaleDTO createSale(String cardNumber) throws NotFoundException, InsufficientStockException;
     Optional<SaleDTO> updateSale (Long id, UpdateSaleDTO updateSaleDTO);
     boolean deleteSale(Long id);
 

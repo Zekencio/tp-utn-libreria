@@ -10,6 +10,7 @@ import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
 import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
@@ -71,8 +72,20 @@ public class BookServiceImpl implements BookService{
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new NotFoundException("Libro no encontrado");
+        }else if (cant <=0){
+            throw new ArithmeticException("La cantidad no puede ser 0 o menor");
         }
         userService.addToUserCart(book.get(),cant);
+    }
+
+    public void removeFromCart (Long id, Integer cant) throws NotFoundException {
+        Optional<Book> book = repository.findById(id);
+        if(book.isEmpty()){
+            throw new NotFoundException("Libro no encontrado");
+        }else if (cant <=0){
+            throw new ArithmeticException("La cantidad no puede ser 0 o menor");
+        }
+        userService.removeFromUserCart(book.get(),cant);
     }
 
     @Override
@@ -118,6 +131,25 @@ public class BookServiceImpl implements BookService{
                     return convertToDTO(saved);
                 });
     }
+
+    public void updateStock(List<Book> cart) throws InsufficientStockException, NotFoundException {
+        while (!cart.isEmpty()){
+            Book book = cart.getFirst();
+            cart.remove(book);
+            if (book.getStock() == 0){
+                throw new InsufficientStockException("stock isuficiente");
+            }
+            if (repository.existsById(book.getId())){
+                book.setStock(book.getStock()-1);
+                repository.save(book);
+            }else{
+                throw new NotFoundException("El libro no esta disponible");
+            }
+
+
+        }
+    }
+
 
     @Override
     public List<BookDTO> getByAuthor(Long id) throws NotFoundException {

@@ -36,6 +36,9 @@ public class CardServiceImpl implements CardService{
         Optional<Card> card = repository.findById(id);
         return card.map(this::convertToDTO);
     }
+    public Optional<Card> getByCardNumber(String cardNumber){
+        return repository.findByCardNumber(cardNumber);
+    }
 
     @Override
     public CardDTO createCard(CreateCardDTO createCardDTO) throws AlreadyExistingException, NotFoundException {

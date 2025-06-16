@@ -1,12 +1,21 @@
 package com.example.demo.sale.service;
 
+import com.example.demo.book.service.BookServiceImpl;
+import com.example.demo.cards.model.Card;
+import com.example.demo.cards.service.CardServiceImpl;
+import com.example.demo.exceptions.InsufficientStockException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
 import com.example.demo.sale.model.Sale;
 import com.example.demo.sale.repository.SaleRepository;
+import com.example.demo.user.model.User;
+import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,9 +24,15 @@ import java.util.stream.Collectors;
 public class SaleServiceImpl implements SaleService{
 
     private final SaleRepository repository;
+    private final UserServiceImpl userService;
+    private final CardServiceImpl cardService;
+    private final BookServiceImpl bookService;
 
-    public SaleServiceImpl(SaleRepository repository) {
+    public SaleServiceImpl(SaleRepository repository, UserServiceImpl userService, CardServiceImpl cardService, BookServiceImpl bookService) {
         this.repository = repository;
+        this.userService = userService;
+        this.cardService = cardService;
+        this.bookService = bookService;
     }
 
     @Override
@@ -32,10 +47,19 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public SaleDTO createSale(CreateSaleDTO createSaleDTO) {
-        Sale newSale = convertToEntity(createSaleDTO);
-        Sale savedSale = repository.save(newSale);
-        return convertToDTO(savedSale);
+    public SaleDTO createSale(String cardNumer) throws NotFoundException, InsufficientStockException {
+        User user = userService.getCurrentUser();
+        Optional<Card> card = cardService.getByCardNumber(cardNumer);
+        if(card.isPresent()){
+            Sale newSale = new Sale(Date.valueOf(LocalDate.now()),user,card.get(),user.getCart());
+            Sale savedSale = repository.save(newSale);
+            bookService.updateStock(user.getCart());
+            userService.emptyCart();
+            return convertToDTO(savedSale);
+        }else {
+            throw new NotFoundException("La tarjeta no esta registrada");
+        }
+
     }
 
     @Override

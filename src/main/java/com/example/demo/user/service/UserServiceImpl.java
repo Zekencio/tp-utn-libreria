@@ -104,6 +104,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         repository.save(user);
     }
 
+    public void removeFromUserCart(Book book, Integer cant) throws NotFoundException {
+        User user = getCurrentUser();
+        List<Book> bookList = user.getCart();
+        for (int i =0; i<cant; i++){
+            bookList.remove(book);
+        }
+        user.setCart(bookList);
+        repository.save(user);
+    }
+
+    public void emptyCart() throws NotFoundException {
+        User user = getCurrentUser();
+        user.setCart(new ArrayList<Book>());
+        repository.save(user);
+    }
+
     @Override
     public User convertToEntity(CreateUserDTO createUserDTO) {
         return new User(createUserDTO.getName(), createUserDTO.getPassword());

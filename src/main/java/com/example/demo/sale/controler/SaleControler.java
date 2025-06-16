@@ -1,16 +1,14 @@
 package com.example.demo.sale.controler;
 
-import com.example.demo.sale.dto.CreateSaleDTO;
+import com.example.demo.exceptions.InsufficientStockException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
 import com.example.demo.sale.service.SaleServiceImpl;
-import com.example.demo.user.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,13 +34,16 @@ public class SaleControler {
         Optional<SaleDTO> sale = saleService.getById(id);
         return sale.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-    //fix me :(
-//    @PostMapping
-//    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardnumber){
-//        CreateSaleDTO sale = new CreateSaleDTO(Date.valueOf(LocalDate.now()))
-//        SaleDTO saleDTO = saleService.createSale(createSaleDTO);
-//        return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
-//    }
+
+    @PostMapping
+    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardnumber){
+        try {
+            SaleDTO saleDTO = saleService.createSale(cardnumber);
+            return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
+        } catch (NotFoundException | InsufficientStockException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<SaleDTO> updateSale(@PathVariable Long id, @RequestBody UpdateSaleDTO updateSaleDTO){
