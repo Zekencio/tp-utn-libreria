@@ -30,14 +30,18 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<CardDTO> getAll() {
-        return repository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return repository.findAll().stream().filter(card -> card.getOwner().getName().equals(CurrentUserUtils.obtenerUsername())).map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CardDTO> getById(Long id) {
+    public Optional<CardDTO> getById(Long id) throws UnautorizedException {
         Optional<Card> card = repository.findById(id);
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+        }
         return card.map(this::convertToDTO);
     }
+
     public Optional<Card> getByCardNumber(String cardNumber){
         return repository.findByCardNumber(cardNumber);
     }
@@ -56,8 +60,11 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public boolean deleteCard(Long id) {
+    public boolean deleteCard(Long id) throws UnautorizedException {
         Optional<Card> card = repository.findById(id);
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+        }
         if (card.isPresent()){
             repository.deleteById(id);
             return true;

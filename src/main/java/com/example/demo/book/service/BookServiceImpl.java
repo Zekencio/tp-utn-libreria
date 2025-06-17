@@ -1,8 +1,10 @@
 package com.example.demo.book.service;
 
+import com.example.demo.author.dto.AuthorDTO;
 import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.model.Author;
 import com.example.demo.author.repository.AuthorRepository;
+import com.example.demo.author.service.AuthorServiceImpl;
 import com.example.demo.book.dto.BookDTO;
 import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.dto.CreateBookDTO;
@@ -14,6 +16,9 @@ import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnautorizedException;
+import com.example.demo.genre.dto.GenreDTO;
+import com.example.demo.genre.model.Genre;
+import com.example.demo.genre.service.GenreServiceImpl;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
@@ -27,13 +32,15 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService{
 
     private final BookRepository repository;
-    private final AuthorRepository authorRepository;
+    private final AuthorServiceImpl authorService;
     private final UserServiceImpl userService;
+    private final GenreServiceImpl genreService;
 
-    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository, UserServiceImpl userService) {
+    public BookServiceImpl(BookRepository repository, AuthorServiceImpl authorService, UserServiceImpl userService, GenreServiceImpl genreService) {
         this.repository = repository;
-        this.authorRepository = authorRepository;
+        this.authorService = authorService;
         this.userService = userService;
+        this.genreService = genreService;
     }
 
     @Override
@@ -60,8 +67,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public boolean deleteBook(Long id) {
+    public boolean deleteBook(Long id) throws UnautorizedException {
         Optional<Book> book = repository.findById(id);
+        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.obtenerUsername())){
+            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+        }
         if (book.isPresent()){
             repository.deleteById(id);
             return true;
@@ -152,18 +162,26 @@ public class BookServiceImpl implements BookService{
                 throw new NotFoundException("El libro no esta disponible");
             }
 
-
         }
     }
 
 
     @Override
     public List<BookDTO> getByAuthor(Long id) throws NotFoundException {
-        Optional<Author> autor= authorRepository.findById(id);
+        Optional<AuthorDTO> autor= authorService.getById(id);
         if (autor.isPresent()) {
-            return repository.findAll().stream().filter(book -> book.getAuthor().equals(autor.get())).map(this::convertToDTO).collect(Collectors.toList());
+            return repository.findAll().stream().filter(book -> book.getAuthor().getId().equals(autor.get().getId())).map(this::convertToDTO).collect(Collectors.toList());
         }else {
             throw new NotFoundException("autor inexistente");
+        }
+    }
+
+    public List<BookDTO> getByGenre(Long id) throws NotFoundException {
+        Optional<Genre> genre= genreService.getEntityById(id);
+        if (genre.isPresent()) {
+            return repository.findAll().stream().filter(book -> book.getGenres().contains(genre.get())).map(this::convertToDTO).collect(Collectors.toList());
+        }else {
+            throw new NotFoundException("genero inexistente");
         }
     }
 

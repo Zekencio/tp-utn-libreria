@@ -17,7 +17,7 @@ public interface SellerProfileService {
     List<SellerProfileDTO> getAll();
     SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) throws AlreadyExistingException, NotFoundException;
     SellerProfileDTO updateSellerProfile (UpdateSellerProfileDTO updateSellerProfileDTO) throws NotFoundException;
-    boolean deleteSellerProfile(Long id);
+    public boolean deleteSellerProfile() throws NotFoundException;
 
     SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO);
     SellerProfileDTO convertToDTO(SellerProfile sellerProfile);

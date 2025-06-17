@@ -42,6 +42,10 @@ public class GenreServiceImpl implements GenreService{
         return genre.map(this::convertToDTO);
     }
 
+    public Optional<Genre> getEntityById(Long id) {
+       return repository.findById(id);
+    }
+
     @Override
     public boolean deleteGenre(Long id) {
         Optional<Genre> genre = repository.findById(id);

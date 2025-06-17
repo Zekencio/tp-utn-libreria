@@ -27,7 +27,6 @@ public class BookControler {
         this.bookService = bookService;
     }
 
-    //No funciona la ruta
     @GetMapping
     public ResponseEntity<List<BookDTOReduced>> getAllBooks () {
         List<BookDTOReduced> books = bookService.getAll();
@@ -45,15 +44,24 @@ public class BookControler {
         }
     }
 
-    //to do: buscar libros por genero
+    @GetMapping("/genre/{id}")
+    public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable Long id){
+        List<BookDTO> books= new ArrayList<>();
+        try {
+            books= bookService.getByGenre(id);
+            return ResponseEntity.ok(books);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getbookById (@PathVariable Long id) {
         Optional<BookDTO> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    //solo podes modificar los libros que correspondan al usuario actual post, pt ,delete
-    // autocompletar vendedor
+
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO){
         try {
@@ -78,11 +86,15 @@ public class BookControler {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id){
-        boolean deleted = bookService.deleteBook(id);
-        if (deleted){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = bookService.deleteBook(id);
+            if (deleted) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }catch (UnautorizedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 

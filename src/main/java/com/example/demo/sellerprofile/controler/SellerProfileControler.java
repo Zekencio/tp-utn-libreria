@@ -58,13 +58,18 @@ public class SellerProfileControler {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id){
-        boolean deleted = sellerProfileService.deleteSellerProfile(id);
-        if (deleted){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteBook(){
+        try {
+            boolean deleted = sellerProfileService.deleteSellerProfile();
+            if (deleted){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        }catch (NotFoundException e){
             return ResponseEntity.notFound().build();
         }
+
     }
 }

@@ -66,14 +66,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean deleteUser(Long id) {
-        Optional<User> user = repository.findById(id);
-        if (user.isPresent()) {
-            repository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
+    public boolean deleteUser() throws NotFoundException {
+        User user = getCurrentUser();
+        repository.deleteById(user.getId());
+        return true;
     }
 
     @Override

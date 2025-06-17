@@ -15,7 +15,7 @@ public interface UserService {
     List<UserDTO> getAll();
     UserDTO createUser(CreateUserDTO createUserDTO) throws AlreadyExistingException;
     Optional<UserDTO> updateUser (UpdateUserDTO updateUserDTO) throws NotFoundException;
-    boolean deleteUser(Long id);
+    boolean deleteUser() throws NotFoundException;
 
     User convertToEntity(CreateUserDTO createUserDTO);
     UserDTO convertToDTO(User user);

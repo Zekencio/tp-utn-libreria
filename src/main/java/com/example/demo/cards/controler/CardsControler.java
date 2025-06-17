@@ -24,7 +24,6 @@ public class CardsControler {
         this.cardService = cardService;
     }
 
-    //solo podes modificar, ver o borrar las tarjetas que correspondan al usuario actual
 
     @GetMapping
     public ResponseEntity<List<CardDTO>> getAllcards () {
@@ -34,8 +33,12 @@ public class CardsControler {
 
     @GetMapping("/{id}")
     public ResponseEntity<CardDTO> getCardById (@PathVariable Long id) {
-        Optional<CardDTO> card = cardService.getById(id);
-        return card.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        try {
+            Optional<CardDTO> card = cardService.getById(id);
+            return card.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        } catch (UnautorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping
@@ -62,12 +65,17 @@ public class CardsControler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCard(@PathVariable Long id){
-        boolean deleted = cardService.deleteCard(id);
-        if (deleted){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
+        try {
+            boolean deleted = cardService.deleteCard(id);
+            if (deleted){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        }catch (UnautorizedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
     }
 }

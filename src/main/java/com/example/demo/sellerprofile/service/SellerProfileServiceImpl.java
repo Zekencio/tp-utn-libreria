@@ -1,5 +1,6 @@
 package com.example.demo.sellerprofile.service;
 
+import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
@@ -38,10 +39,11 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public boolean deleteSellerProfile(Long id) {
-        Optional<SellerProfile> seller = repository.findById(id);
+    public boolean deleteSellerProfile() throws NotFoundException {
+        User user = userService.getCurrentUser();
+        Optional<SellerProfile> seller = Optional.ofNullable(user.getSellerProfile());
         if (seller.isPresent()){
-            repository.deleteById(id);
+            repository.deleteById(seller.get().getId());
             return true;
         }else {
             return false;
@@ -54,20 +56,21 @@ public class SellerProfileServiceImpl implements SellerProfileService{
         Optional<SellerProfile> profile = Optional.ofNullable(user.getSellerProfile());
         if (profile.isEmpty()){
             throw new NotFoundException("No hay un perfil de vendedor registrado para tu usuario");
+        }else {
+            return profile.map(existing -> {
+                if (updateSellerProfileDTO.getName() != null) {
+                    existing.setName(updateSellerProfileDTO.getName());
+                }
+                if (updateSellerProfileDTO.getAddress() != null) {
+                    existing.setAddress(updateSellerProfileDTO.getAddress());
+                }
+                if (updateSellerProfileDTO.getSellerUser() != null) {
+                    existing.setSellerUser(updateSellerProfileDTO.getSellerUser());
+                }
+                SellerProfile saved = repository.save(existing);
+                return convertToDTO(saved);
+            }).get();
         }
-        return profile.map(existing ->{
-                    if (updateSellerProfileDTO.getName() != null){
-                        existing.setName(updateSellerProfileDTO.getName());
-                    }
-                    if (updateSellerProfileDTO.getAddress() != null){
-                        existing.setAddress(updateSellerProfileDTO.getAddress());
-                    }
-                    if (updateSellerProfileDTO.getSellerUser() != null){
-                        existing.setSellerUser(updateSellerProfileDTO.getSellerUser());
-                    }
-                    SellerProfile saved = repository.save(existing);
-                    return convertToDTO(saved);
-                }).get();
     }
 
     @Override

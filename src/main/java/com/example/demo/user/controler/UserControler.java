@@ -65,12 +65,12 @@ public class UserControler {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
-        boolean deleted = userService.deleteUser(id);
-        if (deleted){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteUser(){
+        try {
+            userService.deleteUser();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
