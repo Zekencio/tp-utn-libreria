@@ -44,16 +44,6 @@ public class BookControler {
         }
     }
 
-    @GetMapping("/genre/{id}")
-    public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable Long id){
-        List<BookDTO> books= new ArrayList<>();
-        try {
-            books= bookService.getByGenre(id);
-            return ResponseEntity.ok(books);
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
