@@ -7,6 +7,7 @@ import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.service.BookServiceImpl;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,9 +66,14 @@ public class BookControler {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody UpdateBookDTO updateBookDTO){
-        Optional<BookDTO> updatedBook = bookService.updateBook(id, updateBookDTO);
-        return updatedBook.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Optional<BookDTO> updatedBook = bookService.updateBook(id, updateBookDTO);
+            return updatedBook.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        }catch (UnautorizedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     @DeleteMapping("/{id}")

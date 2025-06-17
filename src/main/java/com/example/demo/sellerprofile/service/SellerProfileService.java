@@ -3,6 +3,7 @@ package com.example.demo.sellerprofile.service;
 
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
@@ -15,7 +16,7 @@ public interface SellerProfileService {
     Optional<SellerProfileDTO> getById(Long id);
     List<SellerProfileDTO> getAll();
     SellerProfileDTO createSellerProfile(CreateSellerProfileDTO createSellerProfileDTO) throws AlreadyExistingException, NotFoundException;
-    Optional<SellerProfileDTO> updateSellerProfile (Long id, UpdateSellerProfileDTO updateSellerProfileDTO);
+    SellerProfileDTO updateSellerProfile (UpdateSellerProfileDTO updateSellerProfileDTO) throws NotFoundException;
     boolean deleteSellerProfile(Long id);
 
     SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO);

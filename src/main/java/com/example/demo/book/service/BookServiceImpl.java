@@ -9,9 +9,11 @@ import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
+import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
@@ -103,7 +105,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Optional<BookDTO> updateBook(Long id, UpdateBookDTO updateBookDTO) {
+    public Optional<BookDTO> updateBook(Long id, UpdateBookDTO updateBookDTO) throws UnautorizedException {
+        Optional<Book> book = repository.findById(id);
+        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.obtenerUsername())){
+            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+        }
         return repository.findById(id)
                 .map(existing ->{
                     if (updateBookDTO.getName() != null){

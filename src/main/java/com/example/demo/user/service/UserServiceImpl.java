@@ -77,7 +77,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserDTO> updateUser(Long id, UpdateUserDTO updateUserDTO) {
+    public Optional<UserDTO> updateUser(UpdateUserDTO updateUserDTO) throws NotFoundException {
+        User user = getCurrentUser();
+        return repository.findById(user.getId())
+                .map(existing -> {
+                    if (updateUserDTO.getName() != null) {
+                        existing.setName(updateUserDTO.getName());
+                    }
+                    if (updateUserDTO.getPassword() != null) {
+                        existing.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
+                    }
+                    User saved = repository.save(existing);
+                    return convertToDTO(saved);
+                });
+    }
+
+    public Optional<UserDTO> updateSpecificUser(Long id, UpdateUserDTO updateUserDTO) {
         return repository.findById(id)
                 .map(existing -> {
                     if (updateUserDTO.getName() != null) {

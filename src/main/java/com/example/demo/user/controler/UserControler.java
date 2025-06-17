@@ -1,6 +1,7 @@
 package com.example.demo.user.controler;
 
 import com.example.demo.exceptions.AlreadyExistingException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
@@ -45,11 +46,21 @@ public class UserControler {
         }
     }
 
-    //solo modifiar o editar  solo tu propio perfil
-    // eliminar PathVarible
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UpdateUserDTO updateUserDTO){
+        try {
+            Optional<UserDTO> updatedUser = userService.updateUser( updateUserDTO);
+            return updatedUser.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //exclusivo para admins
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
-        Optional<UserDTO> updatedUser = userService.updateUser(id, updateUserDTO);
+        Optional<UserDTO> updatedUser = userService.updateSpecificUser(id, updateUserDTO);
         return updatedUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

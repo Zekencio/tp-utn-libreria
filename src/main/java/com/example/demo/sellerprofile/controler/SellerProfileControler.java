@@ -2,6 +2,7 @@ package com.example.demo.sellerprofile.controler;
 
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
@@ -47,11 +48,14 @@ public class SellerProfileControler {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SellerProfileDTO> updateSellerProfile(@PathVariable Long id, @RequestBody UpdateSellerProfileDTO updateSellerProfileDTO){
-        Optional<SellerProfileDTO> updatedBook = sellerProfileService.updateSellerProfile(id, updateSellerProfileDTO);
-        return updatedBook.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PutMapping("/update")
+    public ResponseEntity<SellerProfileDTO> updateSellerProfile( @RequestBody UpdateSellerProfileDTO updateSellerProfileDTO){
+        try {
+            SellerProfileDTO updatedBook = sellerProfileService.updateSellerProfile( updateSellerProfileDTO);
+            return ResponseEntity.ok(updatedBook);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

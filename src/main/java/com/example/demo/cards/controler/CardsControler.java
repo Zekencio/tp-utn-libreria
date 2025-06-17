@@ -6,6 +6,7 @@ import com.example.demo.cards.dto.UpdateCardDTO;
 import com.example.demo.cards.service.CardServiceImpl;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,9 +51,14 @@ public class CardsControler {
 
     @PutMapping("/{id}")
     public ResponseEntity<CardDTO> updateCard(@PathVariable Long id, @RequestBody UpdateCardDTO updateCardDTO){
-        Optional<CardDTO> updatedCard = cardService.updateCard(id, updateCardDTO);
-        return updatedCard.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try{
+            Optional<CardDTO> updatedCard = cardService.updateCard(id, updateCardDTO);
+            return updatedCard.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        }catch (UnautorizedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     @DeleteMapping("/{id}")

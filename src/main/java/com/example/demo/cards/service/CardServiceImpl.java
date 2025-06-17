@@ -5,8 +5,10 @@ import com.example.demo.cards.dto.CreateCardDTO;
 import com.example.demo.cards.dto.UpdateCardDTO;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.repository.CardsRepository;
+import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,11 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public Optional<CardDTO> updateCard(Long id, UpdateCardDTO updateCardDTO) {
+    public Optional<CardDTO> updateCard(Long id, UpdateCardDTO updateCardDTO) throws UnautorizedException {
+        Optional<Card> card = repository.findById(id);
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+        }
         return repository.findById(id)
                 .map(existing ->{
                     if (updateCardDTO.getCardNumber() != null){

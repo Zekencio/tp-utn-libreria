@@ -49,9 +49,13 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public Optional<SellerProfileDTO> updateSellerProfile(Long id, UpdateSellerProfileDTO updateSellerProfileDTO) {
-        return repository.findById(id)
-                .map(existing ->{
+    public SellerProfileDTO updateSellerProfile(UpdateSellerProfileDTO updateSellerProfileDTO) throws NotFoundException {
+        User user = userService.getCurrentUser();
+        Optional<SellerProfile> profile = Optional.ofNullable(user.getSellerProfile());
+        if (profile.isEmpty()){
+            throw new NotFoundException("No hay un perfil de vendedor registrado para tu usuario");
+        }
+        return profile.map(existing ->{
                     if (updateSellerProfileDTO.getName() != null){
                         existing.setName(updateSellerProfileDTO.getName());
                     }
@@ -63,7 +67,7 @@ public class SellerProfileServiceImpl implements SellerProfileService{
                     }
                     SellerProfile saved = repository.save(existing);
                     return convertToDTO(saved);
-                });
+                }).get();
     }
 
     @Override

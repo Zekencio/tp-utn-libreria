@@ -7,6 +7,7 @@ import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public interface BookService {
     Optional<BookDTO> getById(Long id);
     List<BookDTOReduced> getAll();
     BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException, NotFoundException;
-    Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO);
+    Optional<BookDTO> updateBook (Long id, UpdateBookDTO updateBookDTO) throws UnautorizedException;
     boolean deleteBook(Long id);
     double calculateAveragePrice ();
     Map<String, Long> countBooksPerAuthor();
