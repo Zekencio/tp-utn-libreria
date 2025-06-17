@@ -22,7 +22,7 @@ public class SaleControler {
         this.saleService = saleService;
     }
 
-    //validacion para solo verlas ventas vinculadas al usuario que lo esta usando
+    // Validación para solo verlas ventas vinculadas al usuario que lo está usando
     @GetMapping
     public ResponseEntity<List<SaleDTO>> getAllSales () {
         List<SaleDTO> sales = saleService.getAll();
@@ -36,9 +36,9 @@ public class SaleControler {
     }
 
     @PostMapping
-    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardnumber){
+    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardNumber){
         try {
-            SaleDTO saleDTO = saleService.createSale(cardnumber);
+            SaleDTO saleDTO = saleService.createSale(cardNumber);
             return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
         } catch (NotFoundException | InsufficientStockException e) {
             return ResponseEntity.notFound().build();

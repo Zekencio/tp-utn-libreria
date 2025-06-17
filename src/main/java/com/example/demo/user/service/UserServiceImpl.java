@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     public User getCurrentUser() throws NotFoundException {
-        String name= CurrentUserUtils.obtenerUsername();
-        Optional<User> user =repository.findByName(name);
+        String name= CurrentUserUtils.getUsername();
+        Optional<User> user = repository.findByName(name);
         if (user.isEmpty()){
             throw new NotFoundException("Necesitas iniciar sesion");
         }

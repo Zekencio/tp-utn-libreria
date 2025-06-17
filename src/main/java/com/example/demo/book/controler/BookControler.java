@@ -34,26 +34,37 @@ public class BookControler {
         return ResponseEntity.ok(books);
     }
 
+    //FIXME: Las rutas getBookBy... tiran error
     @GetMapping("/author/{id}")
     public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable Long id){
-        List<BookDTO> books= new ArrayList<>();
+        List<BookDTO> books;
         try {
-            books= bookService.getByAuthor(id);
+            books = bookService.getByAuthor(id);
             return ResponseEntity.ok(books);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    //to do: buscar libros por genero
     @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getbookById (@PathVariable Long id) {
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
         Optional<BookDTO> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    //solo podes modificar los libros que correspondan al usuario actual post, pt ,delete
-    // autocompletar vendedor
+    @GetMapping("/genre/{id}")
+    public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable Long id) {
+        List<BookDTO> books;
+        try{
+            books = bookService.getByGenre(id);
+            return ResponseEntity.ok(books);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Solo podés modificar los libros que correspondan al usuario actual (post, put, delete)
+    // Autocompletar vendedor
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO){
         try {
