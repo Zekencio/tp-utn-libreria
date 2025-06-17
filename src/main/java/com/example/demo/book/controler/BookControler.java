@@ -35,9 +35,9 @@ public class BookControler {
 
     @GetMapping("/author/{id}")
     public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable Long id){
-        List<BookDTO> books= new ArrayList<>();
+        List<BookDTO> books;
         try {
-            books= bookService.getByAuthor(id);
+            books = bookService.getByAuthor(id);
             return ResponseEntity.ok(books);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -56,9 +56,20 @@ public class BookControler {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getbookById (@PathVariable Long id) {
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
         Optional<BookDTO> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/genre/{id}")
+    public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable Long id) {
+        List<BookDTO> books;
+        try{
+            books = bookService.getByGenre(id);
+            return ResponseEntity.ok(books);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

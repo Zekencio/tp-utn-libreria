@@ -76,7 +76,7 @@ public class CardServiceImpl implements CardService{
     @Override
     public Optional<CardDTO> updateCard(Long id, UpdateCardDTO updateCardDTO) throws UnautorizedException {
         Optional<Card> card = repository.findById(id);
-        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.getUsername())){
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         return repository.findById(id)
