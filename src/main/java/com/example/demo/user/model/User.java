@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "cartUser")
+    @ManyToMany
     private List<Book> cart;
 
     @OneToMany(mappedBy = "user")

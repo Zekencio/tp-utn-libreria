@@ -1,9 +1,7 @@
 package com.example.demo.genre.dto;
 
-import com.example.demo.book.model.Book;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class GenreDTO {
 

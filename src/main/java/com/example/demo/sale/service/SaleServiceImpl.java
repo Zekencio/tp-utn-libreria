@@ -3,6 +3,7 @@ package com.example.demo.sale.service;
 import com.example.demo.book.service.BookServiceImpl;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.service.CardServiceImpl;
+import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sale.dto.CreateSaleDTO;
@@ -37,20 +38,24 @@ public class SaleServiceImpl implements SaleService{
 
     @Override
     public List<SaleDTO> getAll() {
-        return repository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return repository.findAll().stream().filter(sale -> sale.getUser().getName().equals(CurrentUserUtils.getUsername())).map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public Optional<SaleDTO> getById(Long id) {
         Optional<Sale> sale = repository.findById(id);
-        return sale.map(this::convertToDTO);
+        if (sale.get().getUser().getName().equals(CurrentUserUtils.getUsername())){
+            return sale.map(this::convertToDTO);
+        }else{
+            return Optional.empty();
+        }
     }
 
     @Override
     public SaleDTO createSale(String cardNumer) throws NotFoundException, InsufficientStockException {
         User user = userService.getCurrentUser();
         Optional<Card> card = cardService.getByCardNumber(cardNumer);
-        if(card.isPresent()){
+        if(card.isPresent() && user.getCards().contains(card.get())){
             Sale newSale = new Sale(Date.valueOf(LocalDate.now()),user,card.get(),user.getCart());
             Sale savedSale = repository.save(newSale);
             bookService.updateStock(user.getCart());
@@ -59,7 +64,6 @@ public class SaleServiceImpl implements SaleService{
         }else {
             throw new NotFoundException("La tarjeta no esta registrada");
         }
-
     }
 
     @Override
@@ -101,7 +105,7 @@ public class SaleServiceImpl implements SaleService{
 
     @Override
     public SaleDTO convertToDTO(Sale sale) {
-        return new SaleDTO(sale.getId(),sale.getDate(),sale.getUser(),sale.getCard(),sale.getBooks());
+        return new SaleDTO(sale.getId(),sale.getDate(),sale.getUser(),sale.getCard(),sale.getBooks().stream().map(bookService::reduceBook).collect(Collectors.toList()));
     }
 
 

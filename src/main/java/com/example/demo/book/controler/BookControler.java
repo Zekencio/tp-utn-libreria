@@ -27,6 +27,17 @@ public class BookControler {
         this.bookService = bookService;
     }
 
+
+    @GetMapping("/cart")
+    public ResponseEntity<List<BookDTO>> getCart() {
+        try {
+            List<BookDTO> list = bookService.getCart();
+            return ResponseEntity.ok(list);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping
     public ResponseEntity<List<BookDTOReduced>> getAllBooks () {
         List<BookDTOReduced> books = bookService.getAll();
@@ -73,7 +84,7 @@ public class BookControler {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody UpdateBookDTO updateBookDTO){
         try {
             Optional<BookDTO> updatedBook = bookService.updateBook(id, updateBookDTO);
@@ -100,15 +111,16 @@ public class BookControler {
     }
 
     @PutMapping("/add/{id}")
-    public ResponseEntity<Void> addBookToCart(@PathVariable Long id,@RequestBody Integer cant){
+    public ResponseEntity<List<BookDTOReduced>> addBookToCart(@PathVariable Long id,@RequestBody Integer cant){
         try{
-            bookService.addToCart(id,cant);
+            List<BookDTOReduced> list=bookService.addToCart(id,cant);
+            return ResponseEntity.ok(list);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }catch (ArithmeticException e){
             return ResponseEntity.badRequest().build();
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
     }
 
     @PutMapping("/remove/{id}")

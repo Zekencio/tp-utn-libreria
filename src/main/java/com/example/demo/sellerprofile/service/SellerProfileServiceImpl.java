@@ -90,7 +90,7 @@ public class SellerProfileServiceImpl implements SellerProfileService{
 
     @Override
     public SellerProfileDTO convertToDTO(SellerProfile sellerProfile) {
-        return new SellerProfileDTO(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), sellerProfile.getSellerUser());
+        return new SellerProfileDTO(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress());
     }
 
     @Override

@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 });
     }
 
-    public void addToUserCart(Book book, Integer cant) throws NotFoundException {
+    public List<Book> addToUserCart(Book book, Integer cant) throws NotFoundException {
         User user = getCurrentUser();
         List<Book> bookList = user.getCart();
         if (bookList == null){
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             bookList.add(book);
         }
         user.setCart(bookList);
-        repository.save(user);
+        return repository.save(user).getCart();
     }
 
     public void removeFromUserCart(Book book, Integer cant) throws NotFoundException {

@@ -3,7 +3,6 @@ package com.example.demo.book.service;
 import com.example.demo.author.dto.AuthorDTO;
 import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.model.Author;
-import com.example.demo.author.repository.AuthorRepository;
 import com.example.demo.author.service.AuthorServiceImpl;
 import com.example.demo.book.dto.BookDTO;
 import com.example.demo.book.dto.BookDTOReduced;
@@ -19,10 +18,13 @@ import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.genre.service.GenreServiceImpl;
+import com.example.demo.sellerprofile.model.SellerProfile;
+import com.example.demo.sellerprofile.service.SellerProfileServiceImpl;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,12 +37,14 @@ public class BookServiceImpl implements BookService{
     private final AuthorServiceImpl authorService;
     private final UserServiceImpl userService;
     private final GenreServiceImpl genreService;
+    private final SellerProfileServiceImpl profileService;
 
-    public BookServiceImpl(BookRepository repository, AuthorServiceImpl authorService, UserServiceImpl userService, GenreServiceImpl genreService) {
+    public BookServiceImpl(BookRepository repository, AuthorServiceImpl authorService, UserServiceImpl userService, GenreServiceImpl genreService, SellerProfileServiceImpl profileService) {
         this.repository = repository;
         this.authorService = authorService;
         this.userService = userService;
         this.genreService = genreService;
+        this.profileService = profileService;
     }
 
     @Override
@@ -51,6 +55,9 @@ public class BookServiceImpl implements BookService{
         if(repository.findAll().contains(newBook)){
             throw new AlreadyExistingException("Este libro ye existe");
         }
+        if(user.getSellerProfile() == null){
+            throw new NotFoundException("No estas registrado como vendedor");
+        }
         Book savedBook= repository.save(newBook);
         return convertToDTO(savedBook);
     }
@@ -58,6 +65,10 @@ public class BookServiceImpl implements BookService{
     @Override
     public List<BookDTOReduced> getAll() {
         return repository.findAll().stream().map(this::reduceBook).collect(Collectors.toList());
+    }
+
+    public List<BookDTO> getCart() throws NotFoundException {
+        return userService.getCurrentUser().getCart().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -69,7 +80,7 @@ public class BookServiceImpl implements BookService{
     @Override
     public boolean deleteBook(Long id) throws UnautorizedException {
         Optional<Book> book = repository.findById(id);
-        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.obtenerUsername())){
+        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.getUsername())){
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         if (book.isPresent()){
@@ -80,14 +91,14 @@ public class BookServiceImpl implements BookService{
         }
     }
 
-    public void addToCart (Long id, Integer cant) throws NotFoundException {
+    public List<BookDTOReduced> addToCart (Long id, Integer cant) throws NotFoundException {
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new NotFoundException("Libro no encontrado");
-        }else if (cant <=0){
-            throw new ArithmeticException("La cantidad no puede ser 0 o menor");
+        }else if (cant < 0){
+            throw new ArithmeticException("La cantidad no puede ser menor a 0");
         }
-        userService.addToUserCart(book.get(),cant);
+        return userService.addToUserCart(book.get(),cant).stream().map(this::reduceBook).collect(Collectors.toList());
     }
 
     public void removeFromCart (Long id, Integer cant) throws NotFoundException {
@@ -117,7 +128,7 @@ public class BookServiceImpl implements BookService{
     @Override
     public Optional<BookDTO> updateBook(Long id, UpdateBookDTO updateBookDTO) throws UnautorizedException {
         Optional<Book> book = repository.findById(id);
-        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.obtenerUsername())){
+        if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.getUsername())){
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         return repository.findById(id)
@@ -192,13 +203,13 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public BookDTO convertToDTO(Book book) {
-        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),book.getGenres(),book.getSeller());
+        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),book.getGenres().stream().map(genreService::convertToDTO).toList(),profileService.convertToDTO(book.getSeller()));
     }
 
-    private AuthorDTOReduced reduceAuthor(Author author){
+    public AuthorDTOReduced reduceAuthor(Author author){
         return new AuthorDTOReduced(author.getId(), author.getName(),author.getBirthDate());
     }
-    private BookDTOReduced reduceBook(Book book){
+    public BookDTOReduced reduceBook(Book book){
         return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
     }
 

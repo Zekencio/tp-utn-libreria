@@ -30,13 +30,13 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<CardDTO> getAll() {
-        return repository.findAll().stream().filter(card -> card.getOwner().getName().equals(CurrentUserUtils.obtenerUsername())).map(this::convertToDTO).collect(Collectors.toList());
+        return repository.findAll().stream().filter(card -> card.getOwner().getName().equals(CurrentUserUtils.getUsername())).map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public Optional<CardDTO> getById(Long id) throws UnautorizedException {
         Optional<Card> card = repository.findById(id);
-        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.getUsername())){
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         return card.map(this::convertToDTO);
@@ -62,7 +62,7 @@ public class CardServiceImpl implements CardService{
     @Override
     public boolean deleteCard(Long id) throws UnautorizedException {
         Optional<Card> card = repository.findById(id);
-        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.obtenerUsername())){
+        if (card.isPresent() && !card.get().getOwner().getName().equals(CurrentUserUtils.getUsername())){
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         if (card.isPresent()){

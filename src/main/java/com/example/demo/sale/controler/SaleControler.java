@@ -22,7 +22,6 @@ public class SaleControler {
         this.saleService = saleService;
     }
 
-    // Validación para solo verlas ventas vinculadas al usuario que lo está usando
     @GetMapping
     public ResponseEntity<List<SaleDTO>> getAllSales () {
         List<SaleDTO> sales = saleService.getAll();

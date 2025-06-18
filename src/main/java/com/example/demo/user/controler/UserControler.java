@@ -1,5 +1,6 @@
 package com.example.demo.user.controler;
 
+import com.example.demo.book.dto.BookDTO;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;

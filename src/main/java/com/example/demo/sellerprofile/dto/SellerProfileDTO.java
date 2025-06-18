@@ -11,19 +11,17 @@ public class SellerProfileDTO {
     private Long id;
     private String name;
     private String address;
-    private User sellerUser;
 
-    public SellerProfileDTO(Long id, String name, String address, User sellerUser) {
+    public SellerProfileDTO(Long id, String name, String address) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.sellerUser = sellerUser;
     }
 
-    public SellerProfileDTO(String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfileDTO(String name, String address, List<Book> inventory) {
         this.name = name;
         this.address = address;
-        this.sellerUser = sellerUser;
+
     }
 
     public SellerProfileDTO() {
@@ -53,25 +51,18 @@ public class SellerProfileDTO {
         this.address = address;
     }
 
-    public User getSellerUser() {
-        return sellerUser;
-    }
-
-    public void setSellerUser(User sellerUser) {
-        this.sellerUser = sellerUser;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfileDTO that = (SellerProfileDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, sellerUser);
+        return Objects.hash(id, name, address);
     }
 
     @Override
@@ -80,7 +71,6 @@ public class SellerProfileDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", sellerUser=" + sellerUser +
                 '}';
     }
 }

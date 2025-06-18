@@ -3,8 +3,10 @@ package com.example.demo.book.dto;
 import com.example.demo.author.dto.AuthorDTO;
 import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.author.model.Author;
+import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.sale.model.Sale;
+import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.user.model.User;
 import java.util.List;
@@ -19,11 +21,11 @@ public class BookDTO {
     private Double price;
     private Long stock;
     private AuthorDTOReduced author;
-    private Set<Genre> genres;
-    private SellerProfile seller;
+    private List<GenreDTO> genres;
+    private SellerProfileDTO seller;
 
     public BookDTO(Long id, String name, String description, Double price, Long stock, AuthorDTOReduced author,
-                   Set<Genre> genres, SellerProfile seller) {
+                   List<GenreDTO> genres, SellerProfileDTO seller) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -35,7 +37,7 @@ public class BookDTO {
     }
 
     public BookDTO(String name, String description, Double price, Long stock, AuthorDTOReduced author,
-                   Set<Genre> genres, SellerProfile seller) {
+                   List<GenreDTO> genres, SellerProfileDTO seller) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -96,19 +98,19 @@ public class BookDTO {
         this.author = author;
     }
 
-    public Set<Genre> getGenres() {
+    public List<GenreDTO> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<Genre> genres) {
+    public void setGenres(List<GenreDTO> genres) {
         this.genres = genres;
     }
 
-    public SellerProfile getSeller() {
+    public SellerProfileDTO getSeller() {
         return seller;
     }
 
-    public void setSeller(SellerProfile seller) {
+    public void setSeller(SellerProfileDTO seller) {
         this.seller = seller;
     }
 

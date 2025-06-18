@@ -1,5 +1,6 @@
 package com.example.demo.sale.dto;
 
+import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.user.model.User;
@@ -14,9 +15,9 @@ public class SaleDTO {
     private Date date;
     private User user;
     private Card card;
-    private List<Book> books;
+    private List<BookDTOReduced> books;
 
-    public SaleDTO(Long id, Date date, User user, Card card, List<Book> books) {
+    public SaleDTO(Long id, Date date, User user, Card card, List<BookDTOReduced> books) {
         this.id = id;
         this.date = date;
         this.user = user;
@@ -24,7 +25,7 @@ public class SaleDTO {
         this.books = books;
     }
 
-    public SaleDTO(Date date, User user, Card card, List<Book> books) {
+    public SaleDTO(Date date, User user, Card card, List<BookDTOReduced> books) {
         this.date = date;
         this.user = user;
         this.card = card;
@@ -66,11 +67,11 @@ public class SaleDTO {
         this.card = card;
     }
 
-    public List<Book> getBooks() {
+    public List<BookDTOReduced> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Book> books) {
+    public void setBooks(List<BookDTOReduced> books) {
         this.books = books;
     }
 

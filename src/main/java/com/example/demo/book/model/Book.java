@@ -49,12 +49,11 @@ public class Book {
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_user_id")
-    private User cartUser;
+    @ManyToMany(mappedBy = "cart")
+    private List<User> cartUser;
 
     public Book(Long id, String name, String description, Double price, Long stock, Author author,
-                Set<Genre> genres, List<Sale> sales, SellerProfile seller, User cartUser) {
+                Set<Genre> genres, List<Sale> sales, SellerProfile seller, List<User> cartUser) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -68,7 +67,7 @@ public class Book {
     }
 
     public Book(String name, String description, Double price, Long stock, Author author, Set<Genre> genres,
-                List<Sale> sales, SellerProfile seller, User cartUser) {
+                List<Sale> sales, SellerProfile seller, List<User> cartUser) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -166,11 +165,11 @@ public class Book {
         this.seller = seller;
     }
 
-    public User getCartUser() {
+    public List<User> getCartUser() {
         return cartUser;
     }
 
-    public void setCartUser(User cartUser) {
+    public void setCartUser(List<User> cartUser) {
         this.cartUser = cartUser;
     }
 

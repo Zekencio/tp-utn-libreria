@@ -24,7 +24,6 @@ public class SellerProfileControler {
         this.sellerProfileService = sellerProfileService;
     }
 
-    // modificar la muestra de libros para evitar una muestra infinita
     @GetMapping
     public ResponseEntity<List<SellerProfileDTO>> getAllSellers () {
         List<SellerProfileDTO> sellers = sellerProfileService.getAll();
