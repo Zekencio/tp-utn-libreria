@@ -26,7 +26,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers(HttpMethod.GET,"/api/genres","/api/genres/**", "/api/authors", "/api/authors/**", "/api/books", "/api/books/**","/api/sellerProfiles","/api/sellerProfiles/**","/api/sellerProfiles","/api/sellerProfiles/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/genres","/api/genres/**", "/api/authors", "/api/authors/**", "/api/books", "/api/books/**","/api/sellerProfiles","/api/sellerProfiles/**","/api/sellerProfiles","/api/sellerProfiles/**","api/users").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/users/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/cards","/api/cards/**","/api/sales","/api/sales/**").authenticated()
                         .requestMatchers(HttpMethod.POST,"/api/genres", "/api/books", "/api/authors","/api/cards","/api/sales","/api/sellerProfiles").authenticated()
