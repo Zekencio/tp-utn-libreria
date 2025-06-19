@@ -9,10 +9,8 @@ import java.util.Objects;
 
 public class UpdateSellerProfileDTO {
 
-    @NotBlank(message = "The seller name cannot be empty")
     @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters")
     private String name;
-    @NotBlank(message = "The address cannot be empty")
     @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters")
     private String address;
     private User sellerUser;
@@ -26,19 +24,19 @@ public class UpdateSellerProfileDTO {
     public UpdateSellerProfileDTO() {
     }
 
-    public @NotBlank(message = "The seller name cannot be empty") @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String getName() {
+    public @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String getName() {
         return name;
     }
 
-    public void setName(@NotBlank(message = "The seller name cannot be empty") @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String name) {
+    public void setName(@Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String name) {
         this.name = name;
     }
 
-    public @NotBlank(message = "The address cannot be empty") @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String getAddress() {
+    public @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String getAddress() {
         return address;
     }
 
-    public void setAddress(@NotBlank(message = "The address cannot be empty") @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String address) {
+    public void setAddress( @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String address) {
         this.address = address;
     }
 

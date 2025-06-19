@@ -5,8 +5,10 @@ import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
+import com.example.demo.sellerprofile.dto.SellerProfileDTOFull;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
 import com.example.demo.sellerprofile.service.SellerProfileServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +33,13 @@ public class SellerProfileControler {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SellerProfileDTO> getSellerById (@PathVariable Long id) {
-        Optional<SellerProfileDTO> seller = sellerProfileService.getById(id);
+    public ResponseEntity<SellerProfileDTOFull> getSellerById (@PathVariable Long id) {
+        Optional<SellerProfileDTOFull> seller = sellerProfileService.getById(id);
         return seller.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<SellerProfileDTO> createSellerProfile(@RequestBody CreateSellerProfileDTO createSellerProfileDTO){
+    public ResponseEntity<SellerProfileDTO> createSellerProfile(@Valid @RequestBody CreateSellerProfileDTO createSellerProfileDTO){
         try {
             SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);
 
@@ -48,7 +50,7 @@ public class SellerProfileControler {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<SellerProfileDTO> updateSellerProfile( @RequestBody UpdateSellerProfileDTO updateSellerProfileDTO){
+    public ResponseEntity<SellerProfileDTO> updateSellerProfile(@Valid @RequestBody UpdateSellerProfileDTO updateSellerProfileDTO){
         try {
             SellerProfileDTO updatedBook = sellerProfileService.updateSellerProfile( updateSellerProfileDTO);
             return ResponseEntity.ok(updatedBook);

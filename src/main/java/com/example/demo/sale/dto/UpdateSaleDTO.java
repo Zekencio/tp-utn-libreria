@@ -11,13 +11,9 @@ import java.util.Objects;
 
 public class UpdateSaleDTO {
 
-    @NotNull(message = "The date of sale cannot be null")
     private Date date;
-    @NotNull(message = "The linked client can't be null")
     private User user;
-    @NotNull(message = "The linked card can't be null")
     private Card card;
-    @NotNull(message = "The book list cannot be null")
     private List<Book> books;
 
     public UpdateSaleDTO(Date date, User user, Card card, List<Book> books) {
@@ -30,35 +26,35 @@ public class UpdateSaleDTO {
     public UpdateSaleDTO() {
     }
 
-    public @NotNull(message = "The date of sale cannot be null") Date getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(@NotNull(message = "The date of sale cannot be null") Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public @NotNull(message = "The linked client can't be null") User getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(@NotNull(message = "The linked client can't be null") User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public @NotNull(message = "The linked card can't be null") Card getCard() {
+    public Card getCard() {
         return card;
     }
 
-    public void setCard(@NotNull(message = "The linked card can't be null") Card card) {
+    public void setCard(Card card) {
         this.card = card;
     }
 
-    public @NotNull(message = "The book list cannot be null") List<Book> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(@NotNull(message = "The book list cannot be null") List<Book> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 

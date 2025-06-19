@@ -6,10 +6,8 @@ import java.util.Objects;
 
 public class UpdateUserDTO {
 
-    @NotBlank(message = "The username cannot be blank")
     @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters")
     private String name;
-    @NotBlank(message = "The password cannot be blank")
     @Size(min = 8, message = "The password must be at least 8 characters long")
     private String password;
 
@@ -21,19 +19,19 @@ public class UpdateUserDTO {
     public UpdateUserDTO() {
     }
 
-    public @NotBlank(message = "The username cannot be blank") @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String getName() {
+    public @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String getName() {
         return name;
     }
 
-    public void setName(@NotBlank(message = "The username cannot be blank") @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String name) {
+    public void setName(@Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String name) {
         this.name = name;
     }
 
-    public @NotBlank(message = "The password cannot be blank") @Size(min = 8, message = "The password must be at least 8 characters long") String getPassword() {
+    public @Size(min = 8, message = "The password must be at least 8 characters long") String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank(message = "The password cannot be blank") @Size(min = 8, message = "The password must be at least 8 characters long") String password) {
+    public void setPassword(@Size(min = 8, message = "The password must be at least 8 characters long") String password) {
         this.password = password;
     }
 

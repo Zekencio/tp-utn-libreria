@@ -1,10 +1,12 @@
 package com.example.demo.sellerprofile.service;
 
-import com.example.demo.configuration.CurrentUserUtils;
+import com.example.demo.book.dto.BookDTOReduced;
+import com.example.demo.book.model.Book;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
+import com.example.demo.sellerprofile.dto.SellerProfileDTOFull;
 import com.example.demo.sellerprofile.dto.UpdateSellerProfileDTO;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.sellerprofile.repository.SellerProfileRepository;
@@ -33,9 +35,9 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     @Override
-    public Optional<SellerProfileDTO> getById(Long id) {
+    public Optional<SellerProfileDTOFull> getById(Long id) {
         Optional<SellerProfile> seller = repository.findById(id);
-        return seller.map(this::convertToDTO);
+        return seller.map(this::convertToFullDTO);
     }
 
     @Override
@@ -96,5 +98,12 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     @Override
     public SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO) {
         return new SellerProfile(createSellerProfileDTO.getName(), createSellerProfileDTO.getAddress(), createSellerProfileDTO.getSellerUser());
+    }
+
+    public SellerProfileDTOFull convertToFullDTO(SellerProfile sellerProfile){
+        return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(),sellerProfile.getInventory().stream().map(this::reduceBook).collect(Collectors.toList()));
+    }
+    public BookDTOReduced reduceBook(Book book){
+        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
     }
 }

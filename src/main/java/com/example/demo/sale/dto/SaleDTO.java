@@ -1,9 +1,8 @@
 package com.example.demo.sale.dto;
 
 import com.example.demo.book.dto.BookDTOReduced;
-import com.example.demo.book.model.Book;
-import com.example.demo.cards.model.Card;
-import com.example.demo.user.model.User;
+import com.example.demo.cards.dto.ReducedCardDTO;
+import com.example.demo.user.dto.UserDTO;
 
 import java.sql.Date;
 import java.util.List;
@@ -13,11 +12,11 @@ public class SaleDTO {
 
     private Long id;
     private Date date;
-    private User user;
-    private Card card;
+    private UserDTO user;
+    private ReducedCardDTO card;
     private List<BookDTOReduced> books;
 
-    public SaleDTO(Long id, Date date, User user, Card card, List<BookDTOReduced> books) {
+    public SaleDTO(Long id, Date date, UserDTO user, ReducedCardDTO card, List<BookDTOReduced> books) {
         this.id = id;
         this.date = date;
         this.user = user;
@@ -25,7 +24,7 @@ public class SaleDTO {
         this.books = books;
     }
 
-    public SaleDTO(Date date, User user, Card card, List<BookDTOReduced> books) {
+    public SaleDTO(Date date, UserDTO user, ReducedCardDTO card, List<BookDTOReduced> books) {
         this.date = date;
         this.user = user;
         this.card = card;
@@ -51,19 +50,19 @@ public class SaleDTO {
         this.date = date;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
-    public Card getCard() {
+    public ReducedCardDTO getCard() {
         return card;
     }
 
-    public void setCard(Card card) {
+    public void setCard(ReducedCardDTO card) {
         this.card = card;
     }
 

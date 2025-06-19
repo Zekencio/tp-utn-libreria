@@ -18,16 +18,14 @@ import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.genre.service.GenreServiceImpl;
+import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.sellerprofile.service.SellerProfileServiceImpl;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,14 +99,14 @@ public class BookServiceImpl implements BookService{
         return userService.addToUserCart(book.get(),cant).stream().map(this::reduceBook).collect(Collectors.toList());
     }
 
-    public void removeFromCart (Long id, Integer cant) throws NotFoundException {
+    public List<BookDTOReduced> removeFromCart (Long id, Integer cant) throws NotFoundException {
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new NotFoundException("Libro no encontrado");
         }else if (cant <=0){
             throw new ArithmeticException("La cantidad no puede ser 0 o menor");
         }
-        userService.removeFromUserCart(book.get(),cant);
+        return userService.removeFromUserCart(book.get(),cant).stream().map(this::reduceBook).collect(Collectors.toList());
     }
 
     @Override
@@ -160,19 +158,27 @@ public class BookServiceImpl implements BookService{
     }
 
     public void updateStock(List<Book> cart) throws InsufficientStockException, NotFoundException {
-        while (!cart.isEmpty()){
-            Book book = cart.getFirst();
-            cart.remove(book);
-            if (book.getStock() == 0){
-                throw new InsufficientStockException("stock isuficiente");
-            }
-            if (repository.existsById(book.getId())){
-                book.setStock(book.getStock()-1);
-                repository.save(book);
-            }else{
-                throw new NotFoundException("El libro no esta disponible");
+        Map<Book, Long> bookCounts = cart.stream()
+                .collect(Collectors.groupingBy(book -> book, Collectors.counting()));
+
+        for (Map.Entry<Book, Long> entry : bookCounts.entrySet()) {
+            Book book = entry.getKey();
+            long quantity = entry.getValue();
+
+            if (!repository.existsById(book.getId())) {
+                throw new NotFoundException("El libro no está disponible");
             }
 
+            if (book.getStock() < quantity) {
+                throw new InsufficientStockException("Stock insuficiente para el libro: " + book.getName());
+            }
+            book.setStock(book.getStock() - (int) quantity);
+
+            if (book.getSales() == null) {
+                book.setSales(new ArrayList<>());
+            }
+
+            repository.save(book);
         }
     }
 
@@ -203,7 +209,8 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public BookDTO convertToDTO(Book book) {
-        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),book.getGenres().stream().map(genreService::convertToDTO).toList(),profileService.convertToDTO(book.getSeller()));
+        Set<GenreDTO> genres = book.getGenres().stream().map(g -> genreService.convertToDTO(g)).collect(Collectors.toSet());
+        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),genres,profileService.convertToDTO(book.getSeller()));
     }
 
     public AuthorDTOReduced reduceAuthor(Author author){

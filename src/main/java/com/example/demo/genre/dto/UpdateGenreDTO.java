@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class UpdateGenreDTO {
 
-    @NotNull(message = "The gender name can't be null")
     private String name;
     private String description;
 
@@ -20,11 +19,11 @@ public class UpdateGenreDTO {
     public UpdateGenreDTO() {
     }
 
-    public @NotNull(message = "The gender name can't be null") String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotNull(message = "The gender name can't be null") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

@@ -11,7 +11,6 @@ public class UpdateAuthorDTO {
     @Size(min = 3, max = 255, message = "The new name must have between 3 and 255 characters")
     private String name;
 
-    @NotNull(message = "The date of birth can't be null")
     private Date birthDate;
 
     public UpdateAuthorDTO(String name, Date birthDate){

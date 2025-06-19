@@ -2,6 +2,7 @@ package com.example.demo.sale.controler;
 
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
 import com.example.demo.sale.service.SaleServiceImpl;
@@ -35,13 +36,16 @@ public class SaleControler {
     }
 
     @PostMapping
-    public ResponseEntity<SaleDTO> createSale(@RequestBody String cardNumber){
+    public ResponseEntity<SaleDTO> createSale(@RequestBody Long id){
         try {
-            SaleDTO saleDTO = saleService.createSale(cardNumber);
+            SaleDTO saleDTO = saleService.createSale(id);
             return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
-        } catch (NotFoundException | InsufficientStockException e) {
+        } catch (NotFoundException  e) {
             return ResponseEntity.notFound().build();
+        } catch (InsufficientStockException  e) {
+            return ResponseEntity.badRequest().build();
         }
+
     }
 
     @PutMapping("/{id}")

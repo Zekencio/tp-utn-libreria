@@ -6,6 +6,7 @@ import com.example.demo.author.dto.CreateAuthorDTO;
 import com.example.demo.author.dto.UpdateAuthorDTO;
 import com.example.demo.author.service.AuthorService;
 import com.example.demo.exceptions.AlreadyExistingException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class AuthorControler {
     }
 
     @PostMapping
-    public ResponseEntity<AuthorDTO> createAuthor(@RequestBody CreateAuthorDTO createAuthorDTO) {
+    public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody CreateAuthorDTO createAuthorDTO) {
         try {
             AuthorDTO authorDTO = authorService.createAuthor(createAuthorDTO);
             return new ResponseEntity<>(authorDTO, HttpStatus.CREATED);
@@ -47,7 +48,7 @@ public class AuthorControler {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDTO> updateAuthor(@PathVariable Long id, @RequestBody UpdateAuthorDTO updateAuthorDTO){
+    public ResponseEntity<AuthorDTO> updateAuthor(@PathVariable Long id,@Valid @RequestBody UpdateAuthorDTO updateAuthorDTO){
         Optional<AuthorDTO> updatedAuthor = authorService.updateAuthor(id, updateAuthorDTO);
         return updatedAuthor.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

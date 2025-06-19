@@ -1,11 +1,14 @@
 package com.example.demo.sale.service;
 
+import com.example.demo.book.model.Book;
 import com.example.demo.book.service.BookServiceImpl;
+import com.example.demo.cards.dto.CardDTO;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.service.CardServiceImpl;
 import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,13 +56,17 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public SaleDTO createSale(String cardNumer) throws NotFoundException, InsufficientStockException {
+    public SaleDTO createSale(Long id) throws NotFoundException, InsufficientStockException{
         User user = userService.getCurrentUser();
-        Optional<Card> card = cardService.getByCardNumber(cardNumer);
+        Optional<Card> card = cardService.getByIdNumber(id);
+
         if(card.isPresent() && user.getCards().contains(card.get())){
-            Sale newSale = new Sale(Date.valueOf(LocalDate.now()),user,card.get(),user.getCart());
+            List<Book> cart = new ArrayList<>(user.getCart());
+
+            Sale newSale = new Sale(Date.valueOf(LocalDate.now()),user,card.get(),cart);
             Sale savedSale = repository.save(newSale);
             bookService.updateStock(user.getCart());
+
             userService.emptyCart();
             return convertToDTO(savedSale);
         }else {
@@ -105,7 +113,7 @@ public class SaleServiceImpl implements SaleService{
 
     @Override
     public SaleDTO convertToDTO(Sale sale) {
-        return new SaleDTO(sale.getId(),sale.getDate(),sale.getUser(),sale.getCard(),sale.getBooks().stream().map(bookService::reduceBook).collect(Collectors.toList()));
+        return new SaleDTO(sale.getId(),sale.getDate(),userService.convertToDTO(sale.getUser()),cardService.reduceCard(sale.getCard()),sale.getBooks().stream().map(bookService::reduceBook).collect(Collectors.toList()));
     }
 
 

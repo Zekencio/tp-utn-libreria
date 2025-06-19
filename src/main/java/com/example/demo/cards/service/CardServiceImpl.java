@@ -2,6 +2,7 @@ package com.example.demo.cards.service;
 
 import com.example.demo.cards.dto.CardDTO;
 import com.example.demo.cards.dto.CreateCardDTO;
+import com.example.demo.cards.dto.ReducedCardDTO;
 import com.example.demo.cards.dto.UpdateCardDTO;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.repository.CardsRepository;
@@ -40,6 +41,10 @@ public class CardServiceImpl implements CardService{
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         return card.map(this::convertToDTO);
+    }
+
+    public Optional<Card> getByIdNumber(Long id){
+        return repository.findById(id);
     }
 
     public Optional<Card> getByCardNumber(String cardNumber){
@@ -105,6 +110,10 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public CardDTO convertToDTO(Card card) {
-        return new CardDTO(card.getId(),card.getCardNumber(),card.getBank(),card.getCvv(),card.getOwner());
+        return new CardDTO(card.getId(),card.getCardNumber(),card.getBank(),card.getCvv(),userService.convertToDTO(card.getOwner()));
+    }
+
+    public ReducedCardDTO reduceCard(Card card){
+        return new ReducedCardDTO(card.getId(), card.getCardNumber(), card.getBank());
     }
 }

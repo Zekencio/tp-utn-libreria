@@ -5,6 +5,7 @@ import com.example.demo.genre.dto.CreateGenreDTO;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.dto.UpdateGenreDTO;
 import com.example.demo.genre.service.GenreServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class GenreControler {
     }
 
     @PostMapping
-    public ResponseEntity<GenreDTO> createGenre(@RequestBody CreateGenreDTO createGenreDTO){
+    public ResponseEntity<GenreDTO> createGenre(@Valid @RequestBody CreateGenreDTO createGenreDTO){
         try {
             GenreDTO genreDTO = genreService.createGenre(createGenreDTO);
             return new ResponseEntity<>(genreDTO, HttpStatus.CREATED);
@@ -46,7 +47,7 @@ public class GenreControler {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id, @RequestBody UpdateGenreDTO updateGenreDTO){
+    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id,@Valid @RequestBody UpdateGenreDTO updateGenreDTO){
         Optional<GenreDTO> updatedGenre = genreService.updateGenre(id, updateGenreDTO);
         return updatedGenre.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

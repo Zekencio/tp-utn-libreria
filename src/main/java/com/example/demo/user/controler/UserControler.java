@@ -1,12 +1,12 @@
 package com.example.demo.user.controler;
 
-import com.example.demo.book.dto.BookDTO;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.service.UserServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +37,8 @@ public class UserControler {
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO){
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
         try {
             UserDTO userDTO = userService.createUser(createUserDTO);
             return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
@@ -48,7 +48,7 @@ public class UserControler {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UpdateUserDTO updateUserDTO){
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UpdateUserDTO updateUserDTO){
         try {
             Optional<UserDTO> updatedUser = userService.updateUser( updateUserDTO);
             return updatedUser.map(ResponseEntity::ok)
@@ -58,9 +58,8 @@ public class UserControler {
         }
     }
 
-    //exclusivo para admins
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserDTO updateUserDTO){
         Optional<UserDTO> updatedUser = userService.updateSpecificUser(id, updateUserDTO);
         return updatedUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

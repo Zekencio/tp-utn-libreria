@@ -1,8 +1,6 @@
 package com.example.demo.cards.dto;
 
-import com.example.demo.sale.model.Sale;
-import com.example.demo.user.model.User;
-import java.util.List;
+import com.example.demo.user.dto.UserDTO;
 import java.util.Objects;
 
 public class CardDTO {
@@ -11,9 +9,9 @@ public class CardDTO {
     private String cardNumber;
     private String bank;
     private String cvv;
-    private User owner;
+    private UserDTO owner;
 
-    public CardDTO(Long id, String cardNumber, String bank, String cvv, User owner) {
+    public CardDTO(Long id, String cardNumber, String bank, String cvv, UserDTO owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.bank = bank;
@@ -21,7 +19,7 @@ public class CardDTO {
         this.owner = owner;
     }
 
-    public CardDTO(String cardNumber, String bank, String cvv, User owner) {
+    public CardDTO(String cardNumber, String bank, String cvv, UserDTO owner) {
         this.cardNumber = cardNumber;
         this.bank = bank;
         this.cvv = cvv;
@@ -63,11 +61,11 @@ public class CardDTO {
         this.cvv = cvv;
     }
 
-    public User getOwner() {
+    public UserDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserDTO owner) {
         this.owner = owner;
     }
 

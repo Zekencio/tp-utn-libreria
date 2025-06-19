@@ -7,6 +7,7 @@ import com.example.demo.cards.service.CardServiceImpl;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnautorizedException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class CardsControler {
     }
 
     @PostMapping
-    public ResponseEntity<CardDTO> createCard(@RequestBody CreateCardDTO createCardDTO){
+    public ResponseEntity<CardDTO> createCard(@Valid @RequestBody CreateCardDTO createCardDTO){
         try {
             CardDTO cardDTO = cardService.createCard(createCardDTO);
             return new ResponseEntity<>(cardDTO, HttpStatus.CREATED);
@@ -53,7 +54,7 @@ public class CardsControler {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CardDTO> updateCard(@PathVariable Long id, @RequestBody UpdateCardDTO updateCardDTO){
+    public ResponseEntity<CardDTO> updateCard(@PathVariable Long id,@Valid @RequestBody UpdateCardDTO updateCardDTO){
         try{
             Optional<CardDTO> updatedCard = cardService.updateCard(id, updateCardDTO);
             return updatedCard.map(ResponseEntity::ok)

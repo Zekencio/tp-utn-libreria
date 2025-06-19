@@ -8,6 +8,7 @@ import com.example.demo.book.service.BookServiceImpl;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnautorizedException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +76,7 @@ public class BookControler {
 
 
     @PostMapping
-    public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO){
+    public ResponseEntity<BookDTO> createBook(@Valid @RequestBody CreateBookDTO createBookDTO){
         try {
             BookDTO bookDTO = bookService.createBook(createBookDTO);
             return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
@@ -85,7 +86,7 @@ public class BookControler {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody UpdateBookDTO updateBookDTO){
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id,@Valid @RequestBody UpdateBookDTO updateBookDTO){
         try {
             Optional<BookDTO> updatedBook = bookService.updateBook(id, updateBookDTO);
             return updatedBook.map(ResponseEntity::ok)
@@ -124,15 +125,15 @@ public class BookControler {
     }
 
     @PutMapping("/remove/{id}")
-    public ResponseEntity<Void> removeBookfromCart(@PathVariable Long id,@RequestBody Integer cant){
+    public ResponseEntity<List<BookDTOReduced>> removeBookfromCart(@PathVariable Long id,@RequestBody Integer cant){
         try{
-            bookService.removeFromCart(id,cant);
+            List<BookDTOReduced> list=bookService.removeFromCart(id,cant);
+            return ResponseEntity.ok(list);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }catch (ArithmeticException e){
             return ResponseEntity.badRequest().build();
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/statistics/averageprice")

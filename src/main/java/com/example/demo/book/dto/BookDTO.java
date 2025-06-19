@@ -1,15 +1,9 @@
 package com.example.demo.book.dto;
 
-import com.example.demo.author.dto.AuthorDTO;
 import com.example.demo.author.dto.AuthorDTOReduced;
-import com.example.demo.author.model.Author;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.model.Genre;
-import com.example.demo.sale.model.Sale;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
-import com.example.demo.sellerprofile.model.SellerProfile;
-import com.example.demo.user.model.User;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,11 +15,11 @@ public class BookDTO {
     private Double price;
     private Long stock;
     private AuthorDTOReduced author;
-    private List<GenreDTO> genres;
+    private Set<GenreDTO> genres;
     private SellerProfileDTO seller;
 
     public BookDTO(Long id, String name, String description, Double price, Long stock, AuthorDTOReduced author,
-                   List<GenreDTO> genres, SellerProfileDTO seller) {
+                   Set<GenreDTO> genres, SellerProfileDTO seller) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,7 +31,7 @@ public class BookDTO {
     }
 
     public BookDTO(String name, String description, Double price, Long stock, AuthorDTOReduced author,
-                   List<GenreDTO> genres, SellerProfileDTO seller) {
+                   Set<GenreDTO> genres, SellerProfileDTO seller) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -98,11 +92,11 @@ public class BookDTO {
         this.author = author;
     }
 
-    public List<GenreDTO> getGenres() {
+    public Set<GenreDTO> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<GenreDTO> genres) {
+    public void setGenres(Set<GenreDTO> genres) {
         this.genres = genres;
     }
 

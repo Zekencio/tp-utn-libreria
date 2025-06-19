@@ -11,11 +11,11 @@ public class UpdateCardDTO {
 
     @Size(min = 16, message = "The card must have at least 16 digits")
     private String cardNumber;
-    @NotNull(message = "The bank name can't be null")
+    @Size(min = 3, message = "The bank name must have at least 3 characters")
     private String bank;
     @Size(min = 3, message = "The CVV must have at least 3 digits")
     private String cvv;
-    @NotNull(message = "The owner can't be null")
+
     private User owner;
 
     public UpdateCardDTO(String cardNumber, String bank, String cvv, User owner) {
@@ -36,11 +36,11 @@ public class UpdateCardDTO {
         this.cardNumber = cardNumber;
     }
 
-    public @NotNull(message = "The bank name can't be null") String getBank() {
+    public String getBank() {
         return bank;
     }
 
-    public void setBank(@NotNull(message = "The bank name can't be null") String bank) {
+    public void setBank(String bank) {
         this.bank = bank;
     }
 
@@ -52,11 +52,11 @@ public class UpdateCardDTO {
         this.cvv = cvv;
     }
 
-    public @NotNull(message = "The owner can't be null") User getOwner() {
+    public  User getOwner() {
         return owner;
     }
 
-    public void setOwner(@NotNull(message = "The owner can't be null") User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
