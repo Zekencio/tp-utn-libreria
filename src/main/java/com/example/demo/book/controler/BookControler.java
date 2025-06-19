@@ -46,8 +46,8 @@ public class BookControler {
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable Long id){
-        List<BookDTO> books;
+    public ResponseEntity<List<BookDTOReduced>> getBooksByAuthor(@PathVariable Long id){
+        List<BookDTOReduced> books;
         try {
             books = bookService.getByAuthor(id);
             return ResponseEntity.ok(books);
@@ -64,8 +64,8 @@ public class BookControler {
     }
 
     @GetMapping("/genre/{id}")
-    public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable Long id) {
-        List<BookDTO> books;
+    public ResponseEntity<List<BookDTOReduced>> getBooksByGenre(@PathVariable Long id) {
+        List<BookDTOReduced> books;
         try{
             books = bookService.getByGenre(id);
             return ResponseEntity.ok(books);

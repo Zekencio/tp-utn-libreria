@@ -21,8 +21,8 @@ public interface BookService {
     boolean deleteBook(Long id) throws UnautorizedException;
     double calculateAveragePrice ();
     Map<String, Long> countBooksPerAuthor();
-    List<BookDTO> getByAuthor(Long id) throws NotFoundException;
-    List<BookDTO> getByGenre(Long id) throws NotFoundException;
+    List<BookDTOReduced> getByAuthor(Long id) throws NotFoundException;
+    List<BookDTOReduced> getByGenre(Long id) throws NotFoundException;
     Book convertToEntity(CreateBookDTO createBookDTO);
     BookDTO convertToDTO(Book book);
 }

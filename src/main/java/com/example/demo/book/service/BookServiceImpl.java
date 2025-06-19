@@ -18,8 +18,6 @@ import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.genre.service.GenreServiceImpl;
-import com.example.demo.sale.model.Sale;
-import com.example.demo.sellerprofile.model.SellerProfile;
 import com.example.demo.sellerprofile.service.SellerProfileServiceImpl;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
@@ -48,7 +46,7 @@ public class BookServiceImpl implements BookService{
     @Override
     public BookDTO createBook(CreateBookDTO createBookDTO) throws AlreadyExistingException, NotFoundException {
         Book newBook = convertToEntity(createBookDTO);
-        User user =userService.getCurrentUser();
+        User user = userService.getCurrentUser();
         newBook.setSeller(user.getSellerProfile());
         if(repository.findAll().contains(newBook)){
             throw new AlreadyExistingException("Este libro ye existe");
@@ -56,7 +54,7 @@ public class BookServiceImpl implements BookService{
         if(user.getSellerProfile() == null){
             throw new NotFoundException("No estas registrado como vendedor");
         }
-        Book savedBook= repository.save(newBook);
+        Book savedBook = repository.save(newBook);
         return convertToDTO(savedBook);
     }
 
@@ -79,7 +77,7 @@ public class BookServiceImpl implements BookService{
     public boolean deleteBook(Long id) throws UnautorizedException {
         Optional<Book> book = repository.findById(id);
         if (book.isPresent() && !book.get().getSeller().getSellerUser().getName().equals(CurrentUserUtils.getUsername())){
-            throw new UnautorizedException("No esta autorizado para realizar esta acicon");
+            throw new UnautorizedException("No esta autorizado para realizar esta acción");
         }
         if (book.isPresent()){
             repository.deleteById(id);
@@ -184,19 +182,19 @@ public class BookServiceImpl implements BookService{
 
 
     @Override
-    public List<BookDTO> getByAuthor(Long id) throws NotFoundException {
-        Optional<AuthorDTO> autor= authorService.getById(id);
+    public List<BookDTOReduced> getByAuthor(Long id) throws NotFoundException {
+        Optional<AuthorDTO> autor = authorService.getById(id);
         if (autor.isPresent()) {
-            return repository.findAll().stream().filter(book -> book.getAuthor().getId().equals(autor.get().getId())).map(this::convertToDTO).collect(Collectors.toList());
+            return repository.findAll().stream().filter(book -> book.getAuthor().getId().equals(autor.get().getId())).map(this::reduceBook).collect(Collectors.toList());
         }else {
             throw new NotFoundException("autor inexistente");
         }
     }
 
-    public List<BookDTO> getByGenre(Long id) throws NotFoundException {
-        Optional<Genre> genre= genreService.getEntityById(id);
+    public List<BookDTOReduced> getByGenre(Long id) throws NotFoundException {
+        Optional<Genre> genre = genreService.getEntityById(id);
         if (genre.isPresent()) {
-            return repository.findAll().stream().filter(book -> book.getGenres().contains(genre.get())).map(this::convertToDTO).collect(Collectors.toList());
+            return repository.findAll().stream().filter(book -> book.getGenres().contains(genre.get())).map(this::reduceBook).collect(Collectors.toList());
         }else {
             throw new NotFoundException("genero inexistente");
         }

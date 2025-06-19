@@ -42,7 +42,6 @@ public class SellerProfileControler {
     public ResponseEntity<SellerProfileDTO> createSellerProfile(@Valid @RequestBody CreateSellerProfileDTO createSellerProfileDTO){
         try {
             SellerProfileDTO sellerDTO = sellerProfileService.createSellerProfile(createSellerProfileDTO);
-
             return new ResponseEntity<>(sellerDTO, HttpStatus.CREATED);
         } catch (AlreadyExistingException | NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
