@@ -1,0 +1,87 @@
+/*  Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+:root {
+  --first-color: hsl(230, 62%, 56%);
+  --title-color: hsl(230, 70%, 16%);
+  --text-color: hsl(230, 16%, 45%);
+  --border-color: hsl(230, 50%, 90%);
+  --white-color: hsl(0, 0%, 100%);
+  --body-color: hsl(230, 100%, 96%);
+  --container-color: hsl(230, 100%, 97%);
+
+  --body-font: 'Montserrat', sans-serif;
+  --h2-font-size: 1.25rem;
+  --normal-font-size: 0.938rem;
+
+  --font-regular: 400;
+  --font-semi-bold: 600;
+  --font-bold: 700;
+
+  --z-tooltip: 10;
+  --z-fixed: 100;
+  /* header shadow (default for light theme) */
+  --header-shadow: 0 1px 6px rgba(16, 24, 40, 0.06);
+  /* header border color for subtle separation (light theme) */
+  --header-border: rgba(16, 24, 40, 0.06);
+  /* footer shadow / border for light theme */
+  --footer-shadow: 0 1px 6px rgba(16, 24, 40, 0.04);
+  --footer-border: rgba(16, 24, 40, 0.04);
+  --header-height: 5rem;
+}
+
+/* Base */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+:root,
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body,
+input,
+button {
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+}
+
+body {
+  background-color: var(--body-color);
+  color: var(--text-color);
+  transition: background-color 0.4s;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media screen and (min-width: 1150px) {
+  :root {
+    --h2-font-size: 1.5rem;
+    --normal-font-size: 1rem;
+  }
+}
+
+/* Variables Dark theme */
+body.dark-theme {
+  --title-color: hsl(230, 48%, 85%);
+  --text-color: hsl(230, 16%, 70%);
+  --border-color: hsl(230, 12%, 18%);
+  --body-color: hsl(230, 12%, 8%);
+  --container-color: hsl(230, 12%, 12%);
+  --header-shadow: 0 1px 8px rgba(255, 255, 255, 0.12);
+  --header-border: rgba(255, 255, 255, 0.06);
+  /* footer shadow / border for dark theme */
+  --footer-shadow: 0 -1px 8px rgba(255, 255, 255, 0.03);
+  --footer-border: rgba(255, 255, 255, 0.04);
+}

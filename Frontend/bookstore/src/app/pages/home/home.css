@@ -1,0 +1,21 @@
+.home__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid wheat;
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid wheat;
+  width: 100%;
+  text-align: center;
+}

@@ -1,0 +1,41 @@
+<header class="header" id="header">
+  <div class="header__container">
+    <a href="#" class="nav__logo"> <i class="ri-book-3-line"></i> Librería </a>
+
+    <div class="nav__menu" id="nav-menu">
+      <ul class="nav__list">
+        <li class="nav__item">
+          <a href="#home" class="nav__link active-link">
+            <span>Inicio</span>
+          </a>
+        </li>
+
+        <li class="nav__item">
+          <a href="#libros" class="nav__link">
+            <span>Libros</span>
+          </a>
+        </li>
+
+        <li class="nav__item">
+          <a href="#descuentos" class="nav__link">
+            <span>Descuentos</span>
+          </a>
+        </li>
+
+        <li class="nav__item">
+          <a href="#testimonial" class="nav__link">
+            <span>Testimonios</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav__actions">
+      <button class="nav__toggle theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
+        <i [class]="isDark ? 'ri-sun-line' : 'ri-moon-line'"></i>
+      </button>
+      <i class="ri-search-line nav__search" id="search-btn"></i>
+      <i class="ri-user-line" id="login-btn"></i>
+    </div>
+  </div>
+</header>
