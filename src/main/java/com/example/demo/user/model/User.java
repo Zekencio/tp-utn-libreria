@@ -7,8 +7,10 @@ import com.example.demo.sellerprofile.model.SellerProfile;
 import jakarta.persistence.*;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -36,6 +38,11 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private List<Card> cards;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
+
     public User(Long id, String name, String password, List<Book> cart, List<Sale> sales, SellerProfile sellerProfile, List<Card> cards) {
         this.id = id;
         this.name = name;
@@ -62,6 +69,7 @@ public class User {
 
     public User() {
     }
+
 
     public Long getId() {
         return id;
@@ -119,6 +127,14 @@ public class User {
         this.cards = cards;
     }
 
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,7 +145,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, cart, sales, sellerProfile, cards);
+        return Objects.hash(name);
     }
 
     @Override

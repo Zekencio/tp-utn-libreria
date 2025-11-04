@@ -17,12 +17,6 @@
         </li>
 
         <li class="nav__item">
-          <a href="#descuentos" class="nav__link">
-            <span>Descuentos</span>
-          </a>
-        </li>
-
-        <li class="nav__item">
           <a href="#testimonial" class="nav__link">
             <span>Testimonios</span>
           </a>
@@ -34,8 +28,41 @@
       <button class="nav__toggle theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
         <i [class]="isDark ? 'ri-sun-line' : 'ri-moon-line'"></i>
       </button>
-      <i class="ri-search-line nav__search" id="search-btn"></i>
-      <i class="ri-user-line" id="login-btn"></i>
+      <ng-container *ngIf="auth.userSignal() as user; else showRegister">
+        <div class="user-menu" #userMenu role="menu" [class.open]="menuOpen">
+          <div class="user-area" (click)="toggleUserMenu($event)">
+            <div class="user-badge" title="{{ user.name }}">
+              {{ getInitials(user.name) }}
+            </div>
+
+            <div class="user-meta">
+              <div class="user-name">{{ getLocalPart(user.email || user.name) }}</div>
+              <i class="ri-arrow-down-s-line chevron" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div class="user-menu__dropdown">
+            <ul class="user-menu__list">
+              <li class="user-menu__item user-menu__item--profile" (click)="goToProfile()">
+                <div class="profile-avatar" aria-hidden="true">{{ getInitials(user.name) }}</div>
+                <div class="profile-meta">
+                  <div class="profile-name">{{ user.name }}</div>
+                  <div class="profile-sub">
+                    Mi perfil<i class="ri-arrow-right-s-line chevron"></i>
+                  </div>
+                </div>
+              </li>
+              <li class="user-menu__item" (click)="navigateTo('/purchases')">Compras</li>
+              <li class="user-menu__item" (click)="navigateTo('/sell')">Vender</li>
+              <li class="user-menu__item" (click)="logout()">Salir</li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #showRegister>
+        <a routerLink="/register" class="nav__link">Creá tu cuenta</a>
+        <a routerLink="/login" class="nav__link">Ingresá</a>
+      </ng-template>
     </div>
   </div>
 </header>

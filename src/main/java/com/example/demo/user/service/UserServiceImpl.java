@@ -58,9 +58,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO createUser(CreateUserDTO createUserDTO) throws AlreadyExistingException {
         User newUser = convertToEntity(createUserDTO);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        if (repository.findAll().contains(newUser)) {
+        if (repository.findByName(newUser.getName()).isPresent()) {
             throw new AlreadyExistingException("El usuario ya existe");
         }
+        // Assign default role
+        newUser.getRoles().add("ROLE_CLIENT");
         User savedUser = repository.save(newUser);
         return convertToDTO(savedUser);
     }
@@ -138,7 +140,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getPassword());
+        return new UserDTO(user.getId(), user.getName(), user.getRoles());
     }
 
     @Override
@@ -146,10 +148,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = repository.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getName(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-        );
+    List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+
+    return new org.springframework.security.core.userdetails.User(
+        user.getName(),
+        user.getPassword(),
+        authorities
+    );
     }
 }

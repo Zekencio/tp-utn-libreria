@@ -6,6 +6,7 @@ import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.service.UserServiceImpl;
+import com.example.demo.user.model.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class UserControler {
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/login")
+    @PostMapping("/register")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
         try {
             UserDTO userDTO = userService.createUser(createUserDTO);
@@ -72,6 +73,17 @@ public class UserControler {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getMe() {
+        try {
+            User user = userService.getCurrentUser();
+            UserDTO dto = userService.convertToDTO(user);
+            return ResponseEntity.ok(dto);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

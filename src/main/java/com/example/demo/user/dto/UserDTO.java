@@ -1,21 +1,23 @@
 package com.example.demo.user.dto;
+
 import java.util.Objects;
+import java.util.Set;
 
 public class UserDTO {
 
     private Long id;
     private String name;
-    private String password;
+    private Set<String> roles;
 
-    public UserDTO(Long id, String name, String password) {
+    public UserDTO(Long id, String name, Set<String> roles) {
         this.id = id;
         this.name = name;
-        this.password = password;
+        this.roles = roles;
     }
 
-    public UserDTO(String name, String password) {
+    public UserDTO(String name, Set<String> roles) {
         this.name = name;
-        this.password = password;
+        this.roles = roles;
     }
 
     public UserDTO() {
@@ -37,26 +39,25 @@ public class UserDTO {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDTO userDTO = (UserDTO) o;
-        return  Objects.equals(name, userDTO.name) && Objects.equals(password, userDTO.password);
+        return Objects.equals(name, userDTO.name) && Objects.equals(roles, userDTO.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password);
+        return Objects.hash(id, name, roles);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class UserDTO {
         return "UserDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

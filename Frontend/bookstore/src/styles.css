@@ -27,7 +27,9 @@
   /* footer shadow / border for light theme */
   --footer-shadow: 0 1px 6px rgba(16, 24, 40, 0.04);
   --footer-border: rgba(16, 24, 40, 0.04);
-  --header-height: 5rem;
+  --header-height: 6rem;
+  /* menu item hover background (theme-aware) */
+  --menu-item-hover: rgba(0, 0, 0, 0.03);
 }
 
 /* Base */
@@ -84,4 +86,6 @@ body.dark-theme {
   /* footer shadow / border for dark theme */
   --footer-shadow: 0 -1px 8px rgba(255, 255, 255, 0.03);
   --footer-border: rgba(255, 255, 255, 0.04);
+  /* slightly more visible hover color for dark theme (softened) */
+  --menu-item-hover: rgba(255, 255, 255, 0.06);
 }

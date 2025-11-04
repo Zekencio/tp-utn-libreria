@@ -1,0 +1,36 @@
+<div class="profile-page">
+  <div class="menu-container">
+    <aside class="profile-side">
+      <nav class="profile-menu">
+        <a class="profile-menu__item active">Mi perfil</a>
+        <a class="profile-menu__item">Mis compras</a>
+        <a class="profile-menu__item">Vender</a>
+      </nav>
+    </aside>
+  </div>
+  <section class="profile-content">
+    <div class="profile-header">
+      <div class="profile-header__avatar">
+        <div class="avatar-circle">{{ (user()?.name || '').slice(0, 2).toUpperCase() }}</div>
+        <div class="profile-info">
+          <div class="profile-email">{{ user()?.email || user()?.name }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <ng-container *ngIf="user() as user">
+        <p class="profile-email"><strong>Email:</strong> {{ user.email || user.name }}</p>
+        <p class="profile-role">
+          <strong>Rol:</strong>
+          <ng-container *ngIf="(user.roles || []).length; else noRole">
+            <span *ngFor="let r of user.roles; let last = last"
+              >{{ roleLabel(r) }}<span *ngIf="!last">, </span></span
+            >
+          </ng-container>
+        </p>
+      </ng-container>
+      <ng-template #noRole>—</ng-template>
+    </div>
+  </section>
+</div>
