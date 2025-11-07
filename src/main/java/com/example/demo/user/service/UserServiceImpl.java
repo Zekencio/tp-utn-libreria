@@ -1,12 +1,13 @@
 package com.example.demo.user.service;
-
-import com.example.demo.book.model.Book;
 import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
+import com.example.demo.sellerprofile.dto.SellerProfileDTOFull;
+import com.example.demo.book.dto.BookDTOReduced;
+import com.example.demo.book.model.Book;
 import com.example.demo.user.model.User;
 import com.example.demo.user.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -75,19 +76,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserDTO> updateUser(UpdateUserDTO updateUserDTO) throws NotFoundException {
+    public Optional<UserDTO> updateUser(UpdateUserDTO updateUserDTO) throws NotFoundException, com.example.demo.exceptions.UnautorizedException {
         User user = getCurrentUser();
-        return repository.findById(user.getId())
-                .map(existing -> {
-                    if (updateUserDTO.getName() != null) {
-                        existing.setName(updateUserDTO.getName());
-                    }
-                    if (updateUserDTO.getPassword() != null) {
-                        existing.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
-                    }
-                    User saved = repository.save(existing);
-                    return convertToDTO(saved);
-                });
+        Optional<User> optional = repository.findById(user.getId());
+        if (optional.isEmpty()) {
+            return Optional.empty();
+        }
+        User existing = optional.get();
+        // If changing name or password, require currentPassword verification
+        boolean wantsNameChange = updateUserDTO.getName() != null;
+        boolean wantsPasswordChange = updateUserDTO.getPassword() != null;
+        if (wantsNameChange || wantsPasswordChange) {
+            String currentProvided = updateUserDTO.getCurrentPassword();
+            if (currentProvided == null || !passwordEncoder.matches(currentProvided, existing.getPassword())) {
+                // do not apply changes if current password is missing or incorrect
+                throw new com.example.demo.exceptions.UnautorizedException("Current password is invalid");
+            }
+        }
+
+        if (wantsNameChange) {
+            existing.setName(updateUserDTO.getName());
+        }
+        if (wantsPasswordChange) {
+            existing.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
+        }
+        User saved = repository.save(existing);
+        return Optional.of(convertToDTO(saved));
     }
 
     public Optional<UserDTO> updateSpecificUser(Long id, UpdateUserDTO updateUserDTO) {
@@ -102,6 +116,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     User saved = repository.save(existing);
                     return convertToDTO(saved);
                 });
+    }
+
+    public void saveCurrentUser(User user) {
+        repository.save(user);
     }
 
     public List<Book> addToUserCart(Book book, Integer cant) throws NotFoundException {
@@ -140,7 +158,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getRoles());
+        UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getRoles());
+        if (user.getSellerProfile() != null) {
+            // map seller profile to DTOFull
+            var sp = user.getSellerProfile();
+        java.util.List<BookDTOReduced> books = sp.getInventory() == null ? java.util.Collections.<BookDTOReduced>emptyList() : sp.getInventory().stream()
+            .map(b -> new BookDTOReduced(b.getId(), b.getName(), b.getDescription()))
+            .collect(java.util.stream.Collectors.toList());
+            SellerProfileDTOFull sellerDto = new SellerProfileDTOFull(sp.getId(), sp.getName(), sp.getAddress(), books);
+            dto.setSellerProfile(sellerDto);
+        }
+        return dto;
     }
 
     @Override

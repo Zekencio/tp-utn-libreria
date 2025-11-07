@@ -28,41 +28,51 @@
       <button class="nav__toggle theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
         <i [class]="isDark ? 'ri-sun-line' : 'ri-moon-line'"></i>
       </button>
-      <ng-container *ngIf="auth.userSignal() as user; else showRegister">
-        <div class="user-menu" #userMenu role="menu" [class.open]="menuOpen">
-          <div class="user-area" (click)="toggleUserMenu($event)">
-            <div class="user-badge" title="{{ user.name }}">
-              {{ getInitials(user.name) }}
-            </div>
-
-            <div class="user-meta">
-              <div class="user-name">{{ getLocalPart(user.email || user.name) }}</div>
-              <i class="ri-arrow-down-s-line chevron" aria-hidden="true"></i>
-            </div>
+      @if (auth.userSignal()) {
+      <div class="user-menu" #userMenu role="menu" [class.open]="menuOpen">
+        <div class="user-area" (click)="toggleUserMenu($event)">
+          <div class="user-badge" title="{{ auth.userSignal()!.name }}">
+            {{ getInitials(auth.userSignal()!.name) }}
           </div>
 
-          <div class="user-menu__dropdown">
-            <ul class="user-menu__list">
-              <li class="user-menu__item user-menu__item--profile" (click)="goToProfile()">
-                <div class="profile-avatar" aria-hidden="true">{{ getInitials(user.name) }}</div>
-                <div class="profile-meta">
-                  <div class="profile-name">{{ user.name }}</div>
-                  <div class="profile-sub">
-                    Mi perfil<i class="ri-arrow-right-s-line chevron"></i>
-                  </div>
-                </div>
-              </li>
-              <li class="user-menu__item" (click)="navigateTo('/purchases')">Compras</li>
-              <li class="user-menu__item" (click)="navigateTo('/sell')">Vender</li>
-              <li class="user-menu__item" (click)="logout()">Salir</li>
-            </ul>
+          <div class="user-meta">
+            <div class="user-name">
+              {{ getLocalPart(auth.userSignal()!.email || auth.userSignal()!.name) }}
+            </div>
+            <i class="ri-arrow-down-s-line chevron" aria-hidden="true"></i>
           </div>
         </div>
-      </ng-container>
-      <ng-template #showRegister>
-        <a routerLink="/register" class="nav__link">Creá tu cuenta</a>
-        <a routerLink="/login" class="nav__link">Ingresá</a>
-      </ng-template>
+
+        <div class="user-menu__dropdown">
+          <ul class="user-menu__list">
+            <li class="user-menu__item user-menu__item--profile" (click)="goToProfile()">
+              <div class="profile-avatar" aria-hidden="true">
+                {{ getInitials(auth.userSignal()!.name) }}
+              </div>
+              <div class="profile-meta">
+                <div class="profile-name">{{ auth.userSignal()!.name }}</div>
+                <div class="profile-sub">
+                  Mi perfil<i class="ri-arrow-right-s-line chevron"></i>
+                </div>
+              </div>
+            </li>
+            @if (!isSellerRoute) {
+            <li class="user-menu__item" (click)="onPurchasesClick()">Compras</li>
+            <li class="user-menu__item" (click)="onSellClick()">Vender</li>
+            } @else {
+            <li class="user-menu__item" (click)="onSellerSalesClick()">Mis ventas</li>
+            <li class="user-menu__item" (click)="onSellerCatalogClick()">Mi catalogo</li>
+            <li class="user-menu__item" (click)="onAddBookClick()">Agregar libro</li>
+            <li class="user-menu__item" (click)="onHeaderToggle()">{{ toggleLabel }}</li>
+            }
+            <li class="user-menu__item" (click)="logout()">Salir</li>
+          </ul>
+        </div>
+      </div>
+      } @else {
+      <a routerLink="/register" class="nav__link">Creá tu cuenta</a>
+      <a routerLink="/login" class="nav__link">Ingresá</a>
+      }
     </div>
   </div>
 </header>

@@ -8,6 +8,4 @@ main {
   flex: 1;
   max-width: 1200px;
   margin: 0 auto;
-  /* Compensate for fixed header so content doesn't sit under it */
-  /* padding: calc(var(--header-height, 4rem) + 2rem) 2rem 2rem 2rem; */
 }

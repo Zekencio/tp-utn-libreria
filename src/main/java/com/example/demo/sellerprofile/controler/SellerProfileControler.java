@@ -48,6 +48,16 @@ public class SellerProfileControler {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<SellerProfileDTOFull> getMySellerProfile() {
+        try {
+            Optional<SellerProfileDTOFull> seller = sellerProfileService.getCurrentSellerProfile();
+            return seller.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PutMapping("/update")
     public ResponseEntity<SellerProfileDTO> updateSellerProfile(@Valid @RequestBody UpdateSellerProfileDTO updateSellerProfileDTO){
         try {

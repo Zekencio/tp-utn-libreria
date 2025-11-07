@@ -2,17 +2,27 @@ package com.example.demo.user.dto;
 
 import java.util.Objects;
 import java.util.Set;
+import com.example.demo.sellerprofile.dto.SellerProfileDTOFull;
 
 public class UserDTO {
 
     private Long id;
     private String name;
     private Set<String> roles;
+    private SellerProfileDTOFull sellerProfile;
 
     public UserDTO(Long id, String name, Set<String> roles) {
         this.id = id;
         this.name = name;
         this.roles = roles;
+    }
+
+    public SellerProfileDTOFull getSellerProfile() {
+        return sellerProfile;
+    }
+
+    public void setSellerProfile(SellerProfileDTOFull sellerProfile) {
+        this.sellerProfile = sellerProfile;
     }
 
     public UserDTO(String name, Set<String> roles) {

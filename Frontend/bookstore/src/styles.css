@@ -1,4 +1,3 @@
-/*  Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
 :root {
@@ -20,19 +19,14 @@
 
   --z-tooltip: 10;
   --z-fixed: 100;
-  /* header shadow (default for light theme) */
   --header-shadow: 0 1px 6px rgba(16, 24, 40, 0.06);
-  /* header border color for subtle separation (light theme) */
   --header-border: rgba(16, 24, 40, 0.06);
-  /* footer shadow / border for light theme */
   --footer-shadow: 0 1px 6px rgba(16, 24, 40, 0.04);
   --footer-border: rgba(16, 24, 40, 0.04);
   --header-height: 6rem;
-  /* menu item hover background (theme-aware) */
   --menu-item-hover: rgba(0, 0, 0, 0.03);
 }
 
-/* Base */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -74,7 +68,6 @@ a {
   }
 }
 
-/* Variables Dark theme */
 body.dark-theme {
   --title-color: hsl(230, 48%, 85%);
   --text-color: hsl(230, 16%, 70%);
@@ -83,9 +76,7 @@ body.dark-theme {
   --container-color: hsl(230, 12%, 12%);
   --header-shadow: 0 1px 8px rgba(255, 255, 255, 0.12);
   --header-border: rgba(255, 255, 255, 0.06);
-  /* footer shadow / border for dark theme */
   --footer-shadow: 0 -1px 8px rgba(255, 255, 255, 0.03);
   --footer-border: rgba(255, 255, 255, 0.04);
-  /* slightly more visible hover color for dark theme (softened) */
   --menu-item-hover: rgba(255, 255, 255, 0.06);
 }

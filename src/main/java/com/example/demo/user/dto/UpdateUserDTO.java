@@ -10,10 +10,13 @@ public class UpdateUserDTO {
     private String name;
     @Size(min = 8, message = "The password must be at least 8 characters long")
     private String password;
+    @Size(min = 8, message = "The current password must be at least 8 characters long")
+    private String currentPassword;
 
-    public UpdateUserDTO(String name, String password) {
+    public UpdateUserDTO(String name, String password, String currentPassword) {
         this.name = name;
         this.password = password;
+        this.currentPassword = currentPassword;
     }
 
     public UpdateUserDTO() {
@@ -35,6 +38,14 @@ public class UpdateUserDTO {
         this.password = password;
     }
 
+    public @Size(min = 8, message = "The current password must be at least 8 characters long") String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(@Size(min = 8, message = "The current password must be at least 8 characters long") String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,14 +56,15 @@ public class UpdateUserDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, password);
+        return Objects.hash(name, password, currentPassword);
     }
 
     @Override
     public String toString() {
-        return "UpdateUserDTO{" +
-                "name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    return "UpdateUserDTO{" +
+        "name='" + name + '\'' +
+        ", password='" + password + '\'' +
+        ", currentPassword='" + currentPassword + '\'' +
+        '}';
     }
 }

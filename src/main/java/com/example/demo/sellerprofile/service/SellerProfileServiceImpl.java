@@ -87,7 +87,22 @@ public class SellerProfileServiceImpl implements SellerProfileService{
             throw new AlreadyExistingException("El vendedor ya esta registrado");
         }
         SellerProfile savedSeller = repository.save(newSeller);
+        // add seller role to user
+        user.getRoles().add("ROLE_SELLER");
+        // persist role change
+        userService.saveCurrentUser(user);
         return convertToDTO(savedSeller);
+    }
+
+    @Override
+    public Optional<SellerProfileDTOFull> getCurrentSellerProfile() {
+      try {
+        User user = userService.getCurrentUser();
+        if (user.getSellerProfile() == null) return Optional.empty();
+        return Optional.of(convertToFullDTO(user.getSellerProfile()));
+      } catch (Exception e) {
+        return Optional.empty();
+      }
     }
 
     @Override
@@ -101,7 +116,8 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     }
 
     public SellerProfileDTOFull convertToFullDTO(SellerProfile sellerProfile){
-        return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(),sellerProfile.getInventory().stream().map(this::reduceBook).collect(Collectors.toList()));
+        java.util.List<BookDTOReduced> books = sellerProfile.getInventory() == null ? java.util.Collections.emptyList() : sellerProfile.getInventory().stream().map(this::reduceBook).collect(Collectors.toList());
+        return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), books);
     }
     public BookDTOReduced reduceBook(Book book){
         return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());

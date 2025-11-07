@@ -1,0 +1,145 @@
+<section class="profile-content">
+  <header class="profile-title">
+    <h2>Perfil del Cliente</h2>
+  </header>
+  @if (auth.userSignal()) {
+  <div class="profile-header">
+    <div class="profile-header__avatar">
+      <div class="avatar-circle">
+        {{ (auth.userSignal()!.name || '').slice(0, 2).toUpperCase() }}
+      </div>
+      <div class="profile-info">
+        <div class="profile-email">{{ auth.userSignal()!.email || auth.userSignal()!.name }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-details">
+    <div class="profile-email-row">
+      <p class="profile-email">
+        <strong>Email:</strong> {{ auth.userSignal()!.email || auth.userSignal()!.name }}
+      </p>
+      <button class="edit-email" title="Cambiar Email" (click)="openEmailModal()">
+        <i class="ri-edit-line"></i>
+      </button>
+    </div>
+    <p class="profile-role">
+      <strong>Roles: </strong>
+      @if ((auth.userSignal()!.roles || []).length) {
+      <span *ngFor="let r of auth.userSignal()!.roles; let last = last">
+        {{ roleLabel(r) }}@if (!last) {<span>, </span>}
+      </span>
+      } @else { — }
+    </p>
+  </div>
+  }
+</section>
+
+@if (showSellerModal) {
+<div class="modal" (click)="onModalBackdropClick()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" aria-label="Cerrar" (click)="onModalCloseClick()">×</button>
+    <h3>Registro como vendedor</h3>
+    <div class="modal-field">
+      <label for="sellerName">El nombre de empresa</label>
+      <input
+        id="sellerName"
+        name="sellerName"
+        [(ngModel)]="sellerName"
+        required
+        [disabled]="isRegistering"
+      />
+      @if (sellerName && sellerName.trim().length > 0 && sellerName.trim().length < 6) {
+      <div class="field-hint">El nombre debe tener al menos 6 caracteres.</div>
+      }
+    </div>
+    <div class="modal-field">
+      <label for="sellerAddress">La direccion</label>
+      <input
+        id="sellerAddress"
+        name="sellerAddress"
+        [(ngModel)]="sellerAddress"
+        required
+        [disabled]="isRegistering"
+      />
+      @if (sellerAddress && sellerAddress.trim().length > 0 && sellerAddress.trim().length < 6) {
+      <div class="field-hint">La dirección debe tener al menos 6 caracteres.</div>
+      }
+    </div>
+    <div class="modal-actions">
+      <button
+        class="btn-primary"
+        (click)="submitSellerRegistration()"
+        [disabled]="
+          isRegistering ||
+          !sellerName.trim() ||
+          !sellerAddress.trim() ||
+          sellerName.trim().length < 6 ||
+          sellerAddress.trim().length < 6
+        "
+      >
+        @if (isRegistering) {<span class="spinner" aria-hidden="true"></span>} @if (!isRegistering)
+        {<span>Continuar</span>} @if (isRegistering) {<span>Procesando...</span>}
+      </button>
+      <button class="btn-secondary" (click)="onModalCloseClick()" [disabled]="isRegistering">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+} @if (showEmailModal) {
+<div class="modal" (click)="closeEmailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" aria-label="Cerrar" (click)="closeEmailModal()">×</button>
+    @if (emailModalStep === 1) {
+    <h3>Confirmación de acción</h3>
+    <p>Introduzca la contraseña actual para cambiar Email</p>
+    <div class="modal-field">
+      <label for="emailConfirmPass">Contraseña</label>
+      <input
+        id="emailConfirmPass"
+        name="emailConfirmPass"
+        type="password"
+        [(ngModel)]="emailCurrentPassword"
+        [disabled]="isUpdatingEmail"
+      />
+    </div>
+    <div class="modal-actions">
+      <button
+        class="btn-primary"
+        (click)="submitEmailStep1()"
+        [disabled]="isUpdatingEmail || !emailCurrentPassword"
+      >
+        Continuar
+      </button>
+      <button class="btn-secondary" (click)="closeEmailModal()" [disabled]="isUpdatingEmail">
+        Cancelar
+      </button>
+    </div>
+    } @if (emailModalStep === 2) {
+    <h3>Nuevo Email</h3>
+    <div class="modal-field">
+      <label for="newEmail">Email</label>
+      <input id="newEmail" name="newEmail" [(ngModel)]="newEmail" [disabled]="isUpdatingEmail" />
+      @if (newEmail && newEmail.trim().length < 8) {
+      <div class="field-hint">Email debe tener al menos 8 caracteres.</div>
+      }
+    </div>
+    <div class="modal-actions">
+      <button
+        class="btn-primary"
+        (click)="submitEmailStep2()"
+        [disabled]="isUpdatingEmail || newEmail.trim().length < 8"
+      >
+        Guardar
+      </button>
+      <button class="btn-secondary" (click)="closeEmailModal()" [disabled]="isUpdatingEmail">
+        Cancelar
+      </button>
+    </div>
+    } @if (emailUpdateError) {
+    <div class="error">{{ emailUpdateError }}</div>
+    }
+  </div>
+</div>
+}

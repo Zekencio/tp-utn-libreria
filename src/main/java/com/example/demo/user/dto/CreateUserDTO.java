@@ -1,5 +1,6 @@
 package com.example.demo.user.dto;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class CreateUserDTO {
     @NotBlank(message = "The username cannot be blank")
     private String name;
     @NotBlank(message = "The password cannot be blank")
+    @Size(min = 8, message = "The password must be at least 8 characters long")
     private String password;
 
     public CreateUserDTO(String name, String password) {
@@ -27,11 +29,11 @@ public class CreateUserDTO {
         this.name = name;
     }
 
-    public @NotBlank(message = "The password cannot be blank") String getPassword() {
+    public @NotBlank(message = "The password cannot be blank") @Size(min = 8, message = "The password must be at least 8 characters long") String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank(message = "The password cannot be blank") String password) {
+    public void setPassword(@NotBlank(message = "The password cannot be blank") @Size(min = 8, message = "The password must be at least 8 characters long") String password) {
         this.password = password;
     }
 

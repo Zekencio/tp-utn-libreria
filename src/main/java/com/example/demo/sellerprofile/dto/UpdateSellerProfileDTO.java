@@ -9,9 +9,9 @@ import java.util.Objects;
 
 public class UpdateSellerProfileDTO {
 
-    @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters")
+    @Size(min = 6, max = 255, message = "The seller name must have between 6 and 255 characters")
     private String name;
-    @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters")
+    @Size(min = 6, max = 128, message = "The address must have between 6 and 128 characters")
     private String address;
     private User sellerUser;
 
@@ -24,19 +24,19 @@ public class UpdateSellerProfileDTO {
     public UpdateSellerProfileDTO() {
     }
 
-    public @Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String getName() {
+    public @Size(min = 6, max = 255, message = "The seller name must have between 6 and 255 characters") String getName() {
         return name;
     }
 
-    public void setName(@Size(min = 3, max = 255, message = "The seller name must have between 3 and 255 characters") String name) {
+    public void setName(@Size(min = 6, max = 255, message = "The seller name must have between 6 and 255 characters") String name) {
         this.name = name;
     }
 
-    public @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String getAddress() {
+    public @Size(min = 6, max = 128, message = "The address must have between 6 and 128 characters") String getAddress() {
         return address;
     }
 
-    public void setAddress( @Size(min = 3, max = 128, message = "The address must have between 3 and 128 characters") String address) {
+    public void setAddress( @Size(min = 6, max = 128, message = "The address must have between 6 and 128 characters") String address) {
         this.address = address;
     }
 

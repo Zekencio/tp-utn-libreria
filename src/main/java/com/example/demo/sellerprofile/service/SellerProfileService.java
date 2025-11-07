@@ -19,6 +19,8 @@ public interface SellerProfileService {
     SellerProfileDTO updateSellerProfile (UpdateSellerProfileDTO updateSellerProfileDTO) throws NotFoundException;
     public boolean deleteSellerProfile() throws NotFoundException;
 
+    Optional<SellerProfileDTOFull> getCurrentSellerProfile();
+
     SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO);
     SellerProfileDTO convertToDTO(SellerProfile sellerProfile);
 }

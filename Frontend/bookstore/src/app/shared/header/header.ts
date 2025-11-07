@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ProfileToggleService } from '../../pages/profile/profile-toggle.service';
+import { NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -32,7 +35,11 @@ export class HeaderComponent {
     }
   }
 
-  constructor(private router: Router, public auth: AuthService) {}
+  constructor(
+    private router: Router,
+    public auth: AuthService,
+    private profileToggle: ProfileToggleService
+  ) {}
   toggleTheme() {
     this.setDark(!this.isDark);
   }
@@ -87,6 +94,68 @@ export class HeaderComponent {
     this.router.navigate(['/profile']);
   }
 
+  onSellClick(): void {
+    this.menuOpen = false;
+    const user = this.auth.userSignal();
+    const tokenPresent = (() => {
+      try {
+        return !!localStorage.getItem('basicAuth');
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (!user || !tokenPresent) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
+      return;
+    }
+
+    if (user.roles?.includes('ROLE_SELLER')) {
+      const onProfile = (this.currentUrl || this.router.url || '').includes('/profile');
+      if (!onProfile) {
+        this.router.navigate(['/profile']).then(() => this.profileToggle.requestToggle());
+      } else {
+        this.profileToggle.requestToggle();
+      }
+    } else {
+      this.router.navigate(['/profile'], { queryParams: { openSellerModal: '1' } });
+    }
+  }
+
+  onPurchasesClick(): void {
+    this.menuOpen = false;
+    const user = this.auth.userSignal();
+    const tokenPresent = (() => {
+      try {
+        return !!localStorage.getItem('basicAuth');
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (!user || !tokenPresent) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
+      return;
+    }
+
+    this.router.navigate(['/profile', 'client']);
+  }
+
+  onSellerSalesClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'seller', 'sales']);
+  }
+
+  onSellerCatalogClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'seller', 'catalog']);
+  }
+
+  onAddBookClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'seller', 'books', 'new']);
+  }
+
   getLocalPart(value?: string | null) {
     if (!value) return '';
     const idx = value.indexOf('@');
@@ -98,5 +167,27 @@ export class HeaderComponent {
     this.menuOpen = false;
     this.auth.logout();
     this.router.navigate(['/']);
+  }
+
+  currentUrl = '';
+
+  ngAfterViewInit(): void {
+    this.currentUrl = this.router.url || '';
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: any) => {
+      this.currentUrl = e.urlAfterRedirects || e.url || '';
+    });
+  }
+
+  get isSellerRoute(): boolean {
+    return this.currentUrl.includes('/profile/seller');
+  }
+
+  get toggleLabel(): string {
+    return this.isSellerRoute ? 'Comprar' : 'Vender';
+  }
+
+  onHeaderToggle(): void {
+    this.menuOpen = false;
+    this.profileToggle.requestToggle();
   }
 }

@@ -56,6 +56,8 @@ public class UserControler {
                     .orElse(ResponseEntity.notFound().build());
         }catch (NotFoundException e){
             return ResponseEntity.notFound().build();
+        } catch (com.example.demo.exceptions.UnautorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

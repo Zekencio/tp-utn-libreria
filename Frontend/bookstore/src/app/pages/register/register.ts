@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -19,7 +19,7 @@ export class RegisterComponent {
   nameError = false;
   loading = false;
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   close() {
     this.router.navigate(['/']);
@@ -31,14 +31,16 @@ export class RegisterComponent {
       this.error = 'Engrese nombre y contraseña';
       return;
     }
+    if (this.name.trim().length < 8) {
+      this.error = 'Email debe tener al menos 8 caracteres';
+      this.nameError = true;
+      return;
+    }
     this.loading = true;
     this.auth.register(this.name, this.password).subscribe({
       next: (user) => {
         this.loading = false;
         this.router.navigate(['/']);
-        try {
-          this.cdr.detectChanges();
-        } catch (e) {}
       },
       error: (err) => {
         console.error('Registration error', err);
@@ -46,18 +48,37 @@ export class RegisterComponent {
         if (err && err.status === 406) {
           this.error = 'El usuario ya existe';
           this.nameError = true;
-          try {
-            this.cdr.detectChanges();
-          } catch (e) {}
           return;
         }
+
+        if (err && err.status === 0) {
+          this.error =
+            'No se pudo conectar al servidor. Verifique la configuración del proxy y si el backend está en ejecución.';
+          this.nameError = false;
+          return;
+        }
+
+        if (err && err.status === 404) {
+          this.error =
+            'Ruta no encontrada (404). Verifique la configuración del proxy y si el backend está en ejecución.';
+          this.nameError = false;
+          return;
+        }
+
         this.nameError = false;
-        const serverMessage =
-          err?.error?.message || (typeof err?.error === 'string' ? err.error : null);
+        const raw = err?.error;
+        let serverMessage: string | null = null;
+        if (raw && typeof raw === 'object' && raw.message) {
+          serverMessage = raw.message;
+        } else if (raw && typeof raw === 'string') {
+          if (raw.indexOf('<!DOCTYPE') !== -1 || raw.indexOf('<html') !== -1) {
+            const m = raw.match(/<pre>([\s\S]*?)<\/pre>/i);
+            serverMessage = m ? m[1].trim() : 'Error del servidor';
+          } else {
+            serverMessage = raw;
+          }
+        }
         this.error = serverMessage || 'Error al registrar el usuario';
-        try {
-          this.cdr.detectChanges();
-        } catch (e) {}
       },
     });
   }

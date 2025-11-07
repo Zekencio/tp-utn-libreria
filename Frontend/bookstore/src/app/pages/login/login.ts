@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -18,7 +18,7 @@ export class LoginComponent {
   error = '';
   loading = false;
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   close() {
     this.router.navigate(['/']);
@@ -35,9 +35,6 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         this.router.navigate(['/']);
-        try {
-          this.cdr.detectChanges();
-        } catch (e) {}
       },
       error: (err) => {
         console.error('Login error', err);
@@ -47,9 +44,6 @@ export class LoginComponent {
         } else {
           this.error = err?.error?.message || 'Error al iniciar sesión';
         }
-        try {
-          this.cdr.detectChanges();
-        } catch (e) {}
       },
     });
   }

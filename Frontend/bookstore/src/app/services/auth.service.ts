@@ -3,11 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
+import { SellerProfileDTOFull } from './seller-profile.service';
+
 export interface UserDTO {
   id?: number;
   name: string;
   email?: string;
   roles?: string[];
+  sellerProfile?: SellerProfileDTOFull | null;
 }
 
 const STORAGE_KEY = 'currentUser';
@@ -25,9 +28,15 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(name: string, password: string): Observable<UserDTO> {
-    return this.http
-      .post<UserDTO>(`${this.base}/register`, { name, password })
-      .pipe(tap((user) => this.setCurrentUser(user)));
+    const token = btoa(`${name}:${password}`);
+    return this.http.post<UserDTO>(`${this.base}/register`, { name, password }).pipe(
+      tap((user) => {
+        try {
+          localStorage.setItem(AUTH_TOKEN_KEY, token);
+        } catch (e) {}
+        this.setCurrentUser(user);
+      })
+    );
   }
 
   login(name: string, password: string): Observable<UserDTO> {
@@ -46,10 +55,32 @@ export class AuthService {
   me(): Observable<UserDTO> {
     const token = this.loadAuthToken();
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    try {
+      const tokenRaw = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (tokenRaw) {
+        const headersFallback = new HttpHeaders({ Authorization: `Basic ${tokenRaw}` });
+        return this.http.get<UserDTO>(`${this.base}/me`, { headers: headersFallback }).pipe(
+          tap((user) => this.setCurrentUser(user)),
+          catchError(() => of(null as any))
+        );
+      }
+    } catch (e) {}
     return this.http.get<UserDTO>(`${this.base}/me`, headers ? { headers } : {}).pipe(
       tap((user) => this.setCurrentUser(user)),
       catchError(() => of(null as any))
     );
+  }
+
+  updateUser(update: {
+    name?: string;
+    password?: string;
+    currentPassword?: string;
+  }): Observable<UserDTO> {
+    const token = this.loadAuthToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    return this.http
+      .put<UserDTO>(`${this.base}/update`, update, headers ? { headers } : {})
+      .pipe(tap((user) => this.setCurrentUser(user)));
   }
 
   setCurrentUser(user: UserDTO | null) {

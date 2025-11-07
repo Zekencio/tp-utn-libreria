@@ -41,13 +41,19 @@
   gap: 8px;
 }
 .profile-menu__item {
+  color: var(--title-color);
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
 }
+.profile-menu__item:hover {
+  background: var(--menu-item-hover);
+  color: var(--first-color);
+}
 .profile-menu__item.active {
   background: var(--menu-item-hover);
   font-weight: var(--font-semi-bold);
+  color: var(--first-color);
 }
 
 .profile-header__avatar {
@@ -71,24 +77,183 @@
 }
 .profile-details {
   margin-top: 12px;
-  padding: 12px;
   max-width: 420px;
 }
-.profile-details .profile-email {
-  margin: 0 0 8px 0;
-}
+
 .profile-details .profile-role {
   margin: 0;
 }
+
 .profile-email {
   font-weight: var(--font-semi-bold);
+}
+.profile-email-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+.profile-email {
+  font-weight: var(--font-semi-bold);
+  margin: 0;
+  flex: 0 0 auto;
+}
+.edit-email {
+  margin-left: 0;
+  background: transparent;
+  border: none;
+  color: var(--title-color);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  flex: 0 0 auto;
+}
+.edit-email:hover {
+  color: var(--first-color);
 }
 .profile-role {
   font-size: 0.9rem;
   color: var(--text-color);
 }
+.seller-detail-item {
+  margin: 8px 0;
+}
 
-body.dark-theme .profile-side {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+}
+.modal-content {
+  width: min(90vw, 420px);
+  padding: 2rem;
+  border-radius: 8px;
+  position: relative;
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: var(--normal-font-size);
+}
+
+.modal-content h3 {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-content p {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+.modal-close:hover,
+.modal-close:focus {
+  color: var(--title-color);
+  background: rgba(0, 0, 0, 0.04);
+  outline: none;
+}
+.modal-field {
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+}
+.modal-field label {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+.modal-field input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.modal-field input[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 3rem;
+  justify-content: center;
+}
+
+.field-hint {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #d9534f;
+}
+.btn-primary {
+  background: var(--first-color, #0066ff);
+  color: var(--white-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: var(--font-semi-bold);
+  font-size: var(--normal-font-size);
+}
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: var(--normal-font-size);
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.edit-email {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  padding: 4px;
+}
+
+.edit-email:hover {
+  color: var(--first-color);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .modal-content {
+    max-width: 92%;
+    padding: 16px;
+  }
 }
