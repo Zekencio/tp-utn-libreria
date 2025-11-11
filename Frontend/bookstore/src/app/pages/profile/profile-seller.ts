@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SellerProfileDTOFull, SellerProfileService } from '../../services/seller-profile.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, UserDTO } from '../../services/auth.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-seller',
@@ -79,7 +80,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ProfileSellerComponent {
   get seller(): SellerProfileDTOFull | null {
-    const u = this.auth.userSignal();
+    const u = this.auth.user;
     return u && u.sellerProfile ? (u.sellerProfile as SellerProfileDTOFull) : null;
   }
   showEditModal = false;
@@ -118,18 +119,17 @@ export class ProfileSellerComponent {
     this.sellerUpdateError = null;
     this.sellerService
       .updateSellerProfile({ name: this.editName.trim(), address: this.editAddress.trim() })
+      .pipe(finalize(() => (this.isSavingSeller = false)))
       .subscribe({
-        next: (res) => {
-          this.isSavingSeller = false;
-          const current = this.auth.userSignal();
+        next: (res: SellerProfileDTOFull) => {
+          const current = this.auth.user;
           if (current) {
-            const updated = { ...current, sellerProfile: res } as any;
+            const updated: UserDTO = { ...current, sellerProfile: res };
             this.auth.setCurrentUser(updated);
           }
           this.showEditModal = false;
         },
-        error: (err) => {
-          this.isSavingSeller = false;
+        error: (_err) => {
           this.sellerUpdateError = 'Error al actualizar datos del vendedor';
         },
       });

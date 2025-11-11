@@ -25,6 +25,10 @@ export class AuthService {
 
   userSignal: WritableSignal<UserDTO | null> = signal(this.loadFromStorage());
 
+  get user(): UserDTO | null {
+    return this.userSignal();
+  }
+
   constructor(private http: HttpClient) {}
 
   register(name: string, password: string): Observable<UserDTO> {
@@ -117,5 +121,9 @@ export class AuthService {
     } catch (e) {
       return null;
     }
+  }
+
+  getAuthToken(): string | null {
+    return this.loadAuthToken();
   }
 }

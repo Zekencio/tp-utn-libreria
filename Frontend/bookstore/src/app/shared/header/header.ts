@@ -91,7 +91,80 @@ export class HeaderComponent {
 
   goToProfile() {
     this.menuOpen = false;
-    this.router.navigate(['/profile']);
+    const user = this.auth.userSignal();
+    try {
+      if (user?.roles?.includes('ROLE_ADMIN')) {
+        this.router.navigate(['/profile', 'admin']);
+        return;
+      }
+      if (user?.roles?.includes('ROLE_SELLER')) {
+        this.router.navigate(['/profile', 'seller']);
+        return;
+      }
+    } catch (e) {}
+    this.router.navigate(['/profile', 'client']);
+  }
+
+  get profileRoute(): any[] {
+    const user = this.auth.userSignal();
+    try {
+      if (user?.roles?.includes('ROLE_ADMIN')) return ['/profile', 'admin'];
+      if (user?.roles?.includes('ROLE_SELLER')) return ['/profile', 'seller'];
+    } catch (e) {}
+    return ['/profile', 'client'];
+  }
+
+  debugProfileClick(e: MouseEvent) {
+    try {
+      console.log('debugProfileClick - userSignal:', this.auth.userSignal());
+      console.log('debugProfileClick - profileRoute:', this.profileRoute);
+    } catch (err) {}
+    this.menuOpen = false;
+    e.preventDefault();
+    try {
+      this.router.navigate(this.profileRoute);
+    } catch (err) {
+      console.error('Navigation error', err);
+      this.router.navigate(['/profile', 'client']);
+    }
+  }
+
+  get isAdmin(): boolean {
+    try {
+      const u = this.auth.userSignal();
+      if (u && u.roles) return !!u.roles.includes('ROLE_ADMIN');
+      const raw = localStorage.getItem('currentUser');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return !!parsed?.roles?.includes('ROLE_ADMIN');
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  onAdminBooksClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'books']);
+  }
+
+  onAdminGenresClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'genres']);
+  }
+
+  onAdminAuthorsClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'authors']);
+  }
+
+  onAdminClientsClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'clients']);
+  }
+
+  onAdminSellersClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'sellers']);
   }
 
   onSellClick(): void {
@@ -118,7 +191,7 @@ export class HeaderComponent {
         this.profileToggle.requestToggle();
       }
     } else {
-      this.router.navigate(['/profile'], { queryParams: { openSellerModal: '1' } });
+      this.router.navigate(['/profile', 'client'], { queryParams: { openSellerModal: '1' } });
     }
   }
 

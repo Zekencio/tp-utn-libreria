@@ -1,0 +1,31 @@
+<section class="profile-content">
+  <header class="profile-title">
+    <h2>Perfil de Administrador</h2>
+  </header>
+  @if (auth.userSignal()) {
+  <div class="profile-header">
+    <div class="profile-header__avatar">
+      <div class="avatar-circle">
+        {{ (auth.userSignal()!.name || '').slice(0, 2).toUpperCase() }}
+      </div>
+      <div class="profile-info">
+        <div class="profile-email">{{ auth.userSignal()!.email || auth.userSignal()!.name }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-details">
+    <p class="profile-email">
+      <strong>Email:</strong> {{ auth.userSignal()!.email || auth.userSignal()!.name }}
+    </p>
+    <p class="profile-role">
+      <strong>Roles: </strong>
+      @if ((auth.userSignal()!.roles || []).length) {
+      <span *ngFor="let r of auth.userSignal()!.roles; let last = last">
+        {{ roleLabel(r) }}@if (!last) {<span>, </span>}
+      </span>
+      } @else { — }
+    </p>
+  </div>
+  }
+</section>

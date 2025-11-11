@@ -5,6 +5,8 @@ import { LoginComponent } from './pages/login/login';
 import { ProfileComponent } from './pages/profile/profile-client';
 import { ProfileWrapperComponent } from './pages/profile/profile-wrapper';
 import { ProfileSellerComponent } from './pages/profile/profile-seller';
+import { ProfileAdminComponent } from './pages/profile/profile-admin';
+import { ProfileDefaultComponent } from './pages/profile/profile-default';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
 
@@ -23,7 +25,8 @@ export const routes: Routes = [
         canActivate: [SellerGuard],
         resolve: { sellerProfile: SellerResolver },
       },
-      { path: '', redirectTo: 'client', pathMatch: 'full' },
+      { path: 'admin', component: ProfileAdminComponent },
+      { path: '', component: ProfileDefaultComponent },
     ],
   },
 ];

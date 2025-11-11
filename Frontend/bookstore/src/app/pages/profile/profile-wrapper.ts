@@ -1,30 +1,30 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProfileAdminComponent } from './profile-admin';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, UserDTO } from '../../services/auth.service';
 import { ProfileToggleService } from './profile-toggle.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile-wrapper',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ProfileAdminComponent],
   template: `
     <div class="profile-page">
       <div class="menu-container">
         <aside class="profile-side">
           <nav class="profile-menu">
-            <!-- Top: Mi perfil (links to client or seller depending on route) -->
             <a
               class="profile-menu__item"
-              [routerLink]="isSellerRoute ? ['/profile', 'seller'] : ['/profile', 'client']"
+              [routerLink]="profileLink"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               >Mi perfil</a
             >
 
-            <!-- Client-only items -->
-            @if (!isSellerRoute) {
+            @if (!isSellerRoute && !isAdmin) {
             <a
               class="profile-menu__item"
               routerLink="/profile/client/cards"
@@ -37,8 +37,7 @@ import { ProfileToggleService } from './profile-toggle.service';
               routerLinkActive="active"
               >Mis compras</a
             >
-            } @else {
-            <!-- Seller-only items (shown when in seller area) -->
+            } @else if (isSellerRoute) {
             <a
               class="profile-menu__item"
               routerLink="/profile/seller/sales"
@@ -57,24 +56,39 @@ import { ProfileToggleService } from './profile-toggle.service';
               routerLinkActive="active"
               >Agregar libro</a
             >
-            }
-
-            <!-- single toggle: Vender / Comprar depending on current route -->
+            } @else if (isAdmin) {
+            <a
+              class="profile-menu__item"
+              routerLink="/profile/admin/genres"
+              routerLinkActive="active"
+              >Gestión de Géneros</a
+            >
+            <a
+              class="profile-menu__item"
+              routerLink="/profile/admin/authors"
+              routerLinkActive="active"
+              >Gestión de Autores</a
+            >
+            } @if (!isAdmin) {
             <a
               class="profile-menu__item"
               (click)="openToggleConfirm()"
               [class.active]="isSellerRoute"
               >{{ toggleLabel }}</a
             >
+            }
           </nav>
         </aside>
       </div>
       <section class="profile-content">
+        @if (isAdmin) {
+        <app-profile-admin></app-profile-admin>
+        } @else {
         <router-outlet></router-outlet>
+        }
       </section>
     </div>
 
-    <!-- Confirmation modal for switching profiles -->
     @if (showConfirm) {
     <div class="modal" (click)="cancelConfirm()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -105,14 +119,83 @@ export class ProfileWrapperComponent {
     private profileToggle: ProfileToggleService
   ) {
     this.currentUrl = this.router.url || '';
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: any) => {
-      this.currentUrl = e.urlAfterRedirects || e.url || '';
+    this.routerSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e: any) => {
+        this.currentUrl = e.urlAfterRedirects || e.url || '';
+      });
+    this.toggleSub = this.profileToggle.toggle$.subscribe(() => this.openToggleConfirm());
+  }
+
+  private userSub?: Subscription;
+  private routerSub?: Subscription;
+  private toggleSub?: Subscription;
+  private _isAdmin: boolean | null = null;
+  private _isSeller: boolean | null = null;
+  private _profileLink: any[] | null = null;
+
+  ngOnInit(): void {
+    const u0 = this.auth.user;
+    if (u0) this.applyUser(u0);
+
+    this.userSub = this.auth.currentUser$.subscribe((u: UserDTO | null) => {
+      if (u) this.applyUser(u);
+      else {
+        this._isAdmin = false;
+        this._isSeller = false;
+        this._profileLink = ['/profile', 'client'];
+      }
     });
-    this.profileToggle.toggle$.subscribe(() => this.openToggleConfirm());
+  }
+
+  ngOnDestroy(): void {
+    try {
+      this.userSub?.unsubscribe();
+    } catch (e) {}
+    try {
+      this.routerSub?.unsubscribe();
+    } catch (e) {}
+    try {
+      this.toggleSub?.unsubscribe();
+    } catch (e) {}
+  }
+
+  private applyUser(u: UserDTO) {
+    this._isAdmin = !!u.roles?.includes('ROLE_ADMIN');
+    this._isSeller = !!u.roles?.includes('ROLE_SELLER');
+    if (this._isAdmin) this._profileLink = ['/profile', 'admin'];
+    else if (this._isSeller) this._profileLink = ['/profile', 'seller'];
+    else this._profileLink = ['/profile', 'client'];
   }
 
   get isSellerRoute(): boolean {
     return this.currentUrl.includes('/profile/seller');
+  }
+
+  get isAdminRoute(): boolean {
+    return this.currentUrl.includes('/profile/admin');
+  }
+
+  get isAdmin(): boolean {
+    if (this._isAdmin !== null) return this._isAdmin;
+    const u = this.auth.user;
+    return !!u?.roles?.includes('ROLE_ADMIN');
+  }
+
+  get profileLink(): any[] {
+    if (this._profileLink) return this._profileLink;
+    const u = this.auth.user;
+    if (u?.roles?.includes('ROLE_ADMIN')) return ['/profile', 'admin'];
+    if (u?.roles?.includes('ROLE_SELLER')) return ['/profile', 'seller'];
+    try {
+      const raw = localStorage.getItem('currentUser');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.roles?.includes('ROLE_ADMIN')) return ['/profile', 'admin'];
+        if (parsed?.roles?.includes('ROLE_SELLER')) return ['/profile', 'seller'];
+      }
+    } catch (e) {}
+    return ['/profile', 'client'];
   }
 
   get toggleLabel(): string {
@@ -120,7 +203,8 @@ export class ProfileWrapperComponent {
   }
 
   openToggleConfirm(): void {
-    const user = this.auth.userSignal();
+    if (this.isAdmin) return;
+    const user = this.auth.user;
     const hasSeller = !!user?.roles?.includes('ROLE_SELLER');
 
     if (this.isSellerRoute) {
@@ -144,7 +228,7 @@ export class ProfileWrapperComponent {
 
   confirmSwitch(): void {
     this.showConfirm = false;
-    const user = this.auth.userSignal();
+    const user = this.auth.user;
     const hasSeller = !!user?.roles?.includes('ROLE_SELLER');
 
     if (this.confirmTarget === 'client') {
@@ -165,8 +249,9 @@ export class ProfileWrapperComponent {
   }
 
   onToggle(): void {
-    const user = this.auth.userSignal();
+    const user = this.auth.user;
     const hasSeller = !!user?.roles?.includes('ROLE_SELLER');
+    if (this.isAdmin) return;
 
     if (this.isSellerRoute) {
       this.router.navigate(['/profile', 'client']);

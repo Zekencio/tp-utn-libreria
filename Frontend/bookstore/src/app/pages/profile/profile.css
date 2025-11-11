@@ -84,9 +84,6 @@
   margin: 0;
 }
 
-.profile-email {
-  font-weight: var(--font-semi-bold);
-}
 .profile-email-row {
   display: flex;
   align-items: center;
@@ -97,7 +94,7 @@
 }
 .profile-email {
   font-weight: var(--font-semi-bold);
-  margin: 0;
+  margin-bottom: 8px;
   flex: 0 0 auto;
 }
 .edit-email {

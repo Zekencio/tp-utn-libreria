@@ -45,7 +45,11 @@
 
         <div class="user-menu__dropdown">
           <ul class="user-menu__list">
-            <li class="user-menu__item user-menu__item--profile" (click)="goToProfile()">
+            <li
+              class="user-menu__item user-menu__item--profile"
+              [routerLink]="profileRoute"
+              (click)="debugProfileClick($event)"
+            >
               <div class="profile-avatar" aria-hidden="true">
                 {{ getInitials(auth.userSignal()!.name) }}
               </div>
@@ -56,7 +60,10 @@
                 </div>
               </div>
             </li>
-            @if (!isSellerRoute) {
+            @if (isAdmin) {
+            <li class="user-menu__item" (click)="onAdminGenresClick()">Gestión de Géneros</li>
+            <li class="user-menu__item" (click)="onAdminAuthorsClick()">Gestión de Autores</li>
+            } @else if (!isSellerRoute) {
             <li class="user-menu__item" (click)="onPurchasesClick()">Compras</li>
             <li class="user-menu__item" (click)="onSellClick()">Vender</li>
             } @else {

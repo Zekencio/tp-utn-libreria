@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -31,20 +32,26 @@ export class LoginComponent {
       return;
     }
     this.loading = true;
-    this.auth.login(this.name, this.password).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        console.error('Login error', err);
-        this.loading = false;
-        if (err && err.status === 401) {
-          this.error = 'Login o contraseña incorrectos';
-        } else {
-          this.error = err?.error?.message || 'Error al iniciar sesión';
-        }
-      },
-    });
+    this.auth
+      .login(this.name, this.password)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          const u = this.auth.user;
+          if (u?.roles?.includes('ROLE_ADMIN')) {
+            this.router.navigate(['/profile', 'admin']);
+            return;
+          }
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          console.error('Login error', err);
+          if (err?.status === 401) {
+            this.error = 'Login o contraseña incorrectos';
+          } else {
+            this.error = err?.error?.message ?? 'Error al iniciar sesión';
+          }
+        },
+      });
   }
 }

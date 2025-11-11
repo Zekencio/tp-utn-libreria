@@ -1,9 +1,9 @@
-import { Component, WritableSignal, signal, effect } from '@angular/core';
+import { Component, WritableSignal, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { AuthService, UserDTO } from '../../services/auth.service';
-import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 import { SellerProfileService, SellerProfileDTOFull } from '../../services/seller-profile.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { SellerProfileService, SellerProfileDTOFull } from '../../services/selle
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './profile-client.html',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnDestroy {
   showSellerModal = false;
   isRegistering = false;
   sellerName: string = '';
@@ -29,8 +29,9 @@ export class ProfileComponent {
     ROLE_CLIENT: 'Cliente',
     ROLE_ADMIN: 'Administrador',
     ROLE_SELLER: 'Vendedor',
-    ROLE_USER: 'Usuario',
   };
+
+  private qpSub: Subscription | null = null;
 
   constructor(
     public auth: AuthService,
@@ -39,8 +40,19 @@ export class ProfileComponent {
     private route: ActivatedRoute
   ) {
     effect(() => {
-      const u = this.auth.userSignal();
-      if (u) this.newEmail = u.email || u.name || '';
+      const u = this.auth.user;
+
+      if (u) {
+        this.newEmail = u.email || u.name || '';
+      } else {
+        this.newEmail = '';
+      }
+
+      if (u?.roles?.includes('ROLE_ADMIN')) {
+        this.router.navigate(['/profile', 'admin']);
+        return;
+      }
+
       if (u?.roles?.includes('ROLE_SELLER')) {
         this.loadSellerProfileIfNeeded();
       } else {
@@ -48,20 +60,22 @@ export class ProfileComponent {
       }
     });
 
-    this.route.queryParams.subscribe((qp) => {
-      try {
-        if (qp && qp['openSellerModal']) {
-          this.showSellerModal = true;
-          try {
-            this.router.navigate([], {
-              relativeTo: this.route,
-              queryParams: { openSellerModal: null },
-              replaceUrl: true,
-            });
-          } catch (e) {}
-        }
-      } catch (e) {}
+    this.qpSub = this.route.queryParams.subscribe((qp) => {
+      if (qp && qp['openSellerModal']) {
+        this.showSellerModal = true;
+        try {
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { openSellerModal: null },
+            replaceUrl: true,
+          });
+        } catch (e) {}
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.qpSub?.unsubscribe();
   }
 
   openEmailModal(): void {
