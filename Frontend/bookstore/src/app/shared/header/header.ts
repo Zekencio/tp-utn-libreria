@@ -91,8 +91,21 @@ export class HeaderComponent {
 
   goToProfile() {
     this.menuOpen = false;
-    const user = this.auth.userSignal();
     try {
+      const active = this.auth.getActiveRole() || null;
+      if (active === 'ROLE_ADMIN') {
+        this.router.navigate(['/profile', 'admin']);
+        return;
+      }
+      if (active === 'ROLE_SELLER') {
+        this.router.navigate(['/profile', 'seller']);
+        return;
+      }
+      if (active === 'ROLE_CLIENT') {
+        this.router.navigate(['/profile', 'client']);
+        return;
+      }
+      const user = this.auth.userSignal();
       if (user?.roles?.includes('ROLE_ADMIN')) {
         this.router.navigate(['/profile', 'admin']);
         return;
@@ -106,6 +119,12 @@ export class HeaderComponent {
   }
 
   get profileRoute(): any[] {
+    try {
+      const active = this.auth.getActiveRole() || null;
+      if (active === 'ROLE_ADMIN') return ['/profile', 'admin'];
+      if (active === 'ROLE_SELLER') return ['/profile', 'seller'];
+      if (active === 'ROLE_CLIENT') return ['/profile', 'client'];
+    } catch (e) {}
     const user = this.auth.userSignal();
     try {
       if (user?.roles?.includes('ROLE_ADMIN')) return ['/profile', 'admin'];
@@ -117,11 +136,21 @@ export class HeaderComponent {
   debugProfileClick(e: MouseEvent) {
     try {
       console.log('debugProfileClick - userSignal:', this.auth.userSignal());
-      console.log('debugProfileClick - profileRoute:', this.profileRoute);
+      console.log('debugProfileClick - profileRoute (computed):', this.profileRoute);
+      console.log('debugProfileClick - activeRole:', this.auth.getActiveRole());
     } catch (err) {}
     this.menuOpen = false;
     e.preventDefault();
     try {
+      const active = this.auth.getActiveRole();
+      if (active === 'ROLE_ADMIN') {
+        this.router.navigate(['/profile', 'admin']);
+        return;
+      }
+      if (active === 'ROLE_SELLER') {
+        this.router.navigate(['/profile', 'seller']);
+        return;
+      }
       this.router.navigate(this.profileRoute);
     } catch (err) {
       console.error('Navigation error', err);
@@ -131,6 +160,8 @@ export class HeaderComponent {
 
   get isAdmin(): boolean {
     try {
+      const active = this.auth.getActiveRole();
+      if (active === 'ROLE_ADMIN') return true;
       const u = this.auth.userSignal();
       if (u && u.roles) return !!u.roles.includes('ROLE_ADMIN');
       const raw = localStorage.getItem('currentUser');
@@ -183,7 +214,9 @@ export class HeaderComponent {
       return;
     }
 
-    if (user.roles?.includes('ROLE_SELLER')) {
+    const active = this.auth.getActiveRole();
+    const isSellerActive = active === 'ROLE_SELLER' || user.roles?.includes('ROLE_SELLER');
+    if (isSellerActive) {
       const onProfile = (this.currentUrl || this.router.url || '').includes('/profile');
       if (!onProfile) {
         this.router.navigate(['/profile']).then(() => this.profileToggle.requestToggle());

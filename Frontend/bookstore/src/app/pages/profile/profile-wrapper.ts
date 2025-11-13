@@ -1,6 +1,5 @@
 import { Component, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileAdminComponent } from './profile-admin';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService, UserDTO } from '../../services/auth.service';
@@ -10,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-profile-wrapper',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProfileAdminComponent],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="profile-page">
       <div class="menu-container">
@@ -81,11 +80,7 @@ import { Subscription } from 'rxjs';
         </aside>
       </div>
       <section class="profile-content">
-        @if (isAdmin) {
-        <app-profile-admin></app-profile-admin>
-        } @else {
         <router-outlet></router-outlet>
-        }
       </section>
     </div>
 
@@ -161,6 +156,19 @@ export class ProfileWrapperComponent {
   }
 
   private applyUser(u: UserDTO) {
+    const active = this.auth.getActiveRole();
+    if (active === 'ROLE_ADMIN') {
+      this._isAdmin = true;
+      this._isSeller = false;
+      this._profileLink = ['/profile', 'admin'];
+      return;
+    }
+    if (active === 'ROLE_SELLER') {
+      this._isAdmin = false;
+      this._isSeller = true;
+      this._profileLink = ['/profile', 'seller'];
+      return;
+    }
     this._isAdmin = !!u.roles?.includes('ROLE_ADMIN');
     this._isSeller = !!u.roles?.includes('ROLE_SELLER');
     if (this._isAdmin) this._profileLink = ['/profile', 'admin'];
@@ -232,9 +240,11 @@ export class ProfileWrapperComponent {
     const hasSeller = !!user?.roles?.includes('ROLE_SELLER');
 
     if (this.confirmTarget === 'client') {
+      this.auth.setActiveRole('ROLE_CLIENT');
       this.router.navigate(['/profile', 'client']);
     } else if (this.confirmTarget === 'seller') {
       if (hasSeller) {
+        this.auth.setActiveRole('ROLE_SELLER');
         this.router.navigate(['/profile', 'seller']);
       } else {
         this.router.navigate(['/profile', 'client'], { queryParams: { openSellerModal: '1' } });
@@ -254,11 +264,13 @@ export class ProfileWrapperComponent {
     if (this.isAdmin) return;
 
     if (this.isSellerRoute) {
+      this.auth.setActiveRole('ROLE_CLIENT');
       this.router.navigate(['/profile', 'client']);
       return;
     }
 
     if (hasSeller) {
+      this.auth.setActiveRole('ROLE_SELLER');
       this.router.navigate(['/profile', 'seller']);
     } else {
       this.router.navigate(['/profile', 'client'], { queryParams: { openSellerModal: '1' } });

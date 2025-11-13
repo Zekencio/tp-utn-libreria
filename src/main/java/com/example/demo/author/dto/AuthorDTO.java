@@ -1,7 +1,6 @@
 package com.example.demo.author.dto;
 
 import com.example.demo.book.dto.BookDTOReduced;
-import com.example.demo.book.model.Book;
 
 import java.sql.Date;
 import java.util.List;

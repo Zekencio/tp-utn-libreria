@@ -1,10 +1,7 @@
 package com.example.demo.sellerprofile.dto;
 
-import com.example.demo.book.model.Book;
 import com.example.demo.user.model.User;
 import jakarta.validation.constraints.*;
-
-import java.util.List;
 import java.util.Objects;
 
 public class UpdateSellerProfileDTO {

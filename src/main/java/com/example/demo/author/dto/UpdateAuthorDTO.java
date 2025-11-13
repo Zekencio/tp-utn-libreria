@@ -1,14 +1,12 @@
 package com.example.demo.author.dto;
 
-import com.example.demo.book.model.Book;
 import jakarta.validation.constraints.*;
 import java.sql.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class UpdateAuthorDTO {
 
-    @Size(min = 3, max = 255, message = "The new name must have between 3 and 255 characters")
+    @Size(min = 3, max = 255, message = "El nombre del autor debe tener entre 3 y 255 caracteres")
     private String name;
 
     private Date birthDate;
@@ -21,19 +19,19 @@ public class UpdateAuthorDTO {
     public UpdateAuthorDTO() {
     }
 
-    public @Size(min = 3, max = 255, message = "The new name must have between 3 and 255 characters") String getName() {
+    public @Size(min = 3, max = 255, message = "El nombre del autor debe tener entre 3 y 255 caracteres") String getName() {
         return name;
     }
 
-    public void setName(@Size(min = 3, max = 255, message = "The new name must have between 3 and 255 characters") String name) {
+    public void setName(@Size(min = 3, max = 255, message = "El nombre del autor debe tener entre 3 y 255 caracteres") String name) {
         this.name = name;
     }
 
-    public @NotNull(message = "The date of birth can't be null") Date getBirthDate() {
+    public @NotNull(message = "La fecha de nacimiento no puede ser nula") Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(@NotNull(message = "The date of birth can't be null") Date birthDate) {
+    public void setBirthDate(@NotNull(message = "La fecha de nacimiento no puede ser nula") Date birthDate) {
         this.birthDate = birthDate;
     }
 

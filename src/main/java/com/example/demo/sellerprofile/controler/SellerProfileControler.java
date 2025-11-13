@@ -2,7 +2,6 @@ package com.example.demo.sellerprofile.controler;
 
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
-import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sellerprofile.dto.CreateSellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import com.example.demo.sellerprofile.dto.SellerProfileDTOFull;

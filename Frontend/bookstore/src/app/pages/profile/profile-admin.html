@@ -1,19 +1,9 @@
-<section class="profile-content">
+<div class="profile-admin-root">
   <header class="profile-title">
     <h2>Perfil de Administrador</h2>
   </header>
-  @if (auth.userSignal()) {
-  <div class="profile-header">
-    <div class="profile-header__avatar">
-      <div class="avatar-circle">
-        {{ (auth.userSignal()!.name || '').slice(0, 2).toUpperCase() }}
-      </div>
-      <div class="profile-info">
-        <div class="profile-email">{{ auth.userSignal()!.email || auth.userSignal()!.name }}</div>
-      </div>
-    </div>
-  </div>
 
+  @if (isAdminRoot && auth.userSignal()) {
   <div class="profile-details">
     <p class="profile-email">
       <strong>Email:</strong> {{ auth.userSignal()!.email || auth.userSignal()!.name }}
@@ -28,4 +18,7 @@
     </p>
   </div>
   }
-</section>
+  <div class="admin-subpage">
+    <router-outlet></router-outlet>
+  </div>
+</div>

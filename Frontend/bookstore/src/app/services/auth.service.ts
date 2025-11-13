@@ -15,6 +15,7 @@ export interface UserDTO {
 
 const STORAGE_KEY = 'currentUser';
 const AUTH_TOKEN_KEY = 'basicAuth';
+const ACTIVE_ROLE_KEY = 'activeRole';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
   currentUser$ = this.currentUserSubject.asObservable();
 
   userSignal: WritableSignal<UserDTO | null> = signal(this.loadFromStorage());
+  activeRole: WritableSignal<string | null> = signal(this.loadActiveRole());
 
   get user(): UserDTO | null {
     return this.userSignal();
@@ -90,6 +92,16 @@ export class AuthService {
   setCurrentUser(user: UserDTO | null) {
     this.currentUserSubject.next(user);
     this.userSignal.set(user);
+    try {
+      if (user && user.roles && user.roles.length === 1) {
+        this.setActiveRole(user.roles[0]);
+      } else {
+        const existing = this.loadActiveRole();
+        if (user && user.roles && existing && user.roles.includes(existing)) {
+          this.setActiveRole(existing);
+        }
+      }
+    } catch (e) {}
     if (user) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
@@ -103,6 +115,8 @@ export class AuthService {
     this.setCurrentUser(null);
     try {
       localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(ACTIVE_ROLE_KEY);
+      this.activeRole.set(null);
     } catch (e) {}
   }
 
@@ -125,5 +139,29 @@ export class AuthService {
 
   getAuthToken(): string | null {
     return this.loadAuthToken();
+  }
+
+  private loadActiveRole(): string | null {
+    try {
+      const raw = localStorage.getItem(ACTIVE_ROLE_KEY);
+      return raw ? raw : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  getActiveRole(): string | null {
+    return this.activeRole();
+  }
+
+  setActiveRole(role: string | null) {
+    try {
+      if (role) {
+        localStorage.setItem(ACTIVE_ROLE_KEY, role);
+      } else {
+        localStorage.removeItem(ACTIVE_ROLE_KEY);
+      }
+    } catch (e) {}
+    this.activeRole.set(role);
   }
 }

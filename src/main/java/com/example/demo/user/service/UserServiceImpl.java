@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (repository.findByName(newUser.getName()).isPresent()) {
             throw new AlreadyExistingException("El usuario ya existe");
         }
-        // Assign default role
         newUser.getRoles().add("ROLE_CLIENT");
         User savedUser = repository.save(newUser);
         return convertToDTO(savedUser);
@@ -83,13 +82,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return Optional.empty();
         }
         User existing = optional.get();
-        // If changing name or password, require currentPassword verification
         boolean wantsNameChange = updateUserDTO.getName() != null;
         boolean wantsPasswordChange = updateUserDTO.getPassword() != null;
         if (wantsNameChange || wantsPasswordChange) {
             String currentProvided = updateUserDTO.getCurrentPassword();
             if (currentProvided == null || !passwordEncoder.matches(currentProvided, existing.getPassword())) {
-                // do not apply changes if current password is missing or incorrect
                 throw new com.example.demo.exceptions.UnautorizedException("Current password is invalid");
             }
         }
@@ -160,7 +157,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getRoles());
         if (user.getSellerProfile() != null) {
-            // map seller profile to DTOFull
             var sp = user.getSellerProfile();
         java.util.List<BookDTOReduced> books = sp.getInventory() == null ? java.util.Collections.<BookDTOReduced>emptyList() : sp.getInventory().stream()
             .map(b -> new BookDTOReduced(b.getId(), b.getName(), b.getDescription()))

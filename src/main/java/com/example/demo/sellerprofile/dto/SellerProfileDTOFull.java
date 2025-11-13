@@ -1,7 +1,6 @@
 package com.example.demo.sellerprofile.dto;
 
 import com.example.demo.book.dto.BookDTOReduced;
-import com.example.demo.book.model.Book;
 
 import java.util.List;
 import java.util.Objects;

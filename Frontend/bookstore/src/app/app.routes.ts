@@ -6,6 +6,8 @@ import { ProfileComponent } from './pages/profile/profile-client';
 import { ProfileWrapperComponent } from './pages/profile/profile-wrapper';
 import { ProfileSellerComponent } from './pages/profile/profile-seller';
 import { ProfileAdminComponent } from './pages/profile/profile-admin';
+import { GenresAdminComponent } from './pages/profile/genres-admin';
+import { AuthorsAdminComponent } from './pages/profile/authors-admin';
 import { ProfileDefaultComponent } from './pages/profile/profile-default';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
@@ -25,7 +27,14 @@ export const routes: Routes = [
         canActivate: [SellerGuard],
         resolve: { sellerProfile: SellerResolver },
       },
-      { path: 'admin', component: ProfileAdminComponent },
+      {
+        path: 'admin',
+        component: ProfileAdminComponent,
+        children: [
+          { path: 'genres', component: GenresAdminComponent },
+          { path: 'authors', component: AuthorsAdminComponent },
+        ],
+      },
       { path: '', component: ProfileDefaultComponent },
     ],
   },

@@ -1,16 +1,14 @@
 package com.example.demo.user.dto;
-
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Objects;
 
 public class UpdateUserDTO {
 
-    @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters")
+    @Size(min = 3, max = 255, message = "El nombre de usuario debe tener entre 3 y 255 caracteres")
     private String name;
-    @Size(min = 8, message = "The password must be at least 8 characters long")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String password;
-    @Size(min = 8, message = "The current password must be at least 8 characters long")
+    @Size(min = 8, message = "La contraseña actual debe tener al menos 8 caracteres")
     private String currentPassword;
 
     public UpdateUserDTO(String name, String password, String currentPassword) {
@@ -22,27 +20,27 @@ public class UpdateUserDTO {
     public UpdateUserDTO() {
     }
 
-    public @Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String getName() {
+    public @Size(min = 3, max = 255, message = "El nombre de usuario debe tener entre 3 y 255 caracteres") String getName() {
         return name;
     }
 
-    public void setName(@Size(min = 3, max = 255, message = "The username must have between 3 and 255 characters") String name) {
+    public void setName(@Size(min = 3, max = 255, message = "El nombre de usuario debe tener entre 3 y 255 caracteres") String name) {
         this.name = name;
     }
 
-    public @Size(min = 8, message = "The password must be at least 8 characters long") String getPassword() {
+    public @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres") String getPassword() {
         return password;
     }
 
-    public void setPassword(@Size(min = 8, message = "The password must be at least 8 characters long") String password) {
+    public void setPassword(@Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres") String password) {
         this.password = password;
     }
 
-    public @Size(min = 8, message = "The current password must be at least 8 characters long") String getCurrentPassword() {
+    public @Size(min = 8, message = "La contraseña actual debe tener al menos 8 caracteres") String getCurrentPassword() {
         return currentPassword;
     }
 
-    public void setCurrentPassword(@Size(min = 8, message = "The current password must be at least 8 characters long") String currentPassword) {
+    public void setCurrentPassword(@Size(min = 8, message = "La contraseña actual debe tener al menos 8 caracteres") String currentPassword) {
         this.currentPassword = currentPassword;
     }
 

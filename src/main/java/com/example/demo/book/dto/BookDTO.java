@@ -2,7 +2,6 @@ package com.example.demo.book.dto;
 
 import com.example.demo.author.dto.AuthorDTOReduced;
 import com.example.demo.genre.dto.GenreDTO;
-import com.example.demo.genre.model.Genre;
 import com.example.demo.sellerprofile.dto.SellerProfileDTO;
 import java.util.Objects;
 import java.util.Set;

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +20,12 @@ export class RegisterComponent {
   nameError = false;
   loading = false;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   close() {
     this.router.navigate(['/']);
@@ -39,46 +45,65 @@ export class RegisterComponent {
     this.loading = true;
     this.auth.register(this.name, this.password).subscribe({
       next: (user) => {
-        this.loading = false;
-        this.router.navigate(['/']);
+        this.zone.run(() => {
+          this.loading = false;
+          try {
+            this.cd.detectChanges();
+          } catch (e) {}
+          this.router.navigate(['/']);
+        });
       },
       error: (err) => {
         console.error('Registration error', err);
-        this.loading = false;
-        if (err && err.status === 406) {
-          this.error = 'El usuario ya existe';
-          this.nameError = true;
-          return;
-        }
-
-        if (err && err.status === 0) {
-          this.error =
-            'No se pudo conectar al servidor. Verifique la configuración del proxy y si el backend está en ejecución.';
-          this.nameError = false;
-          return;
-        }
-
-        if (err && err.status === 404) {
-          this.error =
-            'Ruta no encontrada (404). Verifique la configuración del proxy y si el backend está en ejecución.';
-          this.nameError = false;
-          return;
-        }
-
-        this.nameError = false;
-        const raw = err?.error;
-        let serverMessage: string | null = null;
-        if (raw && typeof raw === 'object' && raw.message) {
-          serverMessage = raw.message;
-        } else if (raw && typeof raw === 'string') {
-          if (raw.indexOf('<!DOCTYPE') !== -1 || raw.indexOf('<html') !== -1) {
-            const m = raw.match(/<pre>([\s\S]*?)<\/pre>/i);
-            serverMessage = m ? m[1].trim() : 'Error del servidor';
-          } else {
-            serverMessage = raw;
+        this.zone.run(() => {
+          this.loading = false;
+          if (err && err.status === 406) {
+            this.error = 'El usuario ya existe';
+            this.nameError = true;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+            return;
           }
-        }
-        this.error = serverMessage || 'Error al registrar el usuario';
+
+          if (err && err.status === 0) {
+            this.error =
+              'No se pudo conectar al servidor. Verifique la configuración del proxy y si el backend está en ejecución.';
+            this.nameError = false;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+            return;
+          }
+
+          if (err && err.status === 404) {
+            this.error =
+              'Ruta no encontrada (404). Verifique la configuración del proxy y si el backend está en ejecución.';
+            this.nameError = false;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+            return;
+          }
+
+          this.nameError = false;
+          const raw = err?.error;
+          let serverMessage: string | null = null;
+          if (raw && typeof raw === 'object' && raw.message) {
+            serverMessage = raw.message;
+          } else if (raw && typeof raw === 'string') {
+            if (raw.indexOf('<!DOCTYPE') !== -1 || raw.indexOf('<html') !== -1) {
+              const m = raw.match(/<pre>([\s\S]*?)<\/pre>/i);
+              serverMessage = m ? m[1].trim() : 'Error del servidor';
+            } else {
+              serverMessage = raw;
+            }
+          }
+          this.error = serverMessage || 'Error al registrar el usuario';
+          try {
+            this.cd.detectChanges();
+          } catch (e) {}
+        });
       },
     });
   }

@@ -2,11 +2,11 @@
   --container-max: 1200px;
 }
 .profile-page {
-  margin-top: 50px;
+  margin-top: 20px;
   padding: 16px;
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 100px;
+  gap: 30px;
   width: 100%;
 }
 
@@ -25,10 +25,22 @@
   gap: 16px;
 }
 
+.profile-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profile-title h2 {
+  margin: 0;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
 .profile-header {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
+  padding: 16px;
 }
 
 .profile-side {
@@ -76,7 +88,6 @@
   text-align: left;
 }
 .profile-details {
-  margin-top: 12px;
   max-width: 420px;
 }
 
@@ -95,6 +106,7 @@
 .profile-email {
   font-weight: var(--font-semi-bold);
   margin-bottom: 8px;
+  margin-top: 5px;
   flex: 0 0 auto;
 }
 .edit-email {
@@ -198,7 +210,7 @@
   background: var(--first-color, #0066ff);
   color: var(--white-color);
   border: none;
-  padding: 0.75rem 1rem;
+  padding: 0.3rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: var(--font-semi-bold);

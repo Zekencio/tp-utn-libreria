@@ -1,3 +1,4 @@
+@if (showLoginForm) {
 <div class="register-container">
   <button class="close-btn" aria-label="Cerrar" (click)="close()">×</button>
   <form (ngSubmit)="submit()">
@@ -24,3 +25,14 @@
     </div>
   </form>
 </div>
+} @if (showRoleChoice) {
+<div class="role-backdrop" (click)="$event.stopPropagation()">
+  <div class="role-modal small" (click)="$event.stopPropagation()">
+    <h4>Ingresar como:</h4>
+    <div class="modal-actions">
+      <button class="btn-primary" (click)="chooseRole('client')">Cliente</button>
+      <button class="btn-primary" (click)="chooseRole('seller')">Vendedor</button>
+    </div>
+  </div>
+</div>
+}
