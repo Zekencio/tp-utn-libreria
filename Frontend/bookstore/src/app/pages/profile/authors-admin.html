@@ -52,12 +52,12 @@
     <h3>Crear Autor</h3>
     }
     <div class="modal-field">
-      <label for="genreName">Nombre</label>
-      <input id="genreName" name="genreName" [(ngModel)]="newGenreName" />
+      <label for="authorName">Nombre</label>
+      <input id="authorName" name="authorName" [(ngModel)]="newAuthorName" />
     </div>
     <div class="modal-field">
-      <label for="genreDescription">Fecha de nacimiento (opcional)</label>
-      <input id="genreDescription" name="genreDescription" [(ngModel)]="newGenreDescription" />
+      <label for="AuthorBirthDate">Fecha de nacimiento (opcional)</label>
+      <input id="AuthorBirthDate" name="AuthorBirthDate" [(ngModel)]="newAuthorBirthDate" />
     </div>
     @if (createError) {
     <div class="error">{{ createError }}</div>
