@@ -8,11 +8,11 @@ import { AuthorService, AuthorDTO } from '../../services/author.service';
   selector: 'app-author-admin',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './author-admin.html',
+  templateUrl: './authors-admin.html',
   styleUrls: ['./author-admin.css'],
 })
 export class AuthorsAdminComponent implements OnInit {
-  autors: AuthorDTO[] = [];
+  authors: AuthorDTO[] = [];
   loading = false;
   showCreateModal = false;
   newAuthorName = '';
@@ -40,7 +40,7 @@ export class AuthorsAdminComponent implements OnInit {
     this.authorService.getAll().subscribe({
       next: (g) => {
         this.zone.run(() => {
-          this.autors = g || [];
+          this.authors = g || [];
           this.loading = false;
           try {
             this.cd.detectChanges();

@@ -42,4 +42,13 @@ export class BookService {
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.delete<void>(`${this.base}/${id}`, headers ? { headers } : {});
   }
+
+  getBooksByAuthor(authorId: number): Observable<BookDTO[]>{
+    return this.http.get<BookDTO[]>(`${this.base}/author/${authorId}`)
+  }
+
+  getBooksByGenre(genreId: number): Observable<BookDTO[]>{
+    return this.http.get<BookDTO[]>(`${this.base}/genre/${genreId}`)
+  }
+  
 }
