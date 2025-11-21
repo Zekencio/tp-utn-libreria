@@ -16,7 +16,8 @@ export class AuthorsAdminComponent implements OnInit {
   loading = false;
   showCreateModal = false;
   newAuthorName = '';
-  newAuthorBirthDate: Date | null= null ;
+  newAuthorBirthDate: string | null = null;
+  newAuthorMaxDate = '';
   creating = false;
   createError: string | null = null;
   isEditMode = false;
@@ -33,6 +34,7 @@ export class AuthorsAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAuthors();
+    this.newAuthorMaxDate = this.getTodayString();
   }
 
   loadAuthors(): void {
@@ -72,7 +74,7 @@ export class AuthorsAdminComponent implements OnInit {
     this.editingId = g.id || null;
     this.createError = null;
     this.newAuthorName = g.name || '';
-    this.newAuthorBirthDate = g.birthDate || null;
+    this.newAuthorBirthDate = this.formatDateForInput(g.birthDate || null);
     this.showCreateModal = true;
   }
 
@@ -82,11 +84,22 @@ export class AuthorsAdminComponent implements OnInit {
       this.createError = 'El nombre es requerido.';
       return;
     }
+    if (!this.newAuthorBirthDate) {
+      this.createError = 'La fecha de nacimiento es requerida.';
+      return;
+    }
+    if (this.newAuthorMaxDate && this.newAuthorBirthDate > this.newAuthorMaxDate) {
+      this.createError = 'La fecha de nacimiento no puede ser en el futuro.';
+      return;
+    }
     this.creating = true;
     this.createError = null;
+    let birthDateIso = this.newAuthorBirthDate;
+    try {
+      birthDateIso = new Date((this.newAuthorBirthDate || '') + 'T00:00:00').toISOString();
+    } catch (e) {}
 
-    const payload = { name, description: this.newAuthorBirthDate || '' };
-
+    const payload = { name, birthDate: birthDateIso || '' };
     const obs =
       this.isEditMode && this.editingId
         ? this.authorService.update(this.editingId, payload)
@@ -106,13 +119,35 @@ export class AuthorsAdminComponent implements OnInit {
       error: (err) => {
         this.zone.run(() => {
           this.creating = false;
-          this.createError = err?.error?.message || 'Error al crear/editar género.';
+          this.createError = err?.error?.message || 'Error al crear/editar autor.';
           try {
             this.cd.detectChanges();
           } catch (e) {}
         });
       },
     });
+  }
+
+  private formatDateForInput(dateStr: string | null): string | null {
+    if (!dateStr) return null;
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return null;
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(d.getUTCDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  private getTodayString(): string {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   deleteGenre(g: AuthorDTO): void {

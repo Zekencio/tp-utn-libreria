@@ -56,14 +56,25 @@
       <input id="authorName" name="authorName" [(ngModel)]="newAuthorName" />
     </div>
     <div class="modal-field">
-      <label for="newAuthorBirthDate">Fecha de nacimiento (opcional)</label>
-      <input id="newAuthorBirthDate" name="newAuthorBirthDate" [(ngModel)]="newAuthorBirthDate" />
+      <label for="newAuthorBirthDate">Fecha de nacimiento (requerida)</label>
+      <input
+        id="newAuthorBirthDate"
+        name="newAuthorBirthDate"
+        type="date"
+        required
+        max="{{ newAuthorMaxDate }}"
+        [(ngModel)]="newAuthorBirthDate"
+      />
     </div>
     @if (createError) {
     <div class="error">{{ createError }}</div>
     }
     <div class="modal-actions">
-      <button class="btn-primary" (click)="submitCreateOrEdit()" [disabled]="creating">
+      <button
+        class="btn-primary"
+        (click)="submitCreateOrEdit()"
+        [disabled]="creating || !newAuthorName.trim() || !newAuthorBirthDate"
+      >
         @if (creating) {<span class="spinner" aria-hidden="true"></span>} @if (isEditMode) {Guardar}
         @else {Crear}
       </button>

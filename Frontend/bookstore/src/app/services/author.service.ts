@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface AuthorDTO {
   id?: number;
   name: string;
-  birthDate?: Date | null;
+  birthDate?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -18,13 +18,13 @@ export class AuthorService {
     return this.http.get<AuthorDTO[]>(this.base);
   }
 
-  create(payload: { name: string; birthDate?: Date }): Observable<AuthorDTO> {
+  create(payload: { name: string; birthDate: string }): Observable<AuthorDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.post<AuthorDTO>(this.base, payload, headers ? { headers } : {});
   }
 
-  update(id: number, payload: { name: string; birthDate?: Date }): Observable<AuthorDTO> {
+  update(id: number, payload: { name: string; birthDate: string }): Observable<AuthorDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.put<AuthorDTO>(`${this.base}/${id}`, payload, headers ? { headers } : {});
