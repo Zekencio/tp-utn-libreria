@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, NgZone, HostListener } from '@ang
 import { CommonModule } from '@angular/common';
 import { BookService, BookDTO } from '../../services/book.service';
 import { RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-book-list',
@@ -18,6 +19,7 @@ export class BookListComponent implements OnInit {
 
   constructor(
     private bookService: BookService,
+    private cart: CartService,
     private zone: NgZone,
     private cd: ChangeDetectorRef
   ) {}
@@ -39,6 +41,12 @@ export class BookListComponent implements OnInit {
     const ke = event as KeyboardEvent;
     if (ke.key === 'Escape' && this.selectedBook) {
       this.closeDetails();
+    }
+  }
+
+  addToCart(bookId: number|undefined){
+    if(bookId){
+      this.cart.addToCart(bookId, 1);
     }
   }
 

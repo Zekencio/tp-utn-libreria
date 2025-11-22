@@ -46,6 +46,7 @@
     tabindex="-1"
   >
     <button class="modal-close" aria-label="Cerrar" (click)="closeDetails()">&times;</button>
+    <button class="modal-close" aria-label="Agregar" (click)="addToCart(selectedBook.id)">&times;</button>
     <div class="modal-media">
       <img *ngIf="selectedBook.imageUrl" [src]="selectedBook.imageUrl" [alt]="selectedBook.name" />
       <div *ngIf="!selectedBook.imageUrl" class="modal-img-placeholder"></div>
