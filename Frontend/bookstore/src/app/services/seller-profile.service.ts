@@ -11,6 +11,7 @@ export interface SellerProfileDTO {
 
 export interface SellerProfileDTOFull extends SellerProfileDTO {
   inventory?: any[];
+  books?: any[];
 }
 
 @Injectable({ providedIn: 'root' })

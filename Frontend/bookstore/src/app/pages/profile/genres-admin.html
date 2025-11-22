@@ -7,38 +7,20 @@
   </header>
 
   <div class="admin-container">
-    <div class="genres-table">
-      <table>
-        <colgroup>
-          <col />
-          <col />
-          <col class="col-actions" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let g of genres">
-            <td>{{ g.name }}</td>
-            <td>{{ g.description }}</td>
-            <td class="actions">
-              <button class="btn-small" title="Editar" (click)="openEditModal(g)">
-                <i class="ri-edit-line"></i>
-              </button>
-              <button class="btn-small danger" title="Eliminar" (click)="deleteGenre(g)">
-                <i class="ri-delete-bin-5-line"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div *ngIf="!loading && genres.length === 0" class="empty">No hay géneros.</div>
-      <div *ngIf="loading" class="empty">Cargando...</div>
-    </div>
+    <app-profile-table
+      [columns]="['Nombre', 'Descripción']"
+      [keys]="['name', 'description']"
+      [rows]="genres"
+      [actionsTemplate]="genreActions"
+    ></app-profile-table>
+    <ng-template #genreActions let-row>
+      <button class="btn-small" title="Editar" (click)="openEditModal(row)">
+        <i class="ri-edit-line"></i>
+      </button>
+      <button class="btn-small danger" title="Eliminar" (click)="deleteGenre(row)">
+        <i class="ri-delete-bin-5-line"></i>
+      </button>
+    </ng-template>
   </div>
 </section>
 
@@ -74,17 +56,15 @@
   </div>
 </div>
 } @if (showDeleteModal) {
-<div class="modal" (click)="cancelDelete()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" aria-label="Cerrar" (click)="cancelDelete()">×</button>
-    <h3>Confirmar eliminación</h3>
-    <p>¿Estás seguro que deseas eliminar el género "{{ deleteTarget?.name }}"?</p>
-    <div class="modal-actions">
-      <button class="btn-primary" (click)="confirmDelete()" [disabled]="deleting">
-        @if (deleting) {<span class="spinner" aria-hidden="true"></span>} Eliminar
-      </button>
-      <button class="btn-secondary" (click)="cancelDelete()" [disabled]="deleting">Cancelar</button>
-    </div>
-  </div>
-</div>
+<app-confirm-dialog
+  [visible]="showDeleteModal"
+  [title]="'Confirmar eliminación'"
+  [message]="deleteMessage"
+  [errorMessage]="deleteError"
+  [confirmLabel]="'Eliminar'"
+  [cancelLabel]="'Cancelar'"
+  [loading]="deleting"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+></app-confirm-dialog>
 }

@@ -40,7 +40,6 @@
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  padding: 16px;
 }
 
 .profile-side {
@@ -165,16 +164,7 @@
   position: absolute;
   right: 10px;
   top: 8px;
-  border: none;
-  background: transparent;
-  color: var(--text-color);
   font-size: 1.5rem;
-}
-.modal-close:hover,
-.modal-close:focus {
-  color: var(--title-color);
-  background: rgba(0, 0, 0, 0.04);
-  outline: none;
 }
 .modal-field {
   margin: 12px 0;
@@ -186,6 +176,12 @@
   font-size: 0.95rem;
 }
 .modal-field input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.modal-field select {
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -204,6 +200,9 @@
 .field-hint {
   margin-top: 6px;
   font-size: 0.85rem;
+  color: #6c757d;
+}
+.field-hint.field-error {
   color: #d9534f;
 }
 .btn-primary {
@@ -215,6 +214,11 @@
   cursor: pointer;
   font-weight: var(--font-semi-bold);
   font-size: var(--normal-font-size);
+}
+.btn-primary[disabled],
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .btn-secondary {
   background: transparent;

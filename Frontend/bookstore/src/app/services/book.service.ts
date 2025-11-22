@@ -9,6 +9,8 @@ export interface BookDTO {
   id?: number;
   name: string;
   description: string;
+  imageUrl?: string;
+  price?: number;
   stock: number;
   author: AuthorDTO;
   genres: GenreDTO[];
@@ -25,16 +27,40 @@ export class BookService {
     return this.http.get<BookDTO[]>(this.base);
   }
 
-  create(payload: { name: string, description: string, stock: number, author: AuthorDTO, genres: GenreDTO[],seller: SellerProfileDTO }): Observable<BookDTO> {
+  getAllPublic(): Observable<BookDTO[]> {
+    const headers = { 'X-Skip-Auth': 'true' } as any;
+    return this.http.get<BookDTO[]>(this.base, { headers });
+  }
+
+  create(payload: {
+    name: string;
+    description: string;
+    imageUrl?: string;
+    stock: number;
+    author: AuthorDTO;
+    genres: GenreDTO[];
+    seller: SellerProfileDTO;
+  }): Observable<BookDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.post<BookDTO>(this.base, payload, headers ? { headers } : {});
   }
 
-  update(id: number, payload: { name: string, description: string, stock: number, author: AuthorDTO, genres: GenreDTO[],seller: SellerProfileDTO }): Observable<BookDTO> {
+  update(
+    id: number,
+    payload: {
+      name: string;
+      description: string;
+      imageUrl?: string;
+      stock: number;
+      author: AuthorDTO;
+      genres: GenreDTO[];
+      seller: SellerProfileDTO;
+    }
+  ): Observable<BookDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
-    return this.http.put<BookDTO>(`${this.base}/${id}`, payload, headers ? { headers } : {});
+    return this.http.put<BookDTO>(`${this.base}/update/${id}`, payload, headers ? { headers } : {});
   }
 
   delete(id: number): Observable<void> {
@@ -43,12 +69,11 @@ export class BookService {
     return this.http.delete<void>(`${this.base}/${id}`, headers ? { headers } : {});
   }
 
-  getBooksByAuthor(authorId: number): Observable<BookDTO[]>{
-    return this.http.get<BookDTO[]>(`${this.base}/author/${authorId}`)
+  getBooksByAuthor(authorId: number): Observable<BookDTO[]> {
+    return this.http.get<BookDTO[]>(`${this.base}/author/${authorId}`);
   }
 
-  getBooksByGenre(genreId: number): Observable<BookDTO[]>{
-    return this.http.get<BookDTO[]>(`${this.base}/genre/${genreId}`)
+  getBooksByGenre(genreId: number): Observable<BookDTO[]> {
+    return this.http.get<BookDTO[]>(`${this.base}/genre/${genreId}`);
   }
-  
 }

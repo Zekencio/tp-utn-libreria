@@ -1,0 +1,17 @@
+<div class="modal" *ngIf="visible" (click)="onCancel()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" aria-label="Cerrar" (click)="onCancel()">×</button>
+    <h3>{{ title }}</h3>
+    <p class="confirm-message">{{ message }}</p>
+    <div class="modal-actions">
+      <button class="btn-primary" (click)="onConfirm()" [disabled]="loading">
+        <span *ngIf="loading" class="spinner" aria-hidden="true"></span>
+        {{ confirmLabel }}
+      </button>
+      <button class="btn-secondary" (click)="onCancel()" [disabled]="loading">
+        {{ cancelLabel }}
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="confirm-error">{{ errorMessage }}</div>
+  </div>
+</div>

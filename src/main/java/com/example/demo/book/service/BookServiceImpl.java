@@ -150,6 +150,9 @@ public class BookServiceImpl implements BookService{
                     if (updateBookDTO.getSeller() != null){
                         existing.setSeller(updateBookDTO.getSeller());
                     }
+                    if (updateBookDTO.getImageUrl() != null) {
+                        existing.setImageUrl(updateBookDTO.getImageUrl());
+                    }
                     Book saved = repository.save(existing);
                     return convertToDTO(saved);
                 });
@@ -202,20 +205,27 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Book convertToEntity(CreateBookDTO createBookDTO) {
-        return new Book(createBookDTO.getName(), createBookDTO.getDescription(),createBookDTO.getPrice(), createBookDTO.getStock(),createBookDTO.getAuthor(),createBookDTO.getGenres(),createBookDTO.getSeller());
+        Book b = new Book(createBookDTO.getName(), createBookDTO.getDescription(),createBookDTO.getPrice(), createBookDTO.getStock(),createBookDTO.getAuthor(),createBookDTO.getGenres(),createBookDTO.getSeller());
+        b.setImageUrl(createBookDTO.getImageUrl());
+        return b;
     }
 
     @Override
     public BookDTO convertToDTO(Book book) {
         Set<GenreDTO> genres = book.getGenres().stream().map(g -> genreService.convertToDTO(g)).collect(Collectors.toSet());
-        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),genres,profileService.convertToDTO(book.getSeller()));
+        return new BookDTO(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(),reduceAuthor(book.getAuthor()),genres, book.getImageUrl(), profileService.convertToDTO(book.getSeller()));
     }
 
     public AuthorDTOReduced reduceAuthor(Author author){
         return new AuthorDTOReduced(author.getId(), author.getName(),author.getBirthDate());
     }
     public BookDTOReduced reduceBook(Book book){
-        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
+        // map genres to DTOs for reduced representation
+        Set<com.example.demo.genre.dto.GenreDTO> genres = null;
+        if (book.getGenres() != null) {
+            genres = book.getGenres().stream().map(g -> genreService.convertToDTO(g)).collect(Collectors.toSet());
+        }
+        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(), reduceAuthor(book.getAuthor()), genres, book.getImageUrl());
     }
 
 }

@@ -161,18 +161,6 @@
   }
 }
 
-.user-menu__header {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--header-border);
-  margin-bottom: 6px;
-}
-.user-menu__name {
-  font-weight: var(--font-semi-bold);
-}
-.user-menu__email {
-  font-size: 0.85rem;
-  color: var(--text-color);
-}
 .user-menu__list {
   list-style: none;
   margin: 0;
@@ -226,20 +214,6 @@
 }
 .user-menu__item:hover {
   background: var(--menu-item-hover);
-}
-
-.logout-btn {
-  background: transparent;
-  border: none;
-  color: var(--title-color);
-  cursor: pointer;
-  padding: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.logout-btn:hover {
-  color: var(--first-color);
 }
 
 .nav__actions i {

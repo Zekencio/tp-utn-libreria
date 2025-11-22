@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SellerProfileDTOFull, SellerProfileService } from '../../services/seller-profile.service';
 import { AuthService, UserDTO } from '../../services/auth.service';
@@ -12,6 +12,7 @@ import { finalize } from 'rxjs/operators';
   imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <header class="profile-title"><h2>Perfil del Vendedor</h2></header>
+    @if (showProfileDetails) {
     <div class="profile-details">
       @if (seller) {
       <div class="profile-email-row">
@@ -26,14 +27,12 @@ import { finalize } from 'rxjs/operators';
           <i class="ri-edit-line"></i>
         </button>
       </div>
-      <p class="seller-detail-item">
-        <strong>Inventario:</strong> {{ seller.inventory?.length || 0 }} items
-      </p>
+      <div class="profile-email-row">
+        <p class="seller-detail-item"><strong>Inventario:</strong> {{ inventoryCount }} items</p>
+      </div>
       }
     </div>
-
-    <!-- Edit seller modal -->
-    @if (showEditModal) {
+    } @if (showEditModal) {
     <div class="modal" (click)="closeEditModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <button class="modal-close" aria-label="Cerrar" (click)="closeEditModal()">×</button>
@@ -76,12 +75,102 @@ import { finalize } from 'rxjs/operators';
       </div>
     </div>
     }
+
+    <router-outlet></router-outlet>
   `,
 })
-export class ProfileSellerComponent {
+export class ProfileSellerComponent implements OnInit, OnDestroy {
+  private userSub: any = null;
+  private fetchingSeller = false;
+
+  ngOnInit(): void {
+    this.userSub = this.auth.currentUser$.subscribe((u) => {
+      if (!u) return;
+      const s = u.sellerProfile as any;
+
+      const booksArr = Array.isArray(s?.books) ? s.books : [];
+      const invArr = Array.isArray(s?.inventory) ? s.inventory : [];
+
+      const itemsHaveCounts = (arr: any[]): boolean => {
+        if (!arr || arr.length === 0) return false;
+        return arr.some((item) => {
+          if (item == null) return false;
+          if (typeof item === 'number') return true;
+          if (item.stock !== null && item.stock !== undefined) return true;
+          if (item.quantity !== null && item.quantity !== undefined) return true;
+          if (item.units !== null && item.units !== undefined) return true;
+          return false;
+        });
+      };
+
+      const hasAnyArr = booksArr.length > 0 || invArr.length > 0;
+      const booksHaveCounts = itemsHaveCounts(booksArr);
+      const invHaveCounts = itemsHaveCounts(invArr);
+
+      const shouldFetch =
+        !this.fetchingSeller &&
+        (!hasAnyArr ||
+          (booksArr.length > 0 && !booksHaveCounts) ||
+          (invArr.length > 0 && !invHaveCounts));
+
+      if (s && shouldFetch) {
+        this.fetchingSeller = true;
+        this.sellerService
+          .getMySellerProfile()
+          .pipe(finalize(() => (this.fetchingSeller = false)))
+          .subscribe({
+            next: (res) => {
+              const current = this.auth.user;
+              if (current) {
+                const updated: UserDTO = { ...current, sellerProfile: res };
+                this.auth.setCurrentUser(updated);
+              }
+            },
+            error: () => {},
+          });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    try {
+      if (this.userSub && typeof this.userSub.unsubscribe === 'function')
+        this.userSub.unsubscribe();
+    } catch (e) {}
+  }
   get seller(): SellerProfileDTOFull | null {
     const u = this.auth.user;
     return u && u.sellerProfile ? (u.sellerProfile as SellerProfileDTOFull) : null;
+  }
+  get inventoryCount(): number {
+    const s = this.seller as any;
+    if (!s) return 0;
+
+    const arr = Array.isArray(s.books) ? s.books : Array.isArray(s.inventory) ? s.inventory : [];
+    let total = 0;
+    for (const item of arr) {
+      if (item == null) continue;
+      if (typeof item === 'number') {
+        total += item;
+        continue;
+      }
+      if (typeof item.quantity === 'number') {
+        total += item.quantity;
+        continue;
+      }
+      if (typeof item.stock === 'number') {
+        total += item.stock;
+        continue;
+      }
+      if (typeof item.units === 'number') {
+        total += item.units;
+        continue;
+      }
+      const candidate = item.quantity ?? item.stock ?? item.units ?? item.qty ?? item.count;
+      const n = Number(candidate);
+      if (!isNaN(n)) total += n;
+    }
+    return total;
   }
   showEditModal = false;
   editName = '';
@@ -89,7 +178,33 @@ export class ProfileSellerComponent {
   isSavingSeller = false;
   sellerUpdateError: string | null = null;
 
-  constructor(private sellerService: SellerProfileService, private auth: AuthService) {}
+  constructor(
+    private sellerService: SellerProfileService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
+
+  get isCatalogRoute(): boolean {
+    try {
+      return !!(
+        this.router &&
+        this.router.url &&
+        this.router.url.includes('/profile/seller/catalog')
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  get showProfileDetails(): boolean {
+    try {
+      const url = this.router && this.router.url ? this.router.url : '';
+      if (url.includes('/profile/seller/')) return false;
+      return url === '/profile/seller' || url === '/profile/seller/';
+    } catch (e) {
+      return false;
+    }
+  }
 
   openEditModal(): void {
     const s = this.seller;

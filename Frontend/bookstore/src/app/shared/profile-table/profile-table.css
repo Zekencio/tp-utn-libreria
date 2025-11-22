@@ -13,9 +13,24 @@
   display: flex;
   flex-direction: column;
 }
-.genres-table {
+.admin-container > *,
+.admin-container .author-table,
+.admin-container app-profile-table,
+.admin-container .profile-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.table-container {
   padding: 12px;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  height: 400px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 table {
   width: 100%;

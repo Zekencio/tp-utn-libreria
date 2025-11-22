@@ -93,13 +93,17 @@ export class AuthService {
     this.currentUserSubject.next(user);
     this.userSignal.set(user);
     try {
+      const existing = this.loadActiveRole();
       if (user && user.roles && user.roles.length === 1) {
         this.setActiveRole(user.roles[0]);
-      } else {
-        const existing = this.loadActiveRole();
-        if (user && user.roles && existing && user.roles.includes(existing)) {
+      } else if (user && user.roles && user.roles.length > 1) {
+        if (existing && user.roles.includes(existing)) {
           this.setActiveRole(existing);
+        } else {
+          this.setActiveRole(null);
         }
+      } else {
+        this.setActiveRole(null);
       }
     } catch (e) {}
     if (user) {

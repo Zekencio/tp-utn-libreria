@@ -13,6 +13,8 @@ public class UpdateBookDTO {
 
     private String description;
 
+    private String imageUrl;
+
     @Min(value = 0, message = "El precio no puede ser un valor negativo")
     private Double price;
 
@@ -32,6 +34,14 @@ public class UpdateBookDTO {
         this.author = author;
         this.genres = genres;
         this.seller = seller;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public UpdateBookDTO() {

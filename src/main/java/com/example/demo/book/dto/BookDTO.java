@@ -16,6 +16,7 @@ public class BookDTO {
     private AuthorDTOReduced author;
     private Set<GenreDTO> genres;
     private SellerProfileDTO seller;
+    private String imageUrl;
 
     public BookDTO(Long id, String name, String description, Double price, Long stock, AuthorDTOReduced author,
                    Set<GenreDTO> genres, SellerProfileDTO seller) {
@@ -26,6 +27,19 @@ public class BookDTO {
         this.stock = stock;
         this.author = author;
         this.genres = genres;
+        this.seller = seller;
+    }
+
+    public BookDTO(Long id, String name, String description, Double price, Long stock, AuthorDTOReduced author,
+                   Set<GenreDTO> genres, String imageUrl, SellerProfileDTO seller) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.author = author;
+        this.genres = genres;
+        this.imageUrl = imageUrl;
         this.seller = seller;
     }
 
@@ -105,6 +119,14 @@ public class BookDTO {
 
     public void setSeller(SellerProfileDTO seller) {
         this.seller = seller;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

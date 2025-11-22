@@ -17,8 +17,8 @@
         </li>
 
         <li class="nav__item">
-          <a href="#testimonial" class="nav__link">
-            <span>Testimonios</span>
+          <a routerLink="/about" class="nav__link">
+            <span>Sobre Nosotros</span>
           </a>
         </li>
       </ul>
@@ -69,7 +69,6 @@
             } @else {
             <li class="user-menu__item" (click)="onSellerSalesClick()">Mis ventas</li>
             <li class="user-menu__item" (click)="onSellerCatalogClick()">Mi catalogo</li>
-            <li class="user-menu__item" (click)="onAddBookClick()">Agregar libro</li>
             <li class="user-menu__item" (click)="onHeaderToggle()">{{ toggleLabel }}</li>
             }
             <li class="user-menu__item" (click)="logout()">Salir</li>

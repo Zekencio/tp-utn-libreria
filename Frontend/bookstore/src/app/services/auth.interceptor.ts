@@ -8,6 +8,10 @@ const AUTH_TOKEN_KEY = 'basicAuth';
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     try {
+      if (req.headers.has('X-Skip-Auth')) {
+        const cleared = req.clone({ headers: req.headers.delete('X-Skip-Auth') });
+        return next.handle(cleared);
+      }
       const token = localStorage.getItem(AUTH_TOKEN_KEY);
       console.debug('[AuthInterceptor] intercept', {
         url: req.url,

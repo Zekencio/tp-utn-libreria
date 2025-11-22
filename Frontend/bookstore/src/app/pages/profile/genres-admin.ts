@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { GenreService, GenreDTO } from '../../services/genre.service';
+import { ProfileTableComponent } from '../../shared/profile-table/profile-table';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-genres-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ProfileTableComponent, ConfirmDialogComponent],
   templateUrl: './genres-admin.html',
-  styleUrls: ['./genres-admin.css'],
+  styleUrls: ['../../shared/profile-table/profile-table.css'],
 })
 export class GenresAdminComponent implements OnInit {
   genres: GenreDTO[] = [];
@@ -24,6 +26,8 @@ export class GenresAdminComponent implements OnInit {
   showDeleteModal = false;
   deleteTarget: GenreDTO | null = null;
   deleting = false;
+  deleteMessage = '';
+  deleteError: string | null = null;
 
   constructor(
     private genreService: GenreService,
@@ -117,6 +121,8 @@ export class GenresAdminComponent implements OnInit {
 
   deleteGenre(g: GenreDTO): void {
     this.deleteTarget = g;
+    this.deleteMessage = `¿Estás seguro que deseas eliminar el género "${g.name}"?`;
+    this.deleteError = null;
     this.showDeleteModal = true;
   }
 
@@ -124,6 +130,7 @@ export class GenresAdminComponent implements OnInit {
     if (!this.showDeleteModal) return;
     this.showDeleteModal = false;
     this.deleteTarget = null;
+    this.deleteError = null;
   }
 
   confirmDelete(): void {
@@ -144,11 +151,19 @@ export class GenresAdminComponent implements OnInit {
           });
         }, 450);
       },
-      error: () => {
+      error: (err) => {
         this.zone.run(() => {
           this.deleting = false;
-          this.showDeleteModal = false;
-          this.deleteTarget = null;
+          if (err && err.status === 409) {
+            this.deleteError = 'El género tiene libros y no se puede eliminar.';
+            this.showDeleteModal = true;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+          } else {
+            this.showDeleteModal = false;
+            this.deleteTarget = null;
+          }
         });
       },
     });

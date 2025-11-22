@@ -249,17 +249,12 @@ export class HeaderComponent {
 
   onSellerSalesClick(): void {
     this.menuOpen = false;
-    this.router.navigate(['/profile', 'seller', 'sales']);
+    this.router.navigate(['/profile', 'seller']);
   }
 
   onSellerCatalogClick(): void {
     this.menuOpen = false;
     this.router.navigate(['/profile', 'seller', 'catalog']);
-  }
-
-  onAddBookClick(): void {
-    this.menuOpen = false;
-    this.router.navigate(['/profile', 'seller', 'books', 'new']);
   }
 
   getLocalPart(value?: string | null) {

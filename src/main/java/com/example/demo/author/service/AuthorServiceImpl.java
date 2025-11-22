@@ -6,6 +6,7 @@ import com.example.demo.author.dto.CreateAuthorDTO;
 import com.example.demo.author.dto.UpdateAuthorDTO;
 import com.example.demo.author.model.Author;
 import com.example.demo.author.repository.AuthorRepository;
+import com.example.demo.book.repository.BookRepository;
 import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.model.Book;
 import com.example.demo.exceptions.AlreadyExistingException;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repository;
+    private final BookRepository bookRepository;
 
-    public AuthorServiceImpl(AuthorRepository repository) {
+    public AuthorServiceImpl(AuthorRepository repository, BookRepository bookRepository) {
         this.repository = repository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -44,6 +47,10 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean deleteAuthor(Long id) {
         Optional<Author> author = repository.findById(id);
         if (author.isPresent()){
+            // prevent deletion if any book references this author
+            if (bookRepository.existsByAuthor_Id(id)){
+                throw new IllegalStateException("Author has books and cannot be deleted");
+            }
             repository.deleteById(id);
             return true;
         }else {

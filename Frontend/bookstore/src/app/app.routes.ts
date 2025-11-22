@@ -5,15 +5,19 @@ import { LoginComponent } from './pages/login/login';
 import { ProfileComponent } from './pages/profile/profile-client';
 import { ProfileWrapperComponent } from './pages/profile/profile-wrapper';
 import { ProfileSellerComponent } from './pages/profile/profile-seller';
+import { SellerCatalogComponent } from './pages/profile/seller-catalog';
+import { SellerSalesComponent } from './pages/profile/seller-sales';
 import { ProfileAdminComponent } from './pages/profile/profile-admin';
 import { GenresAdminComponent } from './pages/profile/genres-admin';
 import { AuthorsAdminComponent } from './pages/profile/authors-admin';
 import { ProfileDefaultComponent } from './pages/profile/profile-default';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
+import { AboutComponent } from './pages/about/about';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   {
@@ -26,6 +30,11 @@ export const routes: Routes = [
         component: ProfileSellerComponent,
         canActivate: [SellerGuard],
         resolve: { sellerProfile: SellerResolver },
+        children: [
+          { path: 'sales', component: SellerSalesComponent, canActivate: [SellerGuard] },
+          { path: 'catalog', component: SellerCatalogComponent, canActivate: [SellerGuard] },
+          { path: 'catalog/new', component: SellerCatalogComponent, canActivate: [SellerGuard] },
+        ],
       },
       {
         path: 'admin',

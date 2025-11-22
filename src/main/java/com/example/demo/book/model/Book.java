@@ -49,6 +49,8 @@ public class Book {
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;
 
+    private String imageUrl;
+
     @ManyToMany(mappedBy = "cart")
     private List<User> cartUser;
 
@@ -88,6 +90,14 @@ public class Book {
         this.author = author;
         this.genres = genres;
         this.seller = seller;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Book() {

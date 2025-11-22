@@ -54,12 +54,16 @@ public class GenreControler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGenre(@PathVariable Long id){
-        boolean deleted = genreService.deleteGenre(id);
-        if (deleted){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> deleteGenre(@PathVariable Long id){
+        try{
+            boolean deleted = genreService.deleteGenre(id);
+            if (deleted){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException ex){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
     }
 }

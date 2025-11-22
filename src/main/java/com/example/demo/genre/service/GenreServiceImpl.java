@@ -6,6 +6,7 @@ import com.example.demo.genre.dto.GenreDTO;
 import com.example.demo.genre.dto.UpdateGenreDTO;
 import com.example.demo.genre.model.Genre;
 import com.example.demo.genre.repository.GenreRepository;
+import com.example.demo.book.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 public class GenreServiceImpl implements GenreService{
 
     private final GenreRepository repository;
+    private final BookRepository bookRepository;
 
-    public GenreServiceImpl(GenreRepository repository) {
+    public GenreServiceImpl(GenreRepository repository, BookRepository bookRepository) {
         this.repository = repository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -50,6 +53,10 @@ public class GenreServiceImpl implements GenreService{
     public boolean deleteGenre(Long id) {
         Optional<Genre> genre = repository.findById(id);
         if (genre.isPresent()){
+            // prevent deletion if any book references this genre
+            if (bookRepository != null && bookRepository.existsByGenres_Id(id)){
+                throw new IllegalStateException("Genre is used by existing books and cannot be deleted");
+            }
             repository.deleteById(id);
             return true;
         }else {

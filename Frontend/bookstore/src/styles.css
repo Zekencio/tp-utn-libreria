@@ -80,3 +80,54 @@ body.dark-theme {
   --footer-border: rgba(255, 255, 255, 0.04);
   --menu-item-hover: rgba(255, 255, 255, 0.06);
 }
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+  justify-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 519px) {
+  .books-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 520px) and (max-width: 767px) {
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .books-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.18s ease;
+  font-size: inherit;
+}
+.modal-close:hover,
+.modal-close:focus,
+.modal-close:focus-visible {
+  color: var(--first-color);
+  outline: none;
+  background: transparent;
+}

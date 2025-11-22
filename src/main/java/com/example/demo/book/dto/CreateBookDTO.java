@@ -17,6 +17,8 @@ public class CreateBookDTO {
 
     private String description;
 
+    private String imageUrl;
+
     @NotNull(message = "El precio no puede ser nulo")
     @Min(value = 0, message = "El precio no puede ser un valor negativo")
     private Double price;
@@ -39,6 +41,14 @@ public class CreateBookDTO {
         this.author = author;
         this.genres = genres;
         this.seller = seller;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public CreateBookDTO() {

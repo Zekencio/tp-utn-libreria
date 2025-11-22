@@ -41,6 +41,14 @@ public class SellerProfileDTOFull {
         return address;
     }
 
+    public java.util.List<com.example.demo.book.dto.BookDTOReduced> getBooks() {
+        return books;
+    }
+
+    public void setBooks(java.util.List<com.example.demo.book.dto.BookDTOReduced> books) {
+        this.books = books;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }

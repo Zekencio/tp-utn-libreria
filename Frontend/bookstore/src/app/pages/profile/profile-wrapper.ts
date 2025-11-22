@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
           <nav class="profile-menu">
             <a
               class="profile-menu__item"
-              [routerLink]="profileLink"
+              [routerLink]="miProfileLink"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               >Mi perfil</a
@@ -41,6 +41,7 @@ import { Subscription } from 'rxjs';
               class="profile-menu__item"
               routerLink="/profile/seller/sales"
               routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
               >Mis ventas</a
             >
             <a
@@ -49,12 +50,7 @@ import { Subscription } from 'rxjs';
               routerLinkActive="active"
               >Mi catalogo</a
             >
-            <a
-              class="profile-menu__item"
-              routerLink="/profile/seller/books/new"
-              routerLinkActive="active"
-              >Agregar libro</a
-            >
+
             } @else if (isAdmin) {
             <a
               class="profile-menu__item"
@@ -69,12 +65,8 @@ import { Subscription } from 'rxjs';
               >Gestión de Autores</a
             >
             } @if (!isAdmin) {
-            <a
-              class="profile-menu__item"
-              (click)="openToggleConfirm()"
-              [class.active]="isSellerRoute"
-              >{{ toggleLabel }}</a
-            >
+            <a class="profile-menu__item" (click)="openToggleConfirm()">{{ toggleLabel }}</a>
+
             }
           </nav>
         </aside>
@@ -204,6 +196,18 @@ export class ProfileWrapperComponent {
       }
     } catch (e) {}
     return ['/profile', 'client'];
+  }
+
+  get miProfileLink(): any[] {
+    try {
+      if (this.currentUrl && this.currentUrl.includes('/profile/client'))
+        return ['/profile', 'client'];
+      if (this.currentUrl && this.currentUrl.includes('/profile/seller'))
+        return ['/profile', 'seller'];
+      if (this.currentUrl && this.currentUrl.includes('/profile/admin'))
+        return ['/profile', 'admin'];
+    } catch (e) {}
+    return this.profileLink;
   }
 
   get toggleLabel(): string {

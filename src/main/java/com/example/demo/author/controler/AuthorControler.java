@@ -55,12 +55,17 @@ public class AuthorControler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id){
-        boolean deleted = authorService.deleteAuthor(id);
-        if (deleted){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> deleteAuthor(@PathVariable Long id){
+        try{
+            boolean deleted = authorService.deleteAuthor(id);
+            if (deleted){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException ex){
+            // author is referenced by books
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
     }
 

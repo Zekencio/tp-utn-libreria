@@ -119,6 +119,10 @@ public class SellerProfileServiceImpl implements SellerProfileService{
         return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), books);
     }
     public BookDTOReduced reduceBook(Book book){
-        return new BookDTOReduced(book.getId(), book.getName(), book.getDescription());
+        com.example.demo.author.dto.AuthorDTOReduced a = null;
+        if (book.getAuthor() != null) {
+            a = new com.example.demo.author.dto.AuthorDTOReduced(book.getAuthor().getId(), book.getAuthor().getName(), book.getAuthor().getBirthDate());
+        }
+        return new com.example.demo.book.dto.BookDTOReduced(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(), a);
     }
 }
