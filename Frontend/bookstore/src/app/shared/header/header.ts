@@ -115,7 +115,7 @@ export class HeaderComponent {
         return;
       }
     } catch (e) {}
-    this.router.navigate(['/profile', 'client']);
+    this.router.navigate(['/profile', 'client', 'compras']);
   }
 
   get profileRoute(): any[] {
@@ -244,7 +244,26 @@ export class HeaderComponent {
       return;
     }
 
-    this.router.navigate(['/profile', 'client']);
+    this.router.navigate(['/profile', 'client', 'compras']);
+  }
+
+  onCardsClick(): void {
+    this.menuOpen = false;
+    const user = this.auth.userSignal();
+    const tokenPresent = (() => {
+      try {
+        return !!localStorage.getItem('basicAuth');
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (!user || !tokenPresent) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
+      return;
+    }
+
+    this.router.navigate(['/profile', 'client', 'cards']);
   }
 
   onSellerSalesClick(): void {

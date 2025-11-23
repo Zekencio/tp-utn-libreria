@@ -19,13 +19,13 @@ export class CardService {
     return this.http.get<CardDTO[]>(this.base);
   }
 
-  create(payload: { cardNumber: string, bank: string, cvv: string }): Observable<CardDTO> {
+  create(payload: { cardNumber: string; bank: string; cvv: string; owner?: { id?: number } }): Observable<CardDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.post<CardDTO>(this.base, payload, headers ? { headers } : {});
   }
 
-  update(id: number, payload: { cardNumber: string, bank: string, cvv: string }): Observable<CardDTO> {
+  update(id: number, payload: { cardNumber: string; bank: string; cvv: string; owner?: { id?: number } }): Observable<CardDTO> {
     const token = localStorage.getItem('basicAuth');
     const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
     return this.http.put<CardDTO>(`${this.base}/${id}`, payload, headers ? { headers } : {});

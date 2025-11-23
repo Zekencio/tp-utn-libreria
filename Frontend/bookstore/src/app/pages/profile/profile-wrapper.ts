@@ -32,7 +32,7 @@ import { Subscription } from 'rxjs';
             >
             <a
               class="profile-menu__item"
-              routerLink="/profile/client/purchases"
+              routerLink="/profile/client/compras"
               routerLinkActive="active"
               >Mis compras</a
             >

@@ -126,7 +126,6 @@ import { CommonModule } from '@angular/common';
       }
 
       .about-authors h3 {
-        // margin: 0 0 0.5rem 0;
         text-align: center;
         color: var(--title-color);
       }
@@ -137,6 +136,10 @@ import { CommonModule } from '@angular/common';
         margin: 0 0 0.5rem 0;
       }
 
+        .about-authors h3 {
+          text-align: center;
+          color: var(--title-color);
+        }
       @media (max-width: 720px) {
         .about-header {
           flex-direction: column;

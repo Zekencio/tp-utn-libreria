@@ -14,6 +14,8 @@ import { ProfileDefaultComponent } from './pages/profile/profile-default';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
 import { AboutComponent } from './pages/about/about';
+import { CardsClientComponent } from './pages/profile/cards-client';
+import { ComprasClientComponent } from './pages/profile/compras-client';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,6 +27,8 @@ export const routes: Routes = [
     component: ProfileWrapperComponent,
     children: [
       { path: 'client', component: ProfileComponent },
+      { path: 'client/cards', component: CardsClientComponent },
+      { path: 'client/compras', component: ComprasClientComponent },
       {
         path: 'seller',
         component: ProfileSellerComponent,

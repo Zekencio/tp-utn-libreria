@@ -118,6 +118,12 @@
   top: 8px;
   font-size: 1.6rem;
 }
+.modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
 
 .modal-media img {
   display: block;

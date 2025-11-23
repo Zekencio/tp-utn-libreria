@@ -64,7 +64,8 @@
             <li class="user-menu__item" (click)="onAdminGenresClick()">Gestión de Géneros</li>
             <li class="user-menu__item" (click)="onAdminAuthorsClick()">Gestión de Autores</li>
             } @else if (!isSellerRoute) {
-            <li class="user-menu__item" (click)="onPurchasesClick()">Compras</li>
+            <li class="user-menu__item" (click)="onCardsClick()">Mis tarjetas</li>
+            <li class="user-menu__item" (click)="onPurchasesClick()">Mis compras</li>
             <li class="user-menu__item" (click)="onSellClick()">Vender</li>
             } @else {
             <li class="user-menu__item" (click)="onSellerSalesClick()">Mis ventas</li>

@@ -18,7 +18,7 @@
     </div>
     <div class="book-card__body">
       <h3 class="book-card__title">{{ b.name }}</h3>
-      <div class="book-card__meta">Autor: {{ b.author?.name || 'Desconocido' }}</div>
+      <div class="book-card__meta">Autor: {{ b.author.name || 'Desconocido' }}</div>
       <div class="book-card__meta">Género: {{ (b.genres || [])[0]?.name || '—' }}</div>
     </div>
     <div class="book-card__footer">
@@ -46,14 +46,13 @@
     tabindex="-1"
   >
     <button class="modal-close" aria-label="Cerrar" (click)="closeDetails()">&times;</button>
-    <button class="modal-close" aria-label="Agregar" (click)="addToCart(selectedBook.id)">&times;</button>
     <div class="modal-media">
       <img *ngIf="selectedBook.imageUrl" [src]="selectedBook.imageUrl" [alt]="selectedBook.name" />
       <div *ngIf="!selectedBook.imageUrl" class="modal-img-placeholder"></div>
     </div>
     <div class="modal-body">
       <h2 class="modal-title">{{ selectedBook.name }}</h2>
-      <p class="modal-meta">Autor: {{ selectedBook.author?.name || 'Desconocido' }}</p>
+      <p class="modal-meta">Autor: {{ selectedBook.author.name || 'Desconocido' }}</p>
       <p class="modal-meta">Género: {{ (selectedBook.genres || [])[0]?.name || '—' }}</p>
       <p class="modal-desc">{{ selectedBook.description || 'Sin descripción.' }}</p>
       <div class="modal-actions">
