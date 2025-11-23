@@ -276,6 +276,11 @@ export class HeaderComponent {
     this.router.navigate(['/profile', 'seller', 'catalog']);
   }
 
+  onCartClick(){
+    this.menuOpen = false
+    this.router.navigate(['/cart'])
+  }
+
   getLocalPart(value?: string | null) {
     if (!value) return '';
     const idx = value.indexOf('@');

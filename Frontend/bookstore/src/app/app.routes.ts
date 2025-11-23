@@ -16,6 +16,7 @@ import { SellerResolver } from './pages/profile/seller.resolver';
 import { AboutComponent } from './pages/about/about';
 import { CardsClientComponent } from './pages/profile/cards-client';
 import { ComprasClientComponent } from './pages/profile/compras-client';
+import { CartComponent } from './pages/cart/cart';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -51,4 +52,5 @@ export const routes: Routes = [
       { path: '', component: ProfileDefaultComponent },
     ],
   },
+  {path: 'cart', component: CartComponent}
 ];

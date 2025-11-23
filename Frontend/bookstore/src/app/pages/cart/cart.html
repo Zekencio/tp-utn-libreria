@@ -1,0 +1,66 @@
+<!-- 
+    Placeholders de mensajes. Añadir en cuanto la página tenga todos los elementos en orden
+                                                                                            -Eze
+    <div *ngIf="loading" class="home__loading">Cargando libros...</div>
+    <div *ngIf="errorMessage" class="home__error">{{ errorMessage }}</div>
+    <div *ngIf="!loading && cartItems.length === 0" class="home__empty">No hay items en el carrito adtualmente.</div>
+-->
+
+<header>
+    <h1>Mi carrito</h1>
+    <p>Libros en el carrito:</p>
+</header>
+
+<main>
+    <div class="itemList" *ngIf="!loading && cartItems.length > 0">
+
+        <article class="item-card" *ngFor="let item of cartItems">
+
+            <div class="item-card__media">
+                <img *ngIf="item.imageUrl" [src]="item.imageUrl" class="book-card__img" [alt]="item.name" />
+            <div *ngIf="!item.imageUrl" class="book-card__img book-card__img--placeholder"></div>
+            </div>
+            <div class="item-card__body">
+                <h3 class="item-card__title">{{ item.name }}</h3>
+                <div class="item-card__meta">Autor: {{ item.author.name || 'Desconocido' }}</div>
+                <div class="item-card__meta">Género: {{ (item.genres || [])[0]?.name || '—' }}</div>
+            </div>
+            <div class="item-card__footer">
+                <div class="book-card__price">${{ item.price ?? 0 }}</div>
+                <!-- TO DO: Poner cantidad actual de un libro específico en el carrito -->
+                <button
+                    class="removeButton"
+                    type="button"
+                    aria-label="Restar del carrito"
+                    title="Restar del carrito"
+                    (click)="substractItemFromCart(item.id)"
+                >
+                    <i class="ri-arrow-drop-down-line"></i>
+                </button>
+                <button
+                    class="addButton"
+                    type="button"
+                    aria-label="Sumar al carrito"
+                    title="Sumar al carrito"
+                    (click)="addItemToCart(item.id)"
+                >
+                    <i class="ri-arrow-drop-up-line"></i>
+                </button>
+            </div>
+        </article>
+    </div>
+
+    <div class="paymentSection">
+        <p>Subtotal: {{getTotalPrice()}}</p>
+        <div class="cardSelection">
+            <label>Seleccionar tarjeta:</label>
+            <select class="card-list">
+                @for (item of userCards; track $index) {
+                    <option>Banco: {{item.bank}}. Número: {{item.cardNumber}}</option>
+                }
+            </select>
+        </div>
+        <button class="payButton">Pagar</button>
+    </div>
+    
+</main>

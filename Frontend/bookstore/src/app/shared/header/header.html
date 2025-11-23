@@ -75,6 +75,13 @@
             <li class="user-menu__item" (click)="logout()">Salir</li>
           </ul>
         </div>
+
+        @if(!isAdmin && !isSellerRoute){
+          <button class="user-cart">
+            <i class="ri-shopping-cart-2-line" (click)="onCartClick()"></i>
+          </button>
+        }
+
       </div>
       } @else {
       <a routerLink="/register" class="nav__link">Creá tu cuenta</a>
