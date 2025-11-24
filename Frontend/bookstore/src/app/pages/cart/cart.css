@@ -184,5 +184,5 @@ body.dark-theme .card-select input[type="checkbox"]:focus{
     color: var(--text-color);
     gap: 12px;
 }
-.empty-actions { margin-top: 8px; }
+.empty-actions { margin-top: 20px; }
 .shop-btn { padding: 0.5rem 1rem; font-size: 1rem; }

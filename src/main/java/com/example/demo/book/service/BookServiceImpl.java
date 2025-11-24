@@ -220,7 +220,6 @@ public class BookServiceImpl implements BookService{
         return new AuthorDTOReduced(author.getId(), author.getName(),author.getBirthDate());
     }
     public BookDTOReduced reduceBook(Book book){
-        // map genres to DTOs for reduced representation
         Set<com.example.demo.genre.dto.GenreDTO> genres = null;
         if (book.getGenres() != null) {
             genres = book.getGenres().stream().map(g -> genreService.convertToDTO(g)).collect(Collectors.toSet());

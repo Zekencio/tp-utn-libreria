@@ -173,6 +173,22 @@ body.dark-theme {
   margin-top: 1rem;
 }
 
+/* Ensure buttons in the cart "no cards" empty actions match confirm-dialog buttons */
+.no-cards .modal-actions {
+  margin-top: 0.75rem;
+}
+.no-cards .modal-actions .btn-primary,
+.no-cards .modal-actions .btn-secondary {
+  padding: 0.75rem 1rem; /* same vertical padding as .btn-secondary used elsewhere */
+  min-width: 140px; /* give buttons equal minimum width */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  border-radius: 8px;
+}
+.no-cards .modal-actions .btn-primary { padding-left: 1rem; padding-right: 1rem; }
+
 /* Ensure form fields inside modals stretch full width and labels are left-aligned */
 .modal-content .modal-field {
   width: 100%;

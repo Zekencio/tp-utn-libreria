@@ -5,7 +5,7 @@
     <p class="confirm-message">{{ message }}</p>
     <div *ngIf="loading" class="processing">
       <span class="spinner" aria-hidden="true"></span>
-      <span class="processing-text">Procesando pago...</span>
+      <span class="processing-text">Procesando...</span>
     </div>
     <div class="modal-actions">
       <button class="btn-primary" (click)="onConfirm()" [disabled]="loading">

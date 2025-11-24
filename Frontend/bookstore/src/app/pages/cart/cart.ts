@@ -44,6 +44,14 @@ export class CartComponent {
     , private router: Router
   ) {}
 
+  onAddCard(): void{
+    try{
+      this.paymentMode = false;
+      this.selectedCardId = null;
+      this.router.navigate(['/profile','client','cards'], { queryParams: { openAddCard: '1' } });
+    }catch(e){}
+  }
+
   ngOnInit(): void{
     this.loadCart()
     try {

@@ -71,6 +71,9 @@ public class CardServiceImpl implements CardService{
             throw new UnautorizedException("No esta autorizado para realizar esta acicon");
         }
         if (card.isPresent()){
+            if (card.get().getSales() != null && !card.get().getSales().isEmpty()) {
+                throw new IllegalStateException("Esta tarjeta tiene un pedido pagado. No se puede eliminar.");
+            }
             repository.deleteById(id);
             return true;
         }else {

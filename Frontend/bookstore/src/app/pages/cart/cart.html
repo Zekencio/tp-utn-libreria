@@ -58,7 +58,7 @@
                 </article>
             </div>
 
-            <div *ngIf="paymentMode" class="cards-list">
+            <div *ngIf="paymentMode && userCards.length > 0" class="cards-list">
                 <article class="cart-item card-pay" *ngFor="let c of userCards" [class.selected]="selectedCardId === c.id">
                     <div class="card-select">
                         <input type="checkbox" [checked]="selectedCardId === c.id" (change)="onSelectCard(c.id)" />
@@ -70,6 +70,13 @@
                 <div class="cards-actions modal-actions">
                     <button class="btn-secondary" (click)="onCancelPayment()">Cancelar</button>
                     <button class="btn-primary" [disabled]="!selectedCardId" (click)="onConfirmPayment()">Pagar</button>
+                </div>
+            </div>
+            <div *ngIf="paymentMode && userCards.length === 0" class="no-cards">
+                <div class="empty-message">No tenés tarjetas guardadas para pagar.</div>
+                <div class="empty-actions modal-actions">
+                    <button class="btn-primary" (click)="onAddCard()">Agregar tarjeta</button>
+                    <button class="btn-secondary" (click)="onCancelPayment()">Cancelar</button>
                 </div>
             </div>
         </section>

@@ -1,9 +1,10 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileTableComponent } from '../../shared/profile-table/profile-table';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 import { CardService } from '../../services/card.service';
+import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -135,7 +136,7 @@ import { AuthService } from '../../services/auth.service';
   `,
   styleUrls: ['../../shared/profile-table/profile-table.css'],
 })
-export class CardsClientComponent {
+export class CardsClientComponent implements OnInit {
   cards: any[] = [];
   columns: string[] = ['Número', 'Banco'];
   keys: string[] = ['maskedNumber', 'bank'];
@@ -167,9 +168,20 @@ export class CardsClientComponent {
     private cardService: CardService,
     private cd: ChangeDetectorRef,
     private zone: NgZone,
-    public auth: AuthService
+    public auth: AuthService,
+    private route: ActivatedRoute
   ) {
     this.loadCards();
+  }
+
+  ngOnInit(): void {
+    try {
+      this.route.queryParams.subscribe((params) => {
+        if (params && params['openAddCard'] && String(params['openAddCard']) === '1') {
+          setTimeout(() => this.openAdd(), 0);
+        }
+      });
+    } catch (e) {}
   }
 
   get _cardDigits(): string {
@@ -503,7 +515,7 @@ export class CardsClientComponent {
         this.zone.run(() => {
           this.deleting = false;
           if (err && err.status === 409) {
-            this.deleteError = 'La tarjeta no puede ser eliminada.';
+            this.deleteError = 'Esta tarjeta tiene un pedido pagado. No se puede eliminar.';
             this.showDeleteModal = true;
             try {
               this.cd.detectChanges();

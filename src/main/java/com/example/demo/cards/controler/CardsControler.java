@@ -8,6 +8,7 @@ import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnautorizedException;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,7 @@ public class CardsControler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteCard(@PathVariable Long id) {
         try {
             boolean deleted = cardService.deleteCard(id);
             if (deleted){
@@ -74,7 +75,11 @@ public class CardsControler {
             }else{
                 return ResponseEntity.notFound().build();
             }
-        }catch (UnautorizedException e){
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        } catch (DataIntegrityViolationException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta tarjeta tiene un pedido pagado. No se puede eliminar.");
+        } catch (UnautorizedException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
