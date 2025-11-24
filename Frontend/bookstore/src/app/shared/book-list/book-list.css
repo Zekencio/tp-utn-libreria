@@ -28,6 +28,22 @@
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
+
+.book-card { position: relative; }
+.book-card.out-of-stock { opacity: 0.6; }
+.out-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  border-radius: 8px;
+  z-index: 10;
+  pointer-events: none;
+}
 .book-card__title {
   font-size: 1.05rem;
   margin: 0 0 6px 0;
@@ -74,6 +90,7 @@
   padding: 0.25rem;
   cursor: pointer;
 }
+.book-card__footer .btn-primary[disabled] { cursor: not-allowed; opacity: 0.5; }
 .book-card__footer .btn-primary i {
   font-size: 1.25rem;
   color: var(--first-color);

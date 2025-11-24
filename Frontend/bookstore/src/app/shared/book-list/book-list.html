@@ -8,10 +8,12 @@
   <article
     class="book-card"
     *ngFor="let b of books"
+    [class.out-of-stock]="b.stock === 0"
     (click)="openDetails(b)"
     role="button"
     tabindex="0"
   >
+    <div *ngIf="b.stock === 0" class="out-overlay">Agotado</div>
     <div class="book-card__media">
       <img *ngIf="b.imageUrl" [src]="b.imageUrl" class="book-card__img" [alt]="b.name" />
       <div *ngIf="!b.imageUrl" class="book-card__img book-card__img--placeholder"></div>
@@ -29,7 +31,9 @@
         type="button"
         aria-label="Agregar al carrito"
         title="Agregar al carrito"
-        (click)="$event.stopPropagation()"
+        (click)="addToCart(b.id); $event.stopPropagation()"
+        [disabled]="b.stock === 0"
+        [attr.title]="b.stock === 0 ? 'Agotado' : 'Agregar al carrito'"
       >
         <i class="ri-shopping-cart-fill"></i>
       </button>
@@ -57,7 +61,9 @@
       <p class="modal-desc">{{ selectedBook.description || 'Sin descripción.' }}</p>
       <div class="modal-actions">
         <div class="modal-price">${{ selectedBook.price ?? 0 }}</div>
-        <button class="btn-primary btn-comprar" type="button">Comprar</button>
+          <button class="btn-primary btn-comprar" type="button" (click)="addToCart(selectedBook.id)" [disabled]="selectedBook && selectedBook.stock === 0">
+            {{ (selectedBook && selectedBook.stock === 0) ? 'Agotado' : 'Comprar' }}
+          </button>
       </div>
     </div>
   </div>

@@ -1,8 +1,10 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
+import { Subscription } from 'rxjs';
 import { ProfileToggleService } from '../../pages/profile/profile-toggle.service';
 import { NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -14,10 +16,11 @@ import { filter } from 'rxjs/operators';
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   menuOpen = false;
   @ViewChild('userMenu', { static: false }) userMenu?: ElementRef<HTMLElement>;
   cartCount = 0;
+  private cartSub?: Subscription;
   searchQuery = '';
 
   isDark = false;
@@ -33,12 +36,22 @@ export class HeaderComponent {
         window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.setDark(prefersDark);
     }
+
+    // subscribe to cart changes
+    try {
+      this.cartSub = this.cartService.cart$.subscribe(items => {
+        try { this.cartCount = (items || []).length; } catch(e) { this.cartCount = 0; }
+        try { this.cd.detectChanges(); } catch (e) {}
+      });
+    } catch (e) {}
   }
 
   constructor(
     private router: Router,
     public auth: AuthService,
-    private profileToggle: ProfileToggleService
+    private profileToggle: ProfileToggleService,
+    private cartService: CartService,
+    private cd: ChangeDetectorRef
   ) {}
   toggleTheme() {
     this.setDark(!this.isDark);
@@ -303,8 +316,20 @@ export class HeaderComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    try { this.cartSub?.unsubscribe(); } catch (e) {}
+  }
+
   get isSellerRoute(): boolean {
     return this.currentUrl.includes('/profile/seller');
+  }
+
+  get isSellerActive(): boolean {
+    try {
+      const active = this.auth.getActiveRole();
+      return active === 'ROLE_SELLER';
+    } catch (e) {}
+    return false;
   }
 
   get toggleLabel(): string {

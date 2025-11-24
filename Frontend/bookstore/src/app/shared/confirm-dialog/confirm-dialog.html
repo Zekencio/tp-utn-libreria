@@ -3,6 +3,10 @@
     <button class="modal-close" aria-label="Cerrar" (click)="onCancel()">×</button>
     <h3>{{ title }}</h3>
     <p class="confirm-message">{{ message }}</p>
+    <div *ngIf="loading" class="processing">
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="processing-text">Procesando pago...</span>
+    </div>
     <div class="modal-actions">
       <button class="btn-primary" (click)="onConfirm()" [disabled]="loading">
         <span *ngIf="loading" class="spinner" aria-hidden="true"></span>

@@ -5,17 +5,10 @@
     <div class="nav__menu" id="nav-menu">
       <ul class="nav__list">
         <li class="nav__item">
-          <a href="#home" class="nav__link active-link">
-            <span>Inicio</span>
-          </a>
-        </li>
-
-        <li class="nav__item">
           <a href="#libros" class="nav__link">
             <span>Libros</span>
           </a>
         </li>
-
         <li class="nav__item">
           <a routerLink="/about" class="nav__link">
             <span>Sobre Nosotros</span>
@@ -76,10 +69,11 @@
           </ul>
         </div>
 
-        @if(!isAdmin && !isSellerRoute){
-          <button class="user-cart">
-            <i class="ri-shopping-cart-2-line" (click)="onCartClick()"></i>
-          </button>
+        @if(!isAdmin && !isSellerActive){
+          <button class="user-cart" (click)="onCartClick()">
+              <i class="ri-shopping-cart-2-line"></i>
+              <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+            </button>
         }
 
       </div>

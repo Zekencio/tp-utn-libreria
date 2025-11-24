@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService, UserDTO } from '../../services/auth.service';
-import { ProfileToggleService } from './profile-toggle.service';
+import { ProfileToggleService, ProfileTogglePayload } from './profile-toggle.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -111,8 +111,23 @@ export class ProfileWrapperComponent {
       .subscribe((e: any) => {
         this.currentUrl = e.urlAfterRedirects || e.url || '';
       });
-    this.toggleSub = this.profileToggle.toggle$.subscribe(() => this.openToggleConfirm());
+    this.toggleSub = this.profileToggle.toggle$.subscribe((payload?: ProfileTogglePayload | void) => {
+      if (!payload) {
+        this.openToggleConfirm();
+        return;
+      }
+      if (this.isAdmin) return;
+      this.confirmTarget = payload.target ?? 'client';
+      this.confirmTitle = payload.title ?? (this.confirmTarget === 'client' ? 'Cambiar a perfil de cliente' : 'Cambiar a perfil de vendedor');
+      this.confirmMessage = payload.message ?? (this.confirmTarget === 'client' ? '¿Deseas pasar al perfil de cliente?' : '¿Deseas pasar al perfil de vendedor?');
+      this.pendingOnConfirm = payload.onConfirm ?? null;
+      this.pendingOnCancel = payload.onCancel ?? null;
+      this.showConfirm = true;
+    });
   }
+
+  private pendingOnConfirm: (() => void) | null = null;
+  private pendingOnCancel: (() => void) | null = null;
 
   private userSub?: Subscription;
   private routerSub?: Subscription;
@@ -240,6 +255,16 @@ export class ProfileWrapperComponent {
 
   confirmSwitch(): void {
     this.showConfirm = false;
+    if (this.pendingOnConfirm) {
+      try {
+        this.pendingOnConfirm();
+      } catch (e) {}
+      this.pendingOnConfirm = null;
+      this.pendingOnCancel = null;
+      this.confirmTarget = null;
+      return;
+    }
+
     const user = this.auth.user;
     const hasSeller = !!user?.roles?.includes('ROLE_SELLER');
 
@@ -259,6 +284,13 @@ export class ProfileWrapperComponent {
 
   cancelConfirm(): void {
     this.showConfirm = false;
+    if (this.pendingOnCancel) {
+      try {
+        this.pendingOnCancel();
+      } catch (e) {}
+    }
+    this.pendingOnConfirm = null;
+    this.pendingOnCancel = null;
     this.confirmTarget = null;
   }
 
