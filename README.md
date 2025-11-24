@@ -6,6 +6,8 @@
 - **Backend:** código Java con Spring Boot en `src/main/java/com/example/demo`.
 - **Frontend:** aplicación Angular en `Frontend/bookstore`.
 - **Base de datos:** utiliza una base de datos MYSQL, incluye script SQL en `Script SQL Funcional.sql` para crear esquema y tablas.
+- **Almacenamiento:** el proyecto esta almacenado en el siguiente repositorio `git:https://github.com/Zekencio/tp-utn-libreria.git`
+- **Gestion:** el proyecto fue gestionado utilizando el siguente tablero JIRA: `https://chevi0546.atlassian.net/jira/software/projects/ALEC/summary?atlOrigin=eyJpIjoiYWZlMDdmN2M5M2ZjNDljODhkNTViYzljM2MyMWFkMTEiLCJwIjoiaiJ9`
 
 **Funcionalidad principal**
 - Autenticación vía Basic Auth (encabezado `Authorization: Basic <token>`). El frontend gestiona el token en `localStorage`.
