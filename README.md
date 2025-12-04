@@ -2,39 +2,73 @@
 - **Proyecto**: API Rest y Frontend de un E-commerce de libros (Utilizando Spring Boot + Angular).
 - **Propósito**: CRUD de libros, autores y géneros; gestión de usuarios, perfiles de vendedor, carrito, pagos (tarjetas) y ventas.
 
-**Estructura del Proyecto**
-- **Backend:** código Java con Spring Boot en `src/main/java/com/example/demo`.
+**Resumen**
+- **Proyecto**: API Rest y Frontend de un E-commerce de libros (Spring Boot + Angular).
+- **Propósito**: CRUD de libros, autores y géneros; gestión de usuarios, perfiles de vendedor, carrito, pagos (tarjetas) y ventas.
 - **Frontend:** aplicación Angular en `Frontend/bookstore`.
 - **Base de datos:** utiliza una base de datos MYSQL, incluye script SQL en `Script SQL Funcional.sql` para crear esquema y tablas.
-- **Almacenamiento:** el proyecto esta almacenado en el siguiente repositorio `git:https://github.com/Zekencio/tp-utn-libreria.git`
+**Funcionalidad principal**
+- Autenticación vía JWT Bearer Token (encabezado `Authorization: Bearer <token>`). El backend emite JWT en el login y el frontend guarda el token en `localStorage` bajo la clave `jwtToken`.
+- Registro: `POST /api/users/register` — crea usuario (retorna `UserDTO`), pero ya no entrega credenciales; el cliente debe autenticarse contra `POST /api/auth/login` para obtener el JWT.
 - **Gestion:** el proyecto fue gestionado utilizando el siguente tablero JIRA: `https://chevi0546.atlassian.net/jira/software/projects/ALEC/summary?atlOrigin=eyJpIjoiYWZlMDdmN2M5M2ZjNDljODhkNTViYzljM2MyMWFkMTEiLCJwIjoiaiJ9`
 
-**Funcionalidad principal**
-- Autenticación vía Basic Auth (encabezado `Authorization: Basic <token>`). El frontend gestiona el token en `localStorage`.
+**Autenticación y roles**
+- Tipo: JWT (Bearer). El servidor expone:
+	- `POST /api/auth/login` — recibe JSON `{ "name": "...", "password": "..." }`, responde `{ "token": "<jwt>", "user": { ... } }`.
+	- `POST /api/users/register` — registro (como antes) pero no almacena/retorna credenciales en `localStorage`.
+- Frontend: el token se guarda en `localStorage` con la clave `jwtToken`. Un interceptor añade `Authorization: Bearer <token>` a peticiones salientes.
+- Rutas públicas: consultas de géneros, autores y libros. Operaciones de creación/actualización/eliminación siguen requiriendo autenticación.
 - Roles de usuario: `ROLE_CLIENT`, `ROLE_SELLER`, `ROLE_ADMIN`. Restricciones de acceso definidas en `SecurityConfig`.
 - Registro y login de usuarios.
-- Gestión de perfiles de vendedor: crear perfil, ver catálogo propio y ventas.
-- CRUD de libros, autores y géneros; operaciones para vendedores y administradores según permisos.
-- Carrito de compras (operaciones sobre libros: añadir, quitar), cálculo de precio y creación de venta.
-- Gestión de tarjetas (asociadas a usuarios) para realizar ventas.
-- Estadísticas: precio promedio de libros y cantidad de libros por autor.
-
-
-**Frontend (Angular)**
-- Carpeta: `Frontend/bookstore`.
-- Rutas principales: `/` (home), `/about`, `/register`, `/login`, `/profile` (con subrutas para cliente, vendedor y admin).
-- Componentes y servicios relevantes:
- - `AuthService` — login, registro, gestión de usuario y token
- - `BookService`, `AuthorService`, `GenreService`, `CardService`, `SellerProfileService` — consumo de la API REST
- - Páginas: `home`, `login`, `register`, `profile` (client, seller, admin), `seller catalog`, `seller sales`, `cards` y `compras`
-- Scripts npm en `package.json`: `start` (se inicializa con proxy), `build`, `watch`, `test`.
-
-**Base de datos**
-- Archivo con esquema y tablas: `Script SQL Funcional.sql`. Crea tablas: `users`, `authors`, `sellers`, `genres`, `cards`, `sales`, `books`, tablas intermedias `books_genres`, `sales_books`.
-- En `src/main/resources/application.properties` se usa MySQL, base de datos por defecto `book_store` y credenciales de ejemplo.
-
 **Configuración importante**
 - Archivo: `src/main/resources/application.properties` — contiene `spring.datasource.url`, `username`, `password`, `spring.jpa.hibernate.ddl-auto=update`.
+- JWT: nuevas propiedades configurables (sugeridas):
+	- `app.jwt.secret` — secreto usado para firmar JWT (debe ser largo y fuerte; configure en `application.properties` o variable de entorno).
+	- `app.jwt.expiration-ms` — tiempo de expiración del token en milisegundos (por defecto 3600000 = 1h).
+	Ejemplo en `application.properties`:
+
+```properties
+app.jwt.secret=una_clave_muy_larga_y_segura_para_hs256_DEMASIADO_CORTA_NO
+app.jwt.expiration-ms=3600000
+```
+
+- Puerto por defecto: Spring Boot usa `8080`.
+- Carrito de compras (operaciones sobre libros: añadir, quitar), cálculo de precio y creación de venta.
+- Gestión de tarjetas (asociadas a usuarios) para realizar ventas.
+**Cómo ejecutar (desarrollo)**
+- Requisitos: Java 21, Maven, Node.js y npm.
+
+1) Backend (desde la raíz del proyecto):
+
+```bash
+./mvnw clean package
+
+./mvnw spring-boot:run
+```
+
+3) Frontend (desde `Frontend/bookstore`):
+
+```bash
+cd Frontend/bookstore
+npm install
+npm start
+```
+ - `BookService`, `AuthorService`, `GenreService`, `CardService`, `SellerProfileService` — consumo de la API REST
+ - Páginas: `home`, `login`, `register`, `profile` (client, seller, admin), `seller catalog`, `seller sales`, `cards` y `compras`
+**Notas sobre seguridad y migración a JWT**
+- Migración: la autenticación anterior basada en HTTP Basic fue reemplazada por JWT. Código relevante:
+	- Backend: `src/main/java/com/example/demo/configuration/JwtUtil.java`, `JwtAuthenticationFilter.java`, `AuthController.java`, y cambios en `SecurityConfig.java`.
+	- Frontend: `Frontend/bookstore/src/app/services/auth.service.ts` (ahora usa `/api/auth/login` y guarda `jwtToken`) y `AuthInterceptor` que añade `Authorization: Bearer <token>`.
+- Evite almacenar contraseñas en `localStorage`. Este repositorio ya no guarda credenciales Base64; sólo se guarda el JWT bajo `jwtToken`.
+- Producción: considere enviar JWT en cookie `HttpOnly` y usar refresh tokens para mayor seguridad. Asegúrese de rotar/ocultar `app.jwt.secret` y usar HTTPS.
+
+**Base de datos**
+**Archivos relevantes**
+- `pom.xml` — dependencias y plugin de Spring Boot (agregadas dependencias JJWT para JWT).
+- `src/main/java/com/example/demo` — código principal (controladores, servicios, repositorios, DTOs).
+- `src/main/resources/application.properties` — configuración de la aplicación (añadir `app.jwt.*` si desea cambiar valores por defecto).
+- `Frontend/bookstore` — cliente Angular (interceptor y `auth.service` actualizados para JWT).
+- `Script SQL Funcional.sql` — esquema de base de datos.
 - Puerto por defecto: Spring Boot usa `8080` (no sobrescrito en propiedades).
 
 **Cómo ejecutar (desarrollo)**
@@ -43,10 +77,8 @@
 1) Backend (desde la raíz del proyecto):
 
 ```bash
-# instalar y compilar (Linux / macOS)
 ./mvnw clean package
 
-# ejecutar (dev)
 ./mvnw spring-boot:run
 ```
 
@@ -54,8 +86,6 @@
 2) Base de datos:
 
 ```bash
-# Crear la base de datos y tablas (MySQL)
-# Abrir en cliente MySQL y ejecutar `Script SQL Funcional.sql`
 mysql -u root -p < "Script SQL Funcional.sql"
 ```
 

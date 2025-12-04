@@ -1,7 +1,4 @@
 package com.example.demo.sale.dto;
-
-import com.example.demo.book.dto.BookDTO;
-import com.example.demo.book.dto.BookDTOReduced;
 import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.user.model.User;

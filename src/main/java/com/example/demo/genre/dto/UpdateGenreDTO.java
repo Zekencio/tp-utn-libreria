@@ -1,10 +1,7 @@
 package com.example.demo.genre.dto;
 
-import com.example.demo.book.model.Book;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class UpdateGenreDTO {
 

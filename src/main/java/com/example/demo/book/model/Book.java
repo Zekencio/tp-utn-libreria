@@ -49,6 +49,7 @@ public class Book {
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;
 
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     @ManyToMany(mappedBy = "cart")

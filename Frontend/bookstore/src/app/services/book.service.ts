@@ -41,8 +41,8 @@ export class BookService {
     genres: GenreDTO[];
     seller: SellerProfileDTO;
   }): Observable<BookDTO> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.post<BookDTO>(this.base, payload, headers ? { headers } : {});
   }
 
@@ -58,14 +58,14 @@ export class BookService {
       seller: SellerProfileDTO;
     }
   ): Observable<BookDTO> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.put<BookDTO>(`${this.base}/update/${id}`, payload, headers ? { headers } : {});
   }
 
   delete(id: number): Observable<void> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.delete<void>(`${this.base}/${id}`, headers ? { headers } : {});
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const AUTH_TOKEN_KEY = 'basicAuth';
+const AUTH_TOKEN_KEY = 'jwtToken';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
       });
       if (token) {
         if (!req.headers.has('Authorization')) {
-          const cloned = req.clone({ setHeaders: { Authorization: `Basic ${token}` } });
+          const cloned = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
           console.debug('[AuthInterceptor] attaching Authorization header for', req.url);
           return next.handle(cloned);
         }

@@ -19,20 +19,20 @@ export class AuthorService {
   }
 
   create(payload: { name: string; birthDate: string }): Observable<AuthorDTO> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.post<AuthorDTO>(this.base, payload, headers ? { headers } : {});
   }
 
   update(id: number, payload: { name: string; birthDate: string }): Observable<AuthorDTO> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.put<AuthorDTO>(`${this.base}/${id}`, payload, headers ? { headers } : {});
   }
 
   delete(id: number): Observable<void> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.delete<void>(`${this.base}/${id}`, headers ? { headers } : {});
   }
 }

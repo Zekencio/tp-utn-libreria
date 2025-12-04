@@ -22,9 +22,16 @@ export class CartService {
 
   addToCart(bookId: number, cant: number): Observable<BookDTO[]>{
     const token = this.auth.getAuthToken();
-    return this.http.put<BookDTO[]>(`${this.base}/add/${bookId}`,cant,
-      {headers: {Authorization: `Basic ${token}`},
-    }).pipe(
+    if (token) {
+      return this.http.put<BookDTO[]>(`${this.base}/add/${bookId}`, cant, { headers: { Authorization: `Bearer ${token}` } }).pipe(
+        tap(items => this.cartSubject.next(items || [])),
+        catchError(err => {
+          console.error('addToCart failed', err);
+          return of([] as BookDTO[]);
+        })
+      );
+    }
+    return this.http.put<BookDTO[]>(`${this.base}/add/${bookId}`, cant).pipe(
       tap(items => this.cartSubject.next(items || [])),
       catchError(err => {
         console.error('addToCart failed', err);
@@ -35,9 +42,16 @@ export class CartService {
 
   removeFromCart(bookId: number, cant: number): Observable<BookDTO[]>{
     const token = this.auth.getAuthToken();
-    return this.http.put<BookDTO[]>(`${this.base}/remove/${bookId}`,cant,
-      {headers:{ Authorization: `Basic ${token}`}
-    }).pipe(
+    if (token) {
+      return this.http.put<BookDTO[]>(`${this.base}/remove/${bookId}`, cant, { headers: { Authorization: `Bearer ${token}` } }).pipe(
+        tap(items => this.cartSubject.next(items || [])),
+        catchError(err => {
+          console.error('removeFromCart failed', err);
+          return of([] as BookDTO[]);
+        })
+      );
+    }
+    return this.http.put<BookDTO[]>(`${this.base}/remove/${bookId}`, cant).pipe(
       tap(items => this.cartSubject.next(items || [])),
       catchError(err => {
         console.error('removeFromCart failed', err);
@@ -47,10 +61,17 @@ export class CartService {
   }
 
   getCart(): Observable<BookDTO[]>{
-    const token= this.auth.getAuthToken();
-    return this.http.get<BookDTO[]>(`${this.base}/cart`,
-      {headers: {Authorization: `Basic ${token}`}
-    }).pipe(
+    const token = this.auth.getAuthToken();
+    if (token) {
+      return this.http.get<BookDTO[]>(`${this.base}/cart`, { headers: { Authorization: `Bearer ${token}` } }).pipe(
+        tap(items => this.cartSubject.next(items || [])),
+        catchError(err => {
+          console.error('getCart failed', err);
+          return of([] as BookDTO[]);
+        })
+      );
+    }
+    return this.http.get<BookDTO[]>(`${this.base}/cart`).pipe(
       tap(items => this.cartSubject.next(items || [])),
       catchError(err => {
         console.error('getCart failed', err);

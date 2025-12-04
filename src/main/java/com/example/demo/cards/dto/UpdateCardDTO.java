@@ -1,10 +1,7 @@
 package com.example.demo.cards.dto;
 
-import com.example.demo.sale.model.Sale;
 import com.example.demo.user.model.User;
 import jakarta.validation.constraints.*;
-
-import java.util.List;
 import java.util.Objects;
 
 public class UpdateCardDTO {

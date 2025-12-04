@@ -123,8 +123,8 @@ export class ProfileComponent implements OnDestroy {
       .subscribe({
         next: () => {
           try {
-            const token = btoa(emailTrim + ':' + this.emailCurrentPassword);
-            localStorage.setItem('basicAuth', token);
+            localStorage.removeItem('basicAuth');
+            localStorage.removeItem('jwtToken');
           } catch (e) {}
           this.isUpdatingEmail = false;
           this.showEmailModal = false;
@@ -163,7 +163,7 @@ export class ProfileComponent implements OnDestroy {
   onSellClick(): void {
     const tokenPresent = (() => {
       try {
-        return !!localStorage.getItem('basicAuth');
+        return !!localStorage.getItem('jwtToken');
       } catch (e) {
         return false;
       }

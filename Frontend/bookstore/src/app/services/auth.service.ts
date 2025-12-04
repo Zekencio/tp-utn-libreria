@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 
 import { SellerProfileDTOFull } from './seller-profile.service';
 
@@ -14,7 +14,7 @@ export interface UserDTO {
 }
 
 const STORAGE_KEY = 'currentUser';
-const AUTH_TOKEN_KEY = 'basicAuth';
+const AUTH_TOKEN_KEY = 'jwtToken';
 const ACTIVE_ROLE_KEY = 'activeRole';
 
 @Injectable({ providedIn: 'root' })
@@ -34,47 +34,36 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(name: string, password: string): Observable<UserDTO> {
-    const token = btoa(`${name}:${password}`);
     return this.http.post<UserDTO>(`${this.base}/register`, { name, password }).pipe(
       tap((user) => {
-        try {
-          localStorage.setItem(AUTH_TOKEN_KEY, token);
-        } catch (e) {}
         this.setCurrentUser(user);
       })
     );
   }
 
   login(name: string, password: string): Observable<UserDTO> {
-    const token = btoa(`${name}:${password}`);
-    const headers = new HttpHeaders({ Authorization: `Basic ${token}` });
-    return this.http.get<UserDTO>(`${this.base}/me`, { headers }).pipe(
-      tap((user) => {
+    return this.http.post<{ token: string; user: UserDTO }>(`/api/auth/login`, { name, password }).pipe(
+      tap((res) => {
         try {
-          localStorage.setItem(AUTH_TOKEN_KEY, token);
+          localStorage.setItem(AUTH_TOKEN_KEY, res.token);
         } catch (e) {}
-        this.setCurrentUser(user);
-      })
+        this.setCurrentUser(res.user);
+      }),
+      map((res) => res.user)
     );
   }
 
   me(): Observable<UserDTO> {
     const token = this.loadAuthToken();
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     try {
-      const tokenRaw = localStorage.getItem(AUTH_TOKEN_KEY);
-      if (tokenRaw) {
-        const headersFallback = new HttpHeaders({ Authorization: `Basic ${tokenRaw}` });
-        return this.http.get<UserDTO>(`${this.base}/me`, { headers: headersFallback }).pipe(
-          tap((user) => this.setCurrentUser(user)),
-          catchError(() => of(null as any))
-        );
-      }
-    } catch (e) {}
-    return this.http.get<UserDTO>(`${this.base}/me`, headers ? { headers } : {}).pipe(
-      tap((user) => this.setCurrentUser(user)),
-      catchError(() => of(null as any))
-    );
+      return this.http.get<UserDTO>(`${this.base}/me`, headers ? { headers } : {}).pipe(
+        tap((user) => this.setCurrentUser(user)),
+        catchError(() => of(null as any))
+      );
+    } catch (e) {
+      return of(null as any);
+    }
   }
 
   updateUser(update: {
@@ -83,7 +72,7 @@ export class AuthService {
     currentPassword?: string;
   }): Observable<UserDTO> {
     const token = this.loadAuthToken();
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http
       .put<UserDTO>(`${this.base}/update`, update, headers ? { headers } : {})
       .pipe(tap((user) => this.setCurrentUser(user)));

@@ -24,7 +24,7 @@ export class SellerProfileService {
     const token = this.auth.getAuthToken();
     if (token) {
       return this.http.post<SellerProfileDTO>(this.base, dto, {
-        headers: { Authorization: `Basic ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
     }
     return this.http.post<SellerProfileDTO>(this.base, dto);
@@ -34,7 +34,7 @@ export class SellerProfileService {
     const token = this.auth.getAuthToken();
     if (token) {
       return this.http.get<SellerProfileDTOFull>(`${this.base}/me`, {
-        headers: { Authorization: `Basic ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
     }
     return this.http.get<SellerProfileDTOFull>(`${this.base}/me`);
@@ -44,7 +44,7 @@ export class SellerProfileService {
     const token = this.auth.getAuthToken();
     if (token) {
       return this.http.put<SellerProfileDTO>(`${this.base}/update`, dto, {
-        headers: { Authorization: `Basic ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
     }
     return this.http.put<SellerProfileDTO>(`${this.base}/update`, dto);

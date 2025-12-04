@@ -3,8 +3,6 @@ package com.example.demo.sale.dto;
 import com.example.demo.book.model.Book;
 import com.example.demo.cards.model.Card;
 import com.example.demo.user.model.User;
-import jakarta.validation.constraints.NotNull;
-
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;

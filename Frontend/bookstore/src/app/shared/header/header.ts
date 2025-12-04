@@ -37,7 +37,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.setDark(prefersDark);
     }
 
-    // subscribe to cart changes
     try {
       this.cartSub = this.cartService.cart$.subscribe(items => {
         try { this.cartCount = (items || []).length; } catch(e) { this.cartCount = 0; }
@@ -214,13 +213,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onSellClick(): void {
     this.menuOpen = false;
     const user = this.auth.userSignal();
-    const tokenPresent = (() => {
-      try {
-        return !!localStorage.getItem('basicAuth');
-      } catch (e) {
-        return false;
-      }
-    })();
+      const tokenPresent = (() => {
+        try {
+          return !!localStorage.getItem('jwtToken');
+        } catch (e) {
+          return false;
+        }
+      })();
 
     if (!user || !tokenPresent) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
@@ -244,13 +243,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onPurchasesClick(): void {
     this.menuOpen = false;
     const user = this.auth.userSignal();
-    const tokenPresent = (() => {
-      try {
-        return !!localStorage.getItem('basicAuth');
-      } catch (e) {
-        return false;
-      }
-    })();
+      const tokenPresent = (() => {
+        try {
+          return !!localStorage.getItem('jwtToken');
+        } catch (e) {
+          return false;
+        }
+      })();
 
     if (!user || !tokenPresent) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
@@ -263,13 +262,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onCardsClick(): void {
     this.menuOpen = false;
     const user = this.auth.userSignal();
-    const tokenPresent = (() => {
-      try {
-        return !!localStorage.getItem('basicAuth');
-      } catch (e) {
-        return false;
-      }
-    })();
+      const tokenPresent = (() => {
+        try {
+          return !!localStorage.getItem('jwtToken');
+        } catch (e) {
+          return false;
+        }
+      })();
 
     if (!user || !tokenPresent) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });

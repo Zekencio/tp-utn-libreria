@@ -2,13 +2,11 @@ package com.example.demo.sale.service;
 
 import com.example.demo.book.model.Book;
 import com.example.demo.book.service.BookServiceImpl;
-import com.example.demo.cards.dto.CardDTO;
 import com.example.demo.cards.model.Card;
 import com.example.demo.cards.service.CardServiceImpl;
 import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.InsufficientStockException;
 import com.example.demo.exceptions.NotFoundException;
-import com.example.demo.exceptions.UnautorizedException;
 import com.example.demo.sale.dto.CreateSaleDTO;
 import com.example.demo.sale.dto.SaleDTO;
 import com.example.demo.sale.dto.UpdateSaleDTO;

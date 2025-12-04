@@ -21,8 +21,8 @@ export class SaleService {
   }
 
   create(cardId: number): Observable<SaleDTO> {
-    const token = localStorage.getItem('basicAuth');
-    const headers = token ? new HttpHeaders({ Authorization: `Basic ${token}` }) : undefined;
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.post<SaleDTO>(this.base, cardId, headers ? { headers } : {});
   }
 }
