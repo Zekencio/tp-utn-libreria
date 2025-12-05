@@ -28,10 +28,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final com.example.demo.sellerprofile.repository.SellerProfileRepository sellerProfileRepository;
+    private final com.example.demo.cards.repository.CardsRepository cardsRepository;
+    private final com.example.demo.sale.repository.SaleRepository saleRepository;
 
-    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder,
+                           com.example.demo.sellerprofile.repository.SellerProfileRepository sellerProfileRepository,
+                           com.example.demo.cards.repository.CardsRepository cardsRepository,
+                           com.example.demo.sale.repository.SaleRepository saleRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.sellerProfileRepository = sellerProfileRepository;
+        this.cardsRepository = cardsRepository;
+        this.saleRepository = saleRepository;
     }
 
     @Override
@@ -71,6 +80,53 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean deleteUser() throws NotFoundException {
         User user = getCurrentUser();
         repository.deleteById(user.getId());
+        return true;
+    }
+
+    @Override
+    public boolean deleteUserById(Long id) throws NotFoundException, com.example.demo.exceptions.UnautorizedException {
+        User current = getCurrentUser();
+        boolean isAdmin = current.getRoles() != null && current.getRoles().contains("ROLE_ADMIN");
+        if (!isAdmin) {
+            throw new com.example.demo.exceptions.UnautorizedException("No esta autorizado para realizar esta acción");
+        }
+        if (current.getId() != null && current.getId().equals(id)) {
+            throw new com.example.demo.exceptions.UnautorizedException("No puedes eliminar tu propia cuenta");
+        }
+        Optional<User> target = repository.findById(id);
+        if (target.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
+        }
+
+        try {
+            var profiles = sellerProfileRepository.findAll();
+            for (var sp : profiles) {
+                if (sp.getSellerUser() != null && sp.getSellerUser().getId() != null && sp.getSellerUser().getId().equals(id)) {
+                    sp.setSellerUser(null);
+                    sellerProfileRepository.save(sp);
+                }
+            }
+
+            var cards = cardsRepository.findAll();
+            for (var c : cards) {
+                if (c.getOwner() != null && c.getOwner().getId() != null && c.getOwner().getId().equals(id)) {
+                    c.setOwner(null);
+                    cardsRepository.save(c);
+                }
+            }
+
+            var sales = saleRepository.findAll();
+            for (var s : sales) {
+                if (s.getUser() != null && s.getUser().getId() != null && s.getUser().getId().equals(id)) {
+                    s.setUser(null);
+                    saleRepository.save(s);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error cleaning references before user deletion", e);
+        }
+
+        repository.deleteById(id);
         return true;
     }
 

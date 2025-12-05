@@ -11,6 +11,7 @@ import { ProfileAdminComponent } from './pages/profile/profile-admin';
 import { GenresAdminComponent } from './pages/profile/genres-admin';
 import { AuthorsAdminComponent } from './pages/profile/authors-admin';
 import { ProfileDefaultComponent } from './pages/profile/profile-default';
+import { UsersAdminComponent } from './pages/profile/users-admin';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
 import { AboutComponent } from './pages/about/about';
@@ -47,6 +48,7 @@ export const routes: Routes = [
         children: [
           { path: 'genres', component: GenresAdminComponent },
           { path: 'authors', component: AuthorsAdminComponent },
+          { path: 'users', component: UsersAdminComponent },
         ],
       },
       { path: '', component: ProfileDefaultComponent },

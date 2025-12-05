@@ -32,6 +32,10 @@ export class BookService {
     return this.http.get<BookDTO[]>(this.base, { headers });
   }
 
+  getById(id: number): Observable<BookDTO> {
+    return this.http.get<BookDTO>(`${this.base}/${id}`);
+  }
+
   create(payload: {
     name: string;
     description: string;

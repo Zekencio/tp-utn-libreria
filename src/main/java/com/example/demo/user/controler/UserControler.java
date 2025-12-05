@@ -78,6 +78,18 @@ public class UserControler {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
+        try {
+            userService.deleteUserById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (com.example.demo.exceptions.UnautorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getMe() {
         try {

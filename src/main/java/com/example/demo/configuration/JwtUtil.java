@@ -19,13 +19,13 @@ public class JwtUtil {
     @Value("${app.jwt.secret:}")
     private String secretProp;
 
-    @Value("${app.jwt.expiration-ms:}") // may be empty
+    @Value("${app.jwt.expiration-ms:}")
     private String expirationMsProp;
 
     private final Environment env;
 
     private String secret;
-    private long expirationMs = 3600000L; // default 1h
+    private long expirationMs = 3600000L;
     private byte[] secretBytes;
 
     public JwtUtil(Environment env) {
@@ -95,5 +95,9 @@ public class JwtUtil {
 
     public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public io.jsonwebtoken.Claims parseClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 }

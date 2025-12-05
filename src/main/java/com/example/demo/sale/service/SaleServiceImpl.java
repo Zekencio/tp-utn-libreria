@@ -40,7 +40,16 @@ public class SaleServiceImpl implements SaleService{
 
     @Override
     public List<SaleDTO> getAll() {
-        return repository.findAll().stream().filter(sale -> sale.getUser().getName().equals(CurrentUserUtils.getUsername())).map(this::convertToDTO).collect(Collectors.toList());
+        String current = CurrentUserUtils.getUsername();
+        org.slf4j.LoggerFactory.getLogger(SaleServiceImpl.class).debug("[SaleService] getAll called, CurrentUserUtils.getUsername()='{}'", current);
+        return repository.findAll().stream().filter(sale -> {
+            try {
+                return sale.getUser() != null && sale.getUser().getName().equals(current);
+            } catch (Exception e) {
+                org.slf4j.LoggerFactory.getLogger(SaleServiceImpl.class).warn("[SaleService] error checking sale user", e);
+                return false;
+            }
+        }).map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override

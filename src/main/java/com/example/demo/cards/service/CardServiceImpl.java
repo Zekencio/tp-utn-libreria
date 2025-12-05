@@ -31,7 +31,16 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<CardDTO> getAll() {
-        return repository.findAll().stream().filter(card -> card.getOwner().getName().equals(CurrentUserUtils.getUsername())).map(this::convertToDTO).collect(Collectors.toList());
+        String current = CurrentUserUtils.getUsername();
+        org.slf4j.LoggerFactory.getLogger(CardServiceImpl.class).debug("[CardService] getAll called, CurrentUserUtils.getUsername()='{}'", current);
+        return repository.findAll().stream().filter(card -> {
+            try {
+                return card.getOwner() != null && card.getOwner().getName().equals(current);
+            } catch (Exception e) {
+                org.slf4j.LoggerFactory.getLogger(CardServiceImpl.class).warn("[CardService] error checking card owner", e);
+                return false;
+            }
+        }).map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
