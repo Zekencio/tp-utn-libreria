@@ -11,6 +11,8 @@ export interface UserDTO {
   email?: string;
   roles?: string[];
   sellerProfile?: SellerProfileDTOFull | null;
+  status?: string;
+  isTemporaryPassword?: boolean;
 }
 
 const STORAGE_KEY = 'currentUser';

@@ -31,16 +31,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final com.example.demo.sellerprofile.repository.SellerProfileRepository sellerProfileRepository;
     private final com.example.demo.cards.repository.CardsRepository cardsRepository;
     private final com.example.demo.sale.repository.SaleRepository saleRepository;
+    private final com.example.demo.book.repository.BookRepository bookRepository;
 
     public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder,
                            com.example.demo.sellerprofile.repository.SellerProfileRepository sellerProfileRepository,
                            com.example.demo.cards.repository.CardsRepository cardsRepository,
-                           com.example.demo.sale.repository.SaleRepository saleRepository) {
+                           com.example.demo.sale.repository.SaleRepository saleRepository,
+                           com.example.demo.book.repository.BookRepository bookRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.sellerProfileRepository = sellerProfileRepository;
         this.cardsRepository = cardsRepository;
         this.saleRepository = saleRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -99,6 +102,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         try {
+            // If user has sales, cannot delete; deactivate instead
+            boolean hasSales = saleRepository.existsByUser_Id(id);
+            if (hasSales) {
+                User u = target.get();
+                u.setStatus("INACTIVE");
+                repository.save(u);
+                return true;
+            }
+
+            // If user is a seller, check seller constraints
+            User t = target.get();
+            if (t.getSellerProfile() != null) {
+                Long sellerId = t.getSellerProfile().getId();
+                boolean sellerHasBooks = bookRepository.existsBySeller_Id(sellerId);
+                boolean sellerHasSales = saleRepository.existsByBooks_Seller_Id(sellerId);
+                if (sellerHasBooks || sellerHasSales) {
+                    // deactivate seller and mark books unavailable
+                    t.setStatus("INACTIVE");
+                    repository.save(t);
+                    var books = bookRepository.findBySeller_Id(sellerId);
+                    for (var b : books) {
+                        b.setAvailable(false);
+                    }
+                    bookRepository.saveAll(books);
+                    return true;
+                }
+                // else no books and no sales -> allow deletion
+            }
+
+            // cleanup references (sellerUser, cards, sales user links)
             var profiles = sellerProfileRepository.findAll();
             for (var sp : profiles) {
                 if (sp.getSellerUser() != null && sp.getSellerUser().getId() != null && sp.getSellerUser().getId().equals(id)) {
@@ -122,12 +155,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     saleRepository.save(s);
                 }
             }
+
+            repository.deleteById(id);
+            return true;
         } catch (Exception e) {
             throw new RuntimeException("Error cleaning references before user deletion", e);
         }
-
-        repository.deleteById(id);
-        return true;
     }
 
     @Override
@@ -163,12 +196,74 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     if (updateUserDTO.getName() != null) {
                         existing.setName(updateUserDTO.getName());
                     }
+                    
                     if (updateUserDTO.getPassword() != null) {
                         existing.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
                     }
                     User saved = repository.save(existing);
                     return convertToDTO(saved);
                 });
+    }
+
+    public Optional<UserDTO> updateUserByAdmin(Long id, com.example.demo.user.dto.AdminUpdateUserDTO dto) throws NotFoundException, com.example.demo.exceptions.UnautorizedException {
+        User current = getCurrentUser();
+        boolean isAdmin = current.getRoles() != null && current.getRoles().contains("ROLE_ADMIN");
+        if (!isAdmin) throw new com.example.demo.exceptions.UnautorizedException("No esta autorizado para realizar esta acción");
+
+        return repository.findById(id).map(existing -> {
+            if (dto.getName() != null) existing.setName(dto.getName());
+            if (dto.getPassword() != null) {
+                existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+                if (dto.getIsTemporaryPassword() != null && dto.getIsTemporaryPassword()) {
+                    existing.setIsTemporaryPassword(true);
+                } else {
+                    existing.setIsTemporaryPassword(false);
+                }
+            }
+            if (dto.getStatus() != null) {
+                String newStatus = dto.getStatus();
+                existing.setStatus(newStatus);
+                // if deactivating a seller, make their books unavailable
+                if (existing.getSellerProfile() != null) {
+                    Long sellerId = existing.getSellerProfile().getId();
+                    var books = bookRepository.findBySeller_Id(sellerId);
+                    for (var b : books) {
+                        b.setAvailable("ACTIVE".equalsIgnoreCase(newStatus));
+                    }
+                    bookRepository.saveAll(books);
+                }
+            }
+
+            User saved = repository.save(existing);
+            return convertToDTO(saved);
+        });
+    }
+
+    @Override
+    public boolean canDeleteUserById(Long id) throws NotFoundException, com.example.demo.exceptions.UnautorizedException {
+        User current = getCurrentUser();
+        boolean isAdmin = current.getRoles() != null && current.getRoles().contains("ROLE_ADMIN");
+        if (!isAdmin) throw new com.example.demo.exceptions.UnautorizedException("No esta autorizado para realizar esta acción");
+
+        Optional<User> target = repository.findById(id);
+        if (target.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
+        }
+
+        boolean hasSales = saleRepository.existsByUser_Id(id);
+        if (hasSales) return false;
+
+        User t = target.get();
+        if (t.getSellerProfile() != null) {
+            Long sellerId = t.getSellerProfile().getId();
+            boolean sellerHasBooks = bookRepository.existsBySeller_Id(sellerId);
+            boolean sellerHasSales = saleRepository.existsByBooks_Seller_Id(sellerId);
+            if (sellerHasBooks || sellerHasSales) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void saveCurrentUser(User user) {
@@ -211,7 +306,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDTO convertToDTO(User user) {
-        UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getRoles());
+        UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getRoles(), user.getStatus(), user.getIsTemporaryPassword());
         if (user.getSellerProfile() != null) {
             var sp = user.getSellerProfile();
         java.util.List<BookDTOReduced> books = sp.getInventory() == null ? java.util.Collections.<BookDTOReduced>emptyList() : sp.getInventory().stream()
@@ -221,6 +316,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             dto.setSellerProfile(sellerDto);
         }
         return dto;
+    }
+
+    public boolean existsAndInactive(String name) {
+        Optional<User> u = repository.findByName(name);
+        if (u.isEmpty()) return false;
+        User user = u.get();
+        return user.getStatus() != null && "INACTIVE".equalsIgnoreCase(user.getStatus());
     }
 
     @Override

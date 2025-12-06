@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookListComponent } from '../../shared/book-list/book-list';
 import { RouterModule } from '@angular/router';

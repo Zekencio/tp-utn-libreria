@@ -26,6 +26,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String status = "ACTIVE"; 
+
+    @Column
+    private Boolean isTemporaryPassword = false;
+
     @ManyToMany
     private List<Book> cart;
 
@@ -133,6 +139,24 @@ public class User {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Boolean getIsTemporaryPassword() {
+        return isTemporaryPassword;
+    }
+
+    public void setIsTemporaryPassword(Boolean isTemporaryPassword) {
+        this.isTemporaryPassword = isTemporaryPassword;
     }
 
     @Override

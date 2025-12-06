@@ -21,4 +21,5 @@ public interface UserService {
 
     User convertToEntity(CreateUserDTO createUserDTO);
     UserDTO convertToDTO(User user);
+    boolean canDeleteUserById(Long id) throws NotFoundException, UnautorizedException;
 }

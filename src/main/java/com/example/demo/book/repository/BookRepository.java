@@ -6,9 +6,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book,Long> {
-	// checks if any book references the given author id
 	boolean existsByAuthor_Id(Long authorId);
 
-	// checks if any book references the given genre id (in the many-to-many relationship)
 	boolean existsByGenres_Id(Long genreId);
+
+	boolean existsBySeller_Id(Long sellerId);
+
+	java.util.List<Book> findBySeller_Id(Long sellerId);
 }

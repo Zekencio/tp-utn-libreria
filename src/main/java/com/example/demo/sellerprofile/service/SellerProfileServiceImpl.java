@@ -42,11 +42,11 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     @Override
     public boolean deleteSellerProfile() throws NotFoundException {
         User user = userService.getCurrentUser();
-        Optional<SellerProfile> seller = Optional.ofNullable(user.getSellerProfile());
-        if (seller.isPresent()){
-            repository.deleteById(seller.get().getId());
+        SellerProfile seller = user.getSellerProfile();
+        if (seller != null) {
+            repository.delete(seller);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -54,24 +54,21 @@ public class SellerProfileServiceImpl implements SellerProfileService{
     @Override
     public SellerProfileDTO updateSellerProfile(UpdateSellerProfileDTO updateSellerProfileDTO) throws NotFoundException {
         User user = userService.getCurrentUser();
-        Optional<SellerProfile> profile = Optional.ofNullable(user.getSellerProfile());
-        if (profile.isEmpty()){
+        SellerProfile existing = user.getSellerProfile();
+        if (existing == null) {
             throw new NotFoundException("No hay un perfil de vendedor registrado para tu usuario");
-        }else {
-            return profile.map(existing -> {
-                if (updateSellerProfileDTO.getName() != null) {
-                    existing.setName(updateSellerProfileDTO.getName());
-                }
-                if (updateSellerProfileDTO.getAddress() != null) {
-                    existing.setAddress(updateSellerProfileDTO.getAddress());
-                }
-                if (updateSellerProfileDTO.getSellerUser() != null) {
-                    existing.setSellerUser(updateSellerProfileDTO.getSellerUser());
-                }
-                SellerProfile saved = repository.save(existing);
-                return convertToDTO(saved);
-            }).get();
         }
+        if (updateSellerProfileDTO.getName() != null) {
+            existing.setName(updateSellerProfileDTO.getName());
+        }
+        if (updateSellerProfileDTO.getAddress() != null) {
+            existing.setAddress(updateSellerProfileDTO.getAddress());
+        }
+        if (updateSellerProfileDTO.getSellerUser() != null) {
+            existing.setSellerUser(updateSellerProfileDTO.getSellerUser());
+        }
+        SellerProfile saved = repository.save(existing);
+        return convertToDTO(saved);
     }
 
     @Override
@@ -86,9 +83,7 @@ public class SellerProfileServiceImpl implements SellerProfileService{
             throw new AlreadyExistingException("El vendedor ya esta registrado");
         }
         SellerProfile savedSeller = repository.save(newSeller);
-        // add seller role to user
         user.getRoles().add("ROLE_SELLER");
-        // persist role change
         userService.saveCurrentUser(user);
         return convertToDTO(savedSeller);
     }

@@ -17,6 +17,7 @@ public class UpdateUserDTO {
         this.currentPassword = currentPassword;
     }
 
+
     public UpdateUserDTO() {
     }
 
@@ -43,6 +44,8 @@ public class UpdateUserDTO {
     public void setCurrentPassword(@Size(min = 8, message = "La contraseña actual debe tener al menos 8 caracteres") String currentPassword) {
         this.currentPassword = currentPassword;
     }
+
+    
 
     @Override
     public boolean equals(Object o) {

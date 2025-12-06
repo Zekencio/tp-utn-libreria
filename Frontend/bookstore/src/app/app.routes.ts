@@ -18,6 +18,7 @@ import { AboutComponent } from './pages/about/about';
 import { CardsClientComponent } from './pages/profile/cards-client';
 import { ComprasClientComponent } from './pages/profile/compras-client';
 import { CartComponent } from './pages/cart/cart';
+import { ChangePasswordComponent } from './pages/change-password/change-password';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -55,4 +56,5 @@ export const routes: Routes = [
     ],
   },
   {path: 'cart', component: CartComponent}
+  ,{ path: 'change-password', component: ChangePasswordComponent }
 ];
