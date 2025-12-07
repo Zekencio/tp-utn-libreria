@@ -371,12 +371,42 @@ export class SellerCatalogComponent implements OnInit {
     this.authorId = book?.author?.id ?? null;
     this.genreId = (book?.genres || [])[0]?.id ?? null;
 
-    setTimeout(() => {
-      this.showCreateModal = true;
-      try {
-        this.cd.detectChanges();
-      } catch (e) {}
-    }, 0);
+    const id = this.editBookId;
+    if (id) {
+      this.bookService.getById(id).subscribe({
+        next: (full) => {
+          this.zone.run(() => {
+            this.name = full?.name || this.name;
+            this.description = full?.description || this.description;
+            this.imageUrl = full?.imageUrl || this.imageUrl || '';
+            this.price = full?.price ?? this.price;
+            this.stock = full?.stock ?? this.stock;
+            this.authorId = full?.author?.id ?? this.authorId;
+            this.genreId = (full?.genres || [])[0]?.id ?? this.genreId;
+
+            this.showCreateModal = true;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+          });
+        },
+        error: () => {
+          this.zone.run(() => {
+            this.showCreateModal = true;
+            try {
+              this.cd.detectChanges();
+            } catch (e) {}
+          });
+        },
+      });
+    } else {
+      setTimeout(() => {
+        this.showCreateModal = true;
+        try {
+          this.cd.detectChanges();
+        } catch (e) {}
+      }, 0);
+    }
   }
 
   deleteBook(book: any): void {

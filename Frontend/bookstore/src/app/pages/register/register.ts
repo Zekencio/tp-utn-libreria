@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-register',
@@ -25,6 +26,7 @@ export class RegisterComponent {
     private router: Router,
     private cd: ChangeDetectorRef,
     private zone: NgZone
+    , private cartService: CartService
   ) {}
 
   close() {
@@ -50,6 +52,7 @@ export class RegisterComponent {
           try {
             this.cd.detectChanges();
           } catch (e) {}
+          try { this.cartService.setLocalCart([]); } catch (e) {}
           this.router.navigate(['/']);
         });
       },
@@ -63,6 +66,13 @@ export class RegisterComponent {
             try {
               this.cd.detectChanges();
             } catch (e) {}
+            return;
+          }
+
+          if (err && err.status === 403) {
+            this.error = 'Cuenta inactiva. Contacta al administrador.';
+            this.nameError = true;
+            try { this.cd.detectChanges(); } catch (e) {}
             return;
           }
 

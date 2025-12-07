@@ -5,6 +5,7 @@ import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.user.dto.CreateUserDTO;
 import com.example.demo.user.dto.UpdateUserDTO;
 import com.example.demo.user.dto.UserDTO;
+import com.example.demo.user.dto.AdminUpdateUserDTO;
 import com.example.demo.user.service.UserServiceImpl;
 import com.example.demo.user.model.User;
 import jakarta.validation.Valid;
@@ -41,6 +42,10 @@ public class UserControler {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
         try {
+            // if a user exists but is inactive, return 403 so frontend shows inactive-account message
+            if (userService.existsAndInactive(createUserDTO.getName())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             UserDTO userDTO = userService.createUser(createUserDTO);
             return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
         }catch (AlreadyExistingException e){
@@ -68,6 +73,30 @@ public class UserControler {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}/admin")
+    public ResponseEntity<UserDTO> adminUpdateUser(@PathVariable Long id, @RequestBody AdminUpdateUserDTO adminUpdate){
+        try {
+            Optional<UserDTO> updated = userService.updateUserByAdmin(id, adminUpdate);
+            return updated.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (com.example.demo.exceptions.UnautorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @GetMapping("/{id}/admin/can-delete")
+    public ResponseEntity<Boolean> canDeleteUser(@PathVariable Long id) {
+        try {
+            boolean canDelete = userService.canDeleteUserById(id);
+            return ResponseEntity.ok(canDelete);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (com.example.demo.exceptions.UnautorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(){
         try {
@@ -75,6 +104,18 @@ public class UserControler {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
+        try {
+            userService.deleteUserById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (com.example.demo.exceptions.UnautorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 

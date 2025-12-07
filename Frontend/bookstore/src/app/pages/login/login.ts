@@ -66,6 +66,10 @@ export class LoginComponent {
       .subscribe({
         next: () => {
           const u = this.auth.user;
+          if (u?.isTemporaryPassword) {
+            this.router.navigate(['/change-password']);
+            return;
+          }
           if (u?.roles?.includes('ROLE_ADMIN')) {
             this.router.navigate(['/profile', 'admin']);
             return;
@@ -101,6 +105,8 @@ export class LoginComponent {
           this.zone.run(() => {
             if (err?.status === 401) {
               this.error = 'Login o contraseña incorrectos';
+            } else if (err?.status === 403) {
+              this.error = 'Cuenta inactiva. Contacta al administrador.';
             } else {
               this.error = err?.error?.message ?? 'Error al iniciar sesión';
             }

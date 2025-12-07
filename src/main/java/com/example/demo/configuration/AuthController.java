@@ -61,6 +61,9 @@ public class AuthController {
             String token = jwtUtil.generateToken(req.name, roles);
 
             var user = userService.getCurrentUser();
+            if (user.getStatus() != null && "INACTIVE".equalsIgnoreCase(user.getStatus())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             UserDTO dto = userService.convertToDTO(user);
 
             return ResponseEntity.ok(new AuthResponse(token, dto));

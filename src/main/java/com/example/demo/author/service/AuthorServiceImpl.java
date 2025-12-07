@@ -47,7 +47,6 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean deleteAuthor(Long id) {
         Optional<Author> author = repository.findById(id);
         if (author.isPresent()){
-            // prevent deletion if any book references this author
             if (bookRepository.existsByAuthor_Id(id)){
                 throw new IllegalStateException("Author has books and cannot be deleted");
             }

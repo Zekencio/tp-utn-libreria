@@ -182,6 +182,19 @@ export class ProfileComponent implements OnDestroy {
   }
 
   submitSellerRegistration(): void {
+    const tokenPresent = (() => {
+      try {
+        return !!localStorage.getItem('jwtToken');
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (!this.auth.userSignal() || !tokenPresent) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
+      return;
+    }
+
     if (!this.sellerName || this.sellerName.trim().length < 6) {
       this.emailUpdateError = 'El nombre de la empresa debe tener al menos 6 caracteres.';
       return;

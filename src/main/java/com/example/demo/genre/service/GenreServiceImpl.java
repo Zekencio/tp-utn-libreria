@@ -53,7 +53,6 @@ public class GenreServiceImpl implements GenreService{
     public boolean deleteGenre(Long id) {
         Optional<Genre> genre = repository.findById(id);
         if (genre.isPresent()){
-            // prevent deletion if any book references this genre
             if (bookRepository != null && bookRepository.existsByGenres_Id(id)){
                 throw new IllegalStateException("Genre is used by existing books and cannot be deleted");
             }

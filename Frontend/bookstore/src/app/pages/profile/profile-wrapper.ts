@@ -64,6 +64,12 @@ import { Subscription } from 'rxjs';
               routerLinkActive="active"
               >Gestión de Autores</a
             >
+            <a
+              class="profile-menu__item"
+              routerLink="/profile/admin/users"
+              routerLinkActive="active"
+              >Gestion de Usuarios</a
+            >
             } @if (!isAdmin) {
             <a class="profile-menu__item" (click)="openToggleConfirm()">{{ toggleLabel }}</a>
 

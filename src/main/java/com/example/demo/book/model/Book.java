@@ -52,6 +52,9 @@ public class Book {
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
+    @Column
+    private Boolean available = true;
+
     @ManyToMany(mappedBy = "cart")
     private List<User> cartUser;
 
@@ -102,6 +105,14 @@ public class Book {
     }
 
     public Book() {
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 
     public Long getId() {

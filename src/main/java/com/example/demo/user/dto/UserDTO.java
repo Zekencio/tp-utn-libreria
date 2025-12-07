@@ -10,11 +10,21 @@ public class UserDTO {
     private String name;
     private Set<String> roles;
     private SellerProfileDTOFull sellerProfile;
+    private String status;
+    private Boolean isTemporaryPassword;
 
     public UserDTO(Long id, String name, Set<String> roles) {
         this.id = id;
         this.name = name;
         this.roles = roles;
+    }
+
+    public UserDTO(Long id, String name, Set<String> roles, String status, Boolean isTemporaryPassword) {
+        this.id = id;
+        this.name = name;
+        this.roles = roles;
+        this.status = status;
+        this.isTemporaryPassword = isTemporaryPassword;
     }
 
     public SellerProfileDTOFull getSellerProfile() {
@@ -23,6 +33,24 @@ public class UserDTO {
 
     public void setSellerProfile(SellerProfileDTOFull sellerProfile) {
         this.sellerProfile = sellerProfile;
+    }
+
+    
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Boolean getIsTemporaryPassword() {
+        return isTemporaryPassword;
+    }
+
+    public void setIsTemporaryPassword(Boolean isTemporaryPassword) {
+        this.isTemporaryPassword = isTemporaryPassword;
     }
 
     public UserDTO(String name, Set<String> roles) {
