@@ -46,17 +46,20 @@
   flex: 0 0 33.3333%;
   padding: 16px;
 }
+
 .profile-menu {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .profile-menu__item {
   color: var(--title-color);
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
 }
+
 .profile-menu__item:hover {
   background: var(--menu-item-hover);
   color: var(--first-color);

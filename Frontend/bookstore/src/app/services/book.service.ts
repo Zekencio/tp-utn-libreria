@@ -76,4 +76,12 @@ export class BookService {
   getBooksByGenre(genreId: number): Observable<BookDTO[]> {
     return this.http.get<BookDTO[]>(`${this.base}/genre/${genreId}`);
   }
-}
+
+  getBooksByFilter(payload: { genereId?: string; authorId?: string }) {
+    return this.http.get<BookDTO[]>(`${this.base}/filter`, {
+      params: {
+        ...(payload.genereId && { genereId: payload.genereId }),
+        ...(payload.authorId && { authorId: payload.authorId }),
+      }
+    });
+  }}
