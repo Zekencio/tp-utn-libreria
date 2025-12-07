@@ -10,6 +10,7 @@ import com.example.demo.book.dto.CreateBookDTO;
 import com.example.demo.book.dto.UpdateBookDTO;
 import com.example.demo.book.model.Book;
 import com.example.demo.book.repository.BookRepository;
+import com.example.demo.configuration.BookSpecification;
 import com.example.demo.configuration.CurrentUserUtils;
 import com.example.demo.exceptions.AlreadyExistingException;
 import com.example.demo.exceptions.InsufficientStockException;
@@ -21,6 +22,8 @@ import com.example.demo.genre.service.GenreServiceImpl;
 import com.example.demo.sellerprofile.service.SellerProfileServiceImpl;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
+
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -226,5 +229,16 @@ public class BookServiceImpl implements BookService{
         }
         return new BookDTOReduced(book.getId(), book.getName(), book.getDescription(), book.getPrice(), book.getStock(), reduceAuthor(book.getAuthor()), genres, book.getImageUrl());
     }
+
+    
+    public List<BookDTO> getBooksByFilter(Optional<UUID> genreId, Optional<UUID> authorId) {
+        Specification<Book> spec = Specification.where(BookSpecification.hasGenre(genreId))
+                .and(BookSpecification.hasAuthor(authorId));
+
+        System.out.println("Specification: " + spec);
+
+        return repository.findAll(spec).stream().map(this::convertToDTO).toList();
+    }
+
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/books")
@@ -52,6 +53,14 @@ public class BookControler {
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<BookDTO>> getFiltered(
+        @RequestParam Optional<UUID> genereId,
+        @RequestParam Optional<UUID> authorId){
+        List<BookDTO> books= bookService.getBooksByFilter(genereId, authorId);
+        return ResponseEntity.ok(books);
     }
 
 
