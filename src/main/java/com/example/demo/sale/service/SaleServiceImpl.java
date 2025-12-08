@@ -22,6 +22,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.IOError;
@@ -38,19 +39,20 @@ import java.util.stream.Collectors;
 @Service
 public class SaleServiceImpl implements SaleService{
 
-    @Value("${sendgrid.api-key}")
-    private String emailApiKey;
-
+    private final Environment env;
+    private final String emailApiKey;
     private final SaleRepository repository;
     private final UserServiceImpl userService;
     private final CardServiceImpl cardService;
     private final BookServiceImpl bookService;
 
-    public SaleServiceImpl(SaleRepository repository, UserServiceImpl userService, CardServiceImpl cardService, BookServiceImpl bookService) {
+    public SaleServiceImpl(SaleRepository repository, UserServiceImpl userService, CardServiceImpl cardService, BookServiceImpl bookService, Environment env) {
         this.repository = repository;
         this.userService = userService;
         this.cardService = cardService;
         this.bookService = bookService;
+        this.env = env;
+        this.emailApiKey = this.env.getProperty("sendgrid.api.key");
     }
 
     @Override
