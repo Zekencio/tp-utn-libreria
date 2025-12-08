@@ -14,8 +14,20 @@ import com.example.demo.sale.model.Sale;
 import com.example.demo.sale.repository.SaleRepository;
 import com.example.demo.user.model.User;
 import com.example.demo.user.service.UserServiceImpl;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +37,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class SaleServiceImpl implements SaleService{
+
+    @Value("${sendgrid.api-key}")
+    private String emailApiKey;
 
     private final SaleRepository repository;
     private final UserServiceImpl userService;
@@ -63,7 +78,7 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public SaleDTO createSale(Long id) throws NotFoundException, InsufficientStockException{
+    public SaleDTO createSale(Long id) throws NotFoundException, InsufficientStockException, IOException{
         User user = userService.getCurrentUser();
         Optional<Card> card = cardService.getByIdNumber(id);
 
@@ -75,6 +90,19 @@ public class SaleServiceImpl implements SaleService{
             bookService.updateStock(user.getCart());
 
             userService.emptyCart();
+
+            double total = 0;
+            for(Book book : savedSale.getBooks()){
+                total += book.getPrice();
+            }
+
+            String template = Files.readString(Paths.get("src/main/resources/templates/email-de-compra-exitosa.html"));
+
+            String htmlDetails = template
+                    .replace("{{orderId}}", String.valueOf(savedSale.getId()))
+                    .replace("{{total}}", String.valueOf(total));
+
+            sendSaleEmail(user.getName(), htmlDetails);
             return convertToDTO(savedSale);
         }else {
             throw new NotFoundException("La tarjeta no esta registrada");
@@ -111,6 +139,35 @@ public class SaleServiceImpl implements SaleService{
                     Sale sale = repository.save(existing);
                     return convertToDTO(sale);
                 });
+    }
+
+    @Override
+    public void sendSaleEmail(String userEmail, String htmlDetails) throws IOException{
+
+        // Uso mi mail como remi
+        Email sender = new Email("ezereding420@gmail.com");
+        Email addressee = new Email(userEmail);
+        Content details = new Content("text/html", htmlDetails);
+
+        Mail mail = new Mail(sender, "Compra realizada", addressee, details);
+
+        SendGrid sg = new SendGrid(emailApiKey);
+        Request request = new Request();
+
+        try{
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            // Debug info
+            System.out.println("Status: " + response.getStatusCode());
+            System.out.println("Body: " + response.getBody());
+            System.out.println("Headers: " + response.getHeaders());
+        }catch (IOException e){
+            throw e;
+        }
     }
 
     @Override

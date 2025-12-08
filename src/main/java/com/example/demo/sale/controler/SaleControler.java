@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +40,9 @@ public class SaleControler {
         try {
             SaleDTO saleDTO = saleService.createSale(id);
             return new ResponseEntity<>(saleDTO, HttpStatus.CREATED);
-        } catch (NotFoundException  e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (InsufficientStockException  e) {
+        } catch (InsufficientStockException | IOException e) {
             return ResponseEntity.badRequest().build();
         }
 

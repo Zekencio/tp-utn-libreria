@@ -76,12 +76,11 @@ CREATE TABLE sales_books (
     CONSTRAINT fk_sb_sale FOREIGN KEY (sale_id) REFERENCES sales(id)
 );
 
-
 -- Create un admin user directly in db with login: admin@bookstore.com, contraseña: admin2025
 
 START TRANSACTION;
 
-INSERT INTO user (name, password)
+INSERT INTO users (name, password)
 VALUES ('admin@bookstore.com', '$2b$12$1L/HVmqEdQxJMeF4ddi8d.Xo/CWoEfzA1P6GGaZ8j62cBtQ0P2lNW');
 
 SET @new_user_id = LAST_INSERT_ID();
@@ -89,3 +88,9 @@ INSERT INTO user_roles (user_id, role) VALUES
   (@new_user_id, 'ROLE_ADMIN');
 
 COMMIT;
+
+
+
+
+
+

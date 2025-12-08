@@ -6,12 +6,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-<<<<<<< Updated upstream
-public interface BookRepository extends JpaRepository<Book,Long> {
-=======
+
 public interface BookRepository extends JpaRepository<Book,Long>,JpaSpecificationExecutor<Book> {
 	// checks if any book references the given author id
->>>>>>> Stashed changes
 	boolean existsByAuthor_Id(Long authorId);
 
 	boolean existsByGenres_Id(Long genreId);
