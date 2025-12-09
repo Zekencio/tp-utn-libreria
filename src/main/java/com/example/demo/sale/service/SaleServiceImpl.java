@@ -21,11 +21,9 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -100,9 +98,14 @@ public class SaleServiceImpl implements SaleService{
 
             String template = Files.readString(Paths.get("src/main/resources/templates/email-de-compra-exitosa.html"));
 
+            String booksList = savedSale.getBooks().stream()
+                    .map(book -> "<li>" + book.getName() + " - $" + book.getPrice() + "</li>")
+                    .collect(Collectors.joining());
+
             String htmlDetails = template
                     .replace("{{orderId}}", String.valueOf(savedSale.getId()))
-                    .replace("{{total}}", String.valueOf(total));
+                    .replace("{{total}}", String.valueOf(total))
+                    .replace("{{books}}", booksList);
 
             sendSaleEmail(user.getName(), htmlDetails);
             return convertToDTO(savedSale);

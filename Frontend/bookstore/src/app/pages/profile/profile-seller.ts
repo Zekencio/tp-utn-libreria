@@ -28,6 +28,12 @@ import { finalize } from 'rxjs/operators';
         </button>
       </div>
       <div class="profile-email-row">
+        <p class="seller-detail-item"><strong>Número de AFIP:</strong> {{ seller.afipNumber }}</p>
+        <button class="edit-email" title="Editar" (click)="openEditModal()">
+          <i class="ri-edit-line"></i>
+        </button>
+      </div>
+      <div class="profile-email-row">
         <p class="seller-detail-item"><strong>Inventario:</strong> {{ inventoryCount }} items</p>
       </div>
       }
@@ -51,6 +57,26 @@ import { finalize } from 'rxjs/operators';
           <div class="field-hint">Dirección debe tener al menos 6 символов.</div>
           }
         </div>
+        <div class="modal-field">
+          <label for="editSellerAfip">Número de AFIP</label>
+          <input
+            id="editSellerAfip"
+            [(ngModel)]="editAfipNumber"
+            maxlength="13"
+            inputmode="numeric"
+            (beforeinput)="onBeforeInputAfip($event)"
+            (input)="onAfipNumberInput($event)"
+            (keydown)="allowDigitKeydown($event)"
+            (paste)="onPasteAfip($event)"
+            (blur)="onBlur('afip')"
+            (focus)="onFocus('afip')"
+            [disabled]="isSavingSeller"
+          />
+          <div class="field-hint">Formato: XX-XXXXXXXX-X</div>
+          @if (afipTouched && !isAfipNumberValid(_afipDigits)) {
+          <div class="field-error">Número inválido — debe tener exactamente 11 dígitos.</div>
+          }
+        </div>
         <div class="modal-actions">
           <button
             class="btn-primary"
@@ -60,7 +86,8 @@ import { finalize } from 'rxjs/operators';
               !editName.trim() ||
               !editAddress.trim() ||
               editName.trim().length < 6 ||
-              editAddress.trim().length < 6
+              editAddress.trim().length < 6 ||
+              !isAfipNumberValid(_afipDigits)
             "
           >
             Guardar
@@ -175,6 +202,10 @@ export class ProfileSellerComponent implements OnInit, OnDestroy {
   showEditModal = false;
   editName = '';
   editAddress = '';
+  editAfipNumber = '';
+  afipTouched = false;
+  dirtyAfip = false;
+  focusedAfip = false;
   isSavingSeller = false;
   sellerUpdateError: string | null = null;
 
@@ -211,9 +242,19 @@ export class ProfileSellerComponent implements OnInit, OnDestroy {
     if (s) {
       this.editName = s.name || '';
       this.editAddress = s.address || '';
+      this.editAfipNumber = this.formatDisplayEditableAfip(s.afipNumber || '');
     }
+    this.afipTouched = false;
     this.sellerUpdateError = null;
     this.showEditModal = true;
+  }
+
+  formatDisplayEditableAfip(raw?: string): string {
+    if (!raw) return '';
+    const digits = String(raw).replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 10) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}-${digits.slice(2, 10)}-${digits.slice(10, 11)}`;
   }
 
   closeEditModal(): void {
@@ -230,10 +271,18 @@ export class ProfileSellerComponent implements OnInit, OnDestroy {
       this.sellerUpdateError = 'Dirección debe tener al menos 6 символов.';
       return;
     }
+    if (!this.isAfipNumberValid(this._afipDigits)) {
+      this.sellerUpdateError = 'El número de AFIP debe tener 11 dígitos (formato XX-XXXXXXXX-X).';
+      return;
+    }
     this.isSavingSeller = true;
     this.sellerUpdateError = null;
     this.sellerService
-      .updateSellerProfile({ name: this.editName.trim(), address: this.editAddress.trim() })
+      .updateSellerProfile({
+        name: this.editName.trim(),
+        address: this.editAddress.trim(),
+        afipNumber: this._afipDigits.replace(/(\d{2})(\d{8})(\d{1})/, '$1-$2-$3')
+      })
       .pipe(finalize(() => (this.isSavingSeller = false)))
       .subscribe({
         next: (res: SellerProfileDTOFull) => {
@@ -248,5 +297,90 @@ export class ProfileSellerComponent implements OnInit, OnDestroy {
           this.sellerUpdateError = 'Error al actualizar datos del vendedor';
         },
       });
+  }
+
+  get _afipDigits(): string {
+    return (this.editAfipNumber || '').replace(/\D/g, '');
+  }
+
+  onAfipNumberInput(e: any): void {
+    try {
+      this.onInput('afip');
+      const raw = e?.target?.value ?? '';
+      const digits = String(raw).replace(/\D/g, '').slice(0, 11);
+      const formatted = this.formatAfipNumber(digits);
+      this.editAfipNumber = formatted;
+      try {
+        const inputEl = e?.target as HTMLInputElement | null;
+        if (inputEl) inputEl.value = formatted;
+      } catch (err) {}
+    } catch (err) {}
+  }
+
+  formatAfipNumber(digits: string): string {
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 10) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}-${digits.slice(2, 10)}-${digits.slice(10, 11)}`;
+  }
+
+  onBeforeInputAfip(e: InputEvent): void {
+    try {
+      const data = (e as any).data || '';
+      if (!data) return;
+      if (/\D/.test(String(data))) {
+        e.preventDefault();
+      }
+    } catch (err) {}
+  }
+
+  onPasteAfip(e: ClipboardEvent): void {
+    try {
+      const text = e.clipboardData?.getData('text') || '';
+      const digits = text.replace(/\D/g, '').slice(0, 11);
+      if (digits.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const formatted = this.formatAfipNumber(digits);
+      e.preventDefault();
+      this.editAfipNumber = formatted;
+      try {
+        const input = document.activeElement as HTMLInputElement | null;
+        if (input && input.id === 'editSellerAfip') input.value = formatted;
+      } catch (err) {}
+      this.onInput('afip');
+    } catch (err) {}
+  }
+
+  allowDigitKeydown(e: KeyboardEvent): void {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab'];
+    if (allowedKeys.indexOf(e.key) !== -1) return;
+    if (e.ctrlKey || e.metaKey) return;
+    if (/^\d$/.test(e.key)) return;
+    e.preventDefault();
+  }
+
+  onInput(field: string): void {
+    if (field === 'afip') {
+      this.dirtyAfip = true;
+    }
+  }
+
+  onBlur(field: string): void {
+    if (field === 'afip') {
+      if (this.dirtyAfip || this.focusedAfip) this.afipTouched = true;
+      this.focusedAfip = false;
+    }
+  }
+
+  onFocus(field: string): void {
+    if (field === 'afip') {
+      this.focusedAfip = true;
+    }
+  }
+
+  isAfipNumberValid(digits?: string): boolean {
+    if (!digits) return false;
+    return digits.length === 11;
   }
 }

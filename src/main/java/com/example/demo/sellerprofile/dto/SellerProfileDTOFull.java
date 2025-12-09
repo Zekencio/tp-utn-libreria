@@ -9,12 +9,14 @@ public class SellerProfileDTOFull {
     private Long id;
     private String name;
     private String address;
+    private String afipNumber;
     private List<BookDTOReduced> books;
 
-    public SellerProfileDTOFull(Long id, String name, String address, List<BookDTOReduced> books) {
+    public SellerProfileDTOFull(Long id, String name, String address, String afipNumber, List<BookDTOReduced> books) {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.afipNumber = afipNumber;
         this.books = books;
     }
 
@@ -59,11 +61,11 @@ public class SellerProfileDTOFull {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfileDTOFull that = (SellerProfileDTOFull) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(afipNumber, that.afipNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address);
+        return Objects.hash(id, name, address, afipNumber);
     }
 }

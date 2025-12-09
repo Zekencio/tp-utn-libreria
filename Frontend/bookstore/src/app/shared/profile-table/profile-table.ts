@@ -22,12 +22,18 @@ import { CommonModule } from '@angular/common';
           <tbody>
             <tr *ngFor="let row of rows">
               <td *ngFor="let _col of columns; let i = index">
-                <ng-container *ngIf="keys && keys[i]">
-                  {{ getCellValue(row, keys[i]) }}
+                <ng-container *ngIf="keys && keys[i]; else noKey">
+                  <ng-container *ngIf="cellTemplates && cellTemplates[keys[i]]; else textVal">
+                    <ng-container *ngTemplateOutlet="cellTemplates[keys[i]]; context: { $implicit: row }"></ng-container>
+                  </ng-container>
+                  <ng-template #textVal>{{ getCellValue(row, keys[i]) }}</ng-template>
                 </ng-container>
-                <ng-container *ngIf="!keys || !keys[i]">
-                  {{ getCellValue(row, columns[i]) }}
-                </ng-container>
+                <ng-template #noKey>
+                  <ng-container *ngIf="cellTemplates && cellTemplates[columns[i]]; else textVal2">
+                    <ng-container *ngTemplateOutlet="cellTemplates[columns[i]]; context: { $implicit: row }"></ng-container>
+                  </ng-container>
+                  <ng-template #textVal2>{{ getCellValue(row, columns[i]) }}</ng-template>
+                </ng-template>
               </td>
               <td *ngIf="actionsTemplate" class="actions">
                 <ng-container
@@ -49,6 +55,7 @@ export class ProfileTableComponent {
   @Input() rows: any[] = [];
   @Input() keys?: string[];
   @Input() actionsTemplate?: TemplateRef<any> | null = null;
+  @Input() cellTemplates?: { [key: string]: TemplateRef<any> } | null = null;
 
   getCellValue(row: any, keyOrLabel: string): any {
     if (!row) return '';

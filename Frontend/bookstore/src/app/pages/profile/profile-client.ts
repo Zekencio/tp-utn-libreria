@@ -5,11 +5,13 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { SellerProfileService, SellerProfileDTOFull } from '../../services/seller-profile.service';
+import { SellerRequestService, SellerRequestDTO } from '../../services/seller-request.service';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ConfirmDialogComponent],
   templateUrl: './profile-client.html',
 })
 export class ProfileComponent implements OnDestroy {
@@ -17,6 +19,10 @@ export class ProfileComponent implements OnDestroy {
   isRegistering = false;
   sellerName: string = '';
   sellerAddress: string = '';
+  sellerAfipNumber: string = '';
+  afipTouched = false;
+  dirtyAfip = false;
+  focusedAfip = false;
   showEmailModal = false;
   emailModalStep: number = 1;
   emailCurrentPassword: string = '';
@@ -24,6 +30,11 @@ export class ProfileComponent implements OnDestroy {
   isUpdatingEmail = false;
   emailUpdateError: string | null = null;
   sellerProfile: WritableSignal<SellerProfileDTOFull | null> = signal(null);
+  sellerRequest: WritableSignal<SellerRequestDTO | null> = signal(null);
+  // Withdraw confirm dialog state
+  showWithdrawConfirm = false;
+  withdrawLoading = false;
+  withdrawError: string | null = null;
 
   private roleLabels: Record<string, string> = {
     ROLE_CLIENT: 'Cliente',
@@ -36,7 +47,8 @@ export class ProfileComponent implements OnDestroy {
   constructor(
     public auth: AuthService,
     private sellerProfileService: SellerProfileService,
-    private router: Router,
+    private sellerRequestService: SellerRequestService,
+    public router: Router,
     private route: ActivatedRoute
   ) {
     effect(() => {
@@ -57,6 +69,7 @@ export class ProfileComponent implements OnDestroy {
         this.loadSellerProfileIfNeeded();
       } else {
         this.sellerProfile.set(null);
+        this.loadSellerRequestIfNeeded();
       }
     });
 
@@ -203,25 +216,31 @@ export class ProfileComponent implements OnDestroy {
       this.emailUpdateError = 'La dirección debe tener al menos 6 caracteres.';
       return;
     }
+    if (!this.isAfipNumberValid(this._afipDigits)) {
+      this.emailUpdateError = 'El número de AFIP debe tener 11 dígitos (formato XX-XXXXXXXX-X).';
+      return;
+    }
     this.emailUpdateError = null;
     this.isRegistering = true;
     const start = Date.now();
     const minMs = 2500;
 
-    this.sellerProfileService
-      .createSellerProfile({ name: this.sellerName.trim(), address: this.sellerAddress.trim() })
+    this.sellerRequestService
+      .createRequest({
+        businessName: this.sellerName.trim(),
+        address: this.sellerAddress.trim(),
+        cuit: this._afipDigits.replace(/(\d{2})(\d{8})(\d{1})/, '$1-$2-$3')
+      })
       .subscribe({
-        next: () => {
+        next: (request) => {
           const finish = () => {
-            this.auth.me().subscribe((user) => {
-              this.isRegistering = false;
-              this.showSellerModal = false;
-              this.sellerName = '';
-              this.sellerAddress = '';
-              if (user?.roles?.includes('ROLE_SELLER')) {
-                this.router.navigate(['/profile', 'seller']);
-              }
-            });
+            this.isRegistering = false;
+            this.showSellerModal = false;
+            this.sellerName = '';
+            this.sellerAddress = '';
+            this.sellerAfipNumber = '';
+            this.sellerRequest.set(request);
+            this.emailUpdateError = 'Tu solicitud ha sido enviada. El administrador la revisará pronto.';
           };
           const elapsed = Date.now() - start;
           const wait = Math.max(0, minMs - elapsed);
@@ -230,6 +249,7 @@ export class ProfileComponent implements OnDestroy {
         error: () => {
           const finishErr = () => {
             this.isRegistering = false;
+            this.emailUpdateError = 'Error al enviar la solicitud. Intenta nuevamente.';
           };
           const elapsed = Date.now() - start;
           const wait = Math.max(0, minMs - elapsed);
@@ -254,4 +274,144 @@ export class ProfileComponent implements OnDestroy {
       error: () => this.sellerProfile.set(null),
     });
   }
+
+  get _afipDigits(): string {
+    return (this.sellerAfipNumber || '').replace(/\D/g, '');
+  }
+
+  onAfipNumberInput(e: any): void {
+    try {
+      this.onInput('afip');
+      const raw = e?.target?.value ?? '';
+      const digits = String(raw).replace(/\D/g, '').slice(0, 11);
+      const formatted = this.formatAfipNumber(digits);
+      this.sellerAfipNumber = formatted;
+      try {
+        const inputEl = e?.target as HTMLInputElement | null;
+        if (inputEl) inputEl.value = formatted;
+      } catch (err) {}
+    } catch (err) {}
+  }
+
+  formatAfipNumber(digits: string): string {
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 10) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}-${digits.slice(2, 10)}-${digits.slice(10, 11)}`;
+  }
+
+  onBeforeInputAfip(e: InputEvent): void {
+    try {
+      const data = (e as any).data || '';
+      if (!data) return;
+      if (/\D/.test(String(data))) {
+        e.preventDefault();
+      }
+    } catch (err) {}
+  }
+
+  onPasteAfip(e: ClipboardEvent): void {
+    try {
+      const text = e.clipboardData?.getData('text') || '';
+      const digits = text.replace(/\D/g, '').slice(0, 11);
+      if (digits.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const formatted = this.formatAfipNumber(digits);
+      e.preventDefault();
+      this.sellerAfipNumber = formatted;
+      try {
+        const input = document.activeElement as HTMLInputElement | null;
+        if (input && input.id === 'sellerAfipNumber') input.value = formatted;
+      } catch (err) {}
+      this.onInput('afip');
+    } catch (err) {}
+  }
+
+  allowDigitKeydown(e: KeyboardEvent): void {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab'];
+    if (allowedKeys.indexOf(e.key) !== -1) return;
+    if (e.ctrlKey || e.metaKey) return;
+    if (/^\d$/.test(e.key)) return;
+    e.preventDefault();
+  }
+
+  onInput(field: string): void {
+    if (field === 'afip') {
+      this.dirtyAfip = true;
+    }
+  }
+
+  onBlur(field: string): void {
+    if (field === 'afip') {
+      if (this.dirtyAfip || this.focusedAfip) this.afipTouched = true;
+      this.focusedAfip = false;
+    }
+  }
+
+  onFocus(field: string): void {
+    if (field === 'afip') {
+      this.focusedAfip = true;
+    }
+  }
+
+  isAfipNumberValid(digits?: string): boolean {
+    if (!digits) return false;
+    return digits.length === 11;
+  }
+
+  loadSellerRequestIfNeeded(): void {
+
+    this.sellerProfileService.getMySellerProfile().subscribe({
+      next: (profile) => {
+        this.sellerProfile.set(profile);
+        this.sellerRequest.set(null);
+      },
+      error: () => {
+        this.sellerRequestService.getCurrentUserRequest().subscribe({
+          next: (request) => {
+            this.sellerRequest.set(request);
+          },
+          error: () => this.sellerRequest.set(null),
+        });
+      }
+    });
+  }
+
+  withdrawSellerRequest(): void {
+    const request = this.sellerRequest();
+    if (!request || !request.id) return;
+
+    this.withdrawError = null;
+    this.showWithdrawConfirm = true;
+  }
+
+  onConfirmWithdraw(): void {
+    const request = this.sellerRequest();
+    if (!request || !request.id) {
+      this.showWithdrawConfirm = false;
+      return;
+    }
+    this.withdrawLoading = true;
+    this.withdrawError = null;
+    this.sellerRequestService.withdrawRequest(request.id).subscribe({
+      next: () => {
+        this.withdrawLoading = false;
+        this.showWithdrawConfirm = false;
+        this.sellerRequest.set(null);
+        this.emailUpdateError = 'Solicitud retirada exitosamente.';
+      },
+      error: (err) => {
+        this.withdrawLoading = false;
+        this.withdrawError = 'Error al retirar la solicitud. Intente nuevamente.';
+      },
+    });
+  }
+
+  onCancelWithdraw(): void {
+    if (this.withdrawLoading) return;
+    this.showWithdrawConfirm = false;
+    this.withdrawError = null;
+  }
 }
+

@@ -9,16 +9,19 @@ public class SellerProfileDTO {
     private Long id;
     private String name;
     private String address;
+    private String afipNumber;
 
-    public SellerProfileDTO(Long id, String name, String address) {
+    public SellerProfileDTO(Long id, String name, String address, String afipNumber) {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.afipNumber = afipNumber;
     }
 
-    public SellerProfileDTO(String name, String address, List<Book> inventory) {
+    public SellerProfileDTO(String name, String address, String afipNumber, List<Book> inventory) {
         this.name = name;
         this.address = address;
+        this.afipNumber = afipNumber;
 
     }
 
@@ -49,18 +52,26 @@ public class SellerProfileDTO {
         this.address = address;
     }
 
+    public String getAfipNumber() {
+        return afipNumber;
+    }
+
+    public void setAfipNumber(String afipNumber) {
+        this.afipNumber = afipNumber;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfileDTO that = (SellerProfileDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(afipNumber, that.afipNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address);
+        return Objects.hash(id, name, address, afipNumber);
     }
 
     @Override
@@ -69,6 +80,7 @@ public class SellerProfileDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", afipNumber='" + afipNumber + '\'' +
                 '}';
     }
 }

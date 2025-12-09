@@ -70,6 +70,12 @@ import { Subscription } from 'rxjs';
               routerLinkActive="active"
               >Gestion de Usuarios</a
             >
+            <a
+              class="profile-menu__item"
+              routerLink="/profile/admin/seller-requests"
+              routerLinkActive="active"
+              >Solicitudes de vendedores</a
+            >
             } @if (!isAdmin) {
             <a class="profile-menu__item" (click)="openToggleConfirm()">{{ toggleLabel }}</a>
 

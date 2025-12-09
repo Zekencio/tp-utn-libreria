@@ -64,6 +64,9 @@ public class SellerProfileServiceImpl implements SellerProfileService{
         if (updateSellerProfileDTO.getAddress() != null) {
             existing.setAddress(updateSellerProfileDTO.getAddress());
         }
+        if (updateSellerProfileDTO.getAfipNumber() != null) {
+            existing.setAfipNumber(updateSellerProfileDTO.getAfipNumber());
+        }
         if (updateSellerProfileDTO.getSellerUser() != null) {
             existing.setSellerUser(updateSellerProfileDTO.getSellerUser());
         }
@@ -101,17 +104,17 @@ public class SellerProfileServiceImpl implements SellerProfileService{
 
     @Override
     public SellerProfileDTO convertToDTO(SellerProfile sellerProfile) {
-        return new SellerProfileDTO(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress());
+        return new SellerProfileDTO(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), sellerProfile.getAfipNumber());
     }
 
     @Override
     public SellerProfile convertToEntity(CreateSellerProfileDTO createSellerProfileDTO) {
-        return new SellerProfile(createSellerProfileDTO.getName(), createSellerProfileDTO.getAddress(), createSellerProfileDTO.getSellerUser());
+        return new SellerProfile(createSellerProfileDTO.getName(), createSellerProfileDTO.getAddress(), createSellerProfileDTO.getAfipNumber(), createSellerProfileDTO.getSellerUser());
     }
 
     public SellerProfileDTOFull convertToFullDTO(SellerProfile sellerProfile){
         java.util.List<BookDTOReduced> books = sellerProfile.getInventory() == null ? java.util.Collections.emptyList() : sellerProfile.getInventory().stream().map(this::reduceBook).collect(Collectors.toList());
-        return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), books);
+        return new SellerProfileDTOFull(sellerProfile.getId(), sellerProfile.getName(), sellerProfile.getAddress(), sellerProfile.getAfipNumber(), books);
     }
     public BookDTOReduced reduceBook(Book book){
         com.example.demo.author.dto.AuthorDTOReduced a = null;

@@ -8,6 +8,7 @@ import { CardDTO } from '../../services/card.service';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 import { SaleService } from '../../services/sale.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface CartSummaryItem {
   book: BookDTO;
@@ -42,6 +43,7 @@ export class CartComponent {
     private cd: ChangeDetectorRef
     , private saleService: SaleService
     , private router: Router
+    , private auth: AuthService
   ) {}
 
   onAddCard(): void{
@@ -147,8 +149,46 @@ export class CartComponent {
     this.confirmLoading = true;
     this.confirmError = null;
 
+    const ensureToken = (): void => {
+      const token = this.auth.getAuthToken();
+      if (!token) {
+        this.auth.me().subscribe({
+          next: () => this.processPayment(),
+          error: () => {
+            this.zone.run(() => {
+              this.confirmLoading = false;
+              this.confirmError = 'Sesión expirada. Por favor, inicia sesión nuevamente.';
+              try { this.cd.detectChanges(); } catch (e) {}
+            });
+          }
+        });
+      } else {
+        this.processPayment();
+      }
+    };
+
+    ensureToken();
+  }
+
+  private processPayment(): void {
+    if (!this.selectedCardId) return;
+
+    let finished = false;
+    const timeout = setTimeout(() => {
+      if (!finished) {
+        this.zone.run(() => {
+          this.confirmLoading = false;
+          this.confirmVisible = false;
+          this.confirmError = 'El servidor no responde. Intente nuevamente.';
+          try { this.cd.detectChanges(); } catch (e) {}
+        });
+      }
+    }, 10000);
+
     this.saleService.create(this.selectedCardId).subscribe({
       next: (sale) => {
+        finished = true;
+        clearTimeout(timeout);
         this.zone.run(() => {
           try {
             setTimeout(() => {
@@ -172,9 +212,12 @@ export class CartComponent {
         });
       },
       error: (err) => {
+        finished = true;
+        clearTimeout(timeout);
         console.error('Payment failed', err);
         this.zone.run(() => {
           this.confirmLoading = false;
+          this.confirmVisible = false;
           this.confirmError = 'Error al procesar el pago. Intente nuevamente.';
           try { this.cd.detectChanges(); } catch (e) {}
         });

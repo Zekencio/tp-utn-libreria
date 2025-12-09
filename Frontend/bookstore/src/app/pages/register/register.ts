@@ -47,13 +47,27 @@ export class RegisterComponent {
     this.loading = true;
     this.auth.register(this.name, this.password).subscribe({
       next: (user) => {
-        this.zone.run(() => {
-          this.loading = false;
-          try {
-            this.cd.detectChanges();
-          } catch (e) {}
-          try { this.cartService.setLocalCart([]); } catch (e) {}
-          this.router.navigate(['/']);
+        this.auth.login(this.name, this.password).subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.loading = false;
+              try {
+                this.cd.detectChanges();
+              } catch (e) {}
+              try { this.cartService.setLocalCart([]); } catch (e) {}
+              this.router.navigate(['/']);
+            });
+          },
+          error: () => {
+            this.zone.run(() => {
+              this.loading = false;
+              try {
+                this.cd.detectChanges();
+              } catch (e) {}
+              try { this.cartService.setLocalCart([]); } catch (e) {}
+              this.router.navigate(['/']);
+            });
+          }
         });
       },
       error: (err) => {

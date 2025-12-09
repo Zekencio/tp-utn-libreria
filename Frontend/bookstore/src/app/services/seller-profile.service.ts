@@ -7,6 +7,7 @@ export interface SellerProfileDTO {
   id?: number;
   name: string;
   address: string;
+  afipNumber: string;
 }
 
 export interface SellerProfileDTOFull extends SellerProfileDTO {
@@ -20,7 +21,7 @@ export class SellerProfileService {
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
-  createSellerProfile(dto: { name: string; address: string }): Observable<SellerProfileDTO> {
+  createSellerProfile(dto: { name: string; address: string; afipNumber: string }): Observable<SellerProfileDTO> {
     const token = this.auth.getAuthToken();
     if (token) {
       return this.http.post<SellerProfileDTO>(this.base, dto, {
@@ -40,7 +41,7 @@ export class SellerProfileService {
     return this.http.get<SellerProfileDTOFull>(`${this.base}/me`);
   }
 
-  updateSellerProfile(dto: { name?: string; address?: string }): Observable<SellerProfileDTO> {
+  updateSellerProfile(dto: { name?: string; address?: string; afipNumber?: string }): Observable<SellerProfileDTO> {
     const token = this.auth.getAuthToken();
     if (token) {
       return this.http.put<SellerProfileDTO>(`${this.base}/update`, dto, {

@@ -21,6 +21,9 @@ public class SellerProfile {
     @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
+    private String afipNumber;
+
     @OneToMany(mappedBy = "seller")
     private List<Book> inventory;
 
@@ -28,17 +31,19 @@ public class SellerProfile {
     @JoinColumn(name = "seller_user_id", unique = true)
     private User sellerUser;
 
-    public SellerProfile(Long id, String name, String address, List<Book> inventory, User sellerUser) {
+    public SellerProfile(Long id, String name, String address, String afipNumber, List<Book> inventory, User sellerUser) {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.afipNumber = afipNumber;
         this.inventory = inventory;
         this.sellerUser = sellerUser;
     }
 
-    public SellerProfile(String name, String address, User sellerUser) {
+    public SellerProfile(String name, String address, String afipNumber, User sellerUser) {
         this.name = name;
         this.address = address;
+        this.afipNumber = afipNumber;
         this.sellerUser = sellerUser;
     }
 
@@ -69,6 +74,14 @@ public class SellerProfile {
         this.address = address;
     }
 
+    public String getAfipNumber() {
+        return afipNumber;
+    }
+
+    public void setAfipNumber(String afipNumber) {
+        this.afipNumber = afipNumber;
+    }
+
     public List<Book> getInventory() {
         return inventory;
     }
@@ -90,12 +103,12 @@ public class SellerProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SellerProfile that = (SellerProfile) o;
-        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(sellerUser, that.sellerUser);
+        return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(afipNumber, that.afipNumber) && Objects.equals(sellerUser, that.sellerUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, inventory, sellerUser);
+        return Objects.hash(id, name, address, afipNumber, inventory, sellerUser);
     }
 
     @Override
@@ -104,6 +117,7 @@ public class SellerProfile {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", afipNumber='" + afipNumber + '\'' +
                 ", Inventory=" + inventory +
                 ", sellerUser=" + sellerUser +
                 '}';

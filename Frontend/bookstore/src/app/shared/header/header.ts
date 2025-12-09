@@ -200,6 +200,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile', 'admin', 'authors']);
   }
 
+  onAdminSellerRequestsClick(): void {
+    this.menuOpen = false;
+    this.router.navigate(['/profile', 'admin', 'seller-requests']);
+  }
+
   onAdminClientsClick(): void {
     this.menuOpen = false;
     this.router.navigate(['/profile', 'admin', 'clients']);

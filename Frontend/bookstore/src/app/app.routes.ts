@@ -12,6 +12,7 @@ import { GenresAdminComponent } from './pages/profile/genres-admin';
 import { AuthorsAdminComponent } from './pages/profile/authors-admin';
 import { ProfileDefaultComponent } from './pages/profile/profile-default';
 import { UsersAdminComponent } from './pages/profile/users-admin';
+import { SellerRequestsAdminComponent } from './pages/profile/seller-requests-admin';
 import { SellerGuard } from './pages/profile/seller.guard';
 import { SellerResolver } from './pages/profile/seller.resolver';
 import { AboutComponent } from './pages/about/about';
@@ -50,6 +51,7 @@ export const routes: Routes = [
           { path: 'genres', component: GenresAdminComponent },
           { path: 'authors', component: AuthorsAdminComponent },
           { path: 'users', component: UsersAdminComponent },
+          { path: 'seller-requests', component: SellerRequestsAdminComponent },
         ],
       },
       { path: '', component: ProfileDefaultComponent },

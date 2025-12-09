@@ -56,6 +56,7 @@
             @if (isAdmin) {
             <li class="user-menu__item" (click)="onAdminGenresClick()">Gestión de Géneros</li>
             <li class="user-menu__item" (click)="onAdminAuthorsClick()">Gestión de Autores</li>
+            <li class="user-menu__item" (click)="onAdminSellerRequestsClick()">Solicitudes de vendedores</li>
             } @else if (!isSellerRoute) {
             <li class="user-menu__item" (click)="onCardsClick()">Mis tarjetas</li>
             <li class="user-menu__item" (click)="onPurchasesClick()">Mis compras</li>

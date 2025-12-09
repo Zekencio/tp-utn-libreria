@@ -24,7 +24,7 @@
   min-height: 0;
 }
 .table-container {
-  padding: 12px;
+  padding: 20px;
   flex: 1 1 auto;
   min-height: 0;
   box-sizing: border-box;
@@ -96,4 +96,15 @@ table th:nth-child(3) {
 .empty {
   padding: 16px;
   color: #666;
+}
+
+:host-context(.seller-requests-content) table th:nth-child(4),
+:host-context(.seller-requests-content) table td:nth-child(4) {
+  text-align: center;
+  vertical-align: middle;
+}
+
+:host-context(.seller-requests-content) table td:nth-child(4) .status-icon {
+  display: inline-block;
+  margin: 0 auto;
 }

@@ -22,7 +22,12 @@ export class SaleService {
 
   create(cardId: number): Observable<SaleDTO> {
     const token = localStorage.getItem('jwtToken');
-    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
-    return this.http.post<SaleDTO>(this.base, cardId, headers ? { headers } : {});
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.post<SaleDTO>(this.base, cardId, { headers });
   }
 }

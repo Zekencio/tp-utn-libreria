@@ -102,7 +102,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         try {
-            // If user has sales, cannot delete; deactivate instead
             boolean hasSales = saleRepository.existsByUser_Id(id);
             if (hasSales) {
                 User u = target.get();
@@ -111,14 +110,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 return true;
             }
 
-            // If user is a seller, check seller constraints
             User t = target.get();
             if (t.getSellerProfile() != null) {
                 Long sellerId = t.getSellerProfile().getId();
                 boolean sellerHasBooks = bookRepository.existsBySeller_Id(sellerId);
                 boolean sellerHasSales = saleRepository.existsByBooks_Seller_Id(sellerId);
                 if (sellerHasBooks || sellerHasSales) {
-                    // deactivate seller and mark books unavailable
                     t.setStatus("INACTIVE");
                     repository.save(t);
                     var books = bookRepository.findBySeller_Id(sellerId);
@@ -128,10 +125,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     bookRepository.saveAll(books);
                     return true;
                 }
-                // else no books and no sales -> allow deletion
             }
 
-            // cleanup references (sellerUser, cards, sales user links)
             var profiles = sellerProfileRepository.findAll();
             for (var sp : profiles) {
                 if (sp.getSellerUser() != null && sp.getSellerUser().getId() != null && sp.getSellerUser().getId().equals(id)) {
@@ -223,7 +218,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (dto.getStatus() != null) {
                 String newStatus = dto.getStatus();
                 existing.setStatus(newStatus);
-                // if deactivating a seller, make their books unavailable
                 if (existing.getSellerProfile() != null) {
                     Long sellerId = existing.getSellerProfile().getId();
                     var books = bookRepository.findBySeller_Id(sellerId);
@@ -312,7 +306,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         java.util.List<BookDTOReduced> books = sp.getInventory() == null ? java.util.Collections.<BookDTOReduced>emptyList() : sp.getInventory().stream()
             .map(b -> new BookDTOReduced(b.getId(), b.getName(), b.getDescription()))
             .collect(java.util.stream.Collectors.toList());
-            SellerProfileDTOFull sellerDto = new SellerProfileDTOFull(sp.getId(), sp.getName(), sp.getAddress(), books);
+            SellerProfileDTOFull sellerDto = new SellerProfileDTOFull(
+                sp.getId(),
+                sp.getName(),
+                sp.getAddress(),
+                sp.getAfipNumber(),
+                books
+            );
             dto.setSellerProfile(sellerDto);
         }
         return dto;
