@@ -1,18 +1,60 @@
 <header class="header" id="header">
   <div class="header__container">
+    <div class="nav__logo-container">
     <a href="#" class="nav__logo"> <i class="ri-book-3-line"></i> Librería </a>
-
+    <a routerLink="/about" class="nav__link"><span>Sobre Nosotros</span></a>
+    </div>
     <div class="nav__menu" id="nav-menu">
       <ul class="nav__list">
-        <li class="nav__item">
-          <a href="#libros" class="nav__link">
-            <span>Libros</span>
-          </a>
-        </li>
-        <li class="nav__item">
-          <a routerLink="/about" class="nav__link">
-            <span>Sobre Nosotros</span>
-          </a>
+        <li class="nav__item nav__filters">
+          <div class="header-filters">
+            <div class="book-search">
+              <div class="book-wrapper">
+                <input class="book-input" placeholder="Buscar libro..." (input)="onBookInput($event)" (keyup.enter)="onBookSearch()" />
+                <button type="button" class="book-btn" (click)="onBookSearch()" aria-label="Buscar">
+                  <i class="ri-search-line"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-genres" aria-label="Filtros por género">
+              <div class="genres-menu" #genresMenu [class.open]="genresOpen">
+                <button class="genres-toggler genres-area" (click)="toggleGenresMenu($event)" type="button" [attr.aria-expanded]="genresOpen">
+                  <div class="genres-meta">
+                    <div class="genres-name">Géneros</div>
+                  </div>
+
+                  <i class="ri-arrow-down-s-line chevron" aria-hidden="true"></i>
+                </button>
+
+                <div class="genres-menu__dropdown">
+                  <div class="genres-arrow" aria-hidden="true"></div>
+                  <div class="genres-list">
+                    <label *ngFor="let g of genres" class="genre-item">
+                      <input type="checkbox" (change)="onToggleGenre(g.id, $event)" [checked]="selectedGenresHas(g.id)" />
+                      <span>{{ g.name }}</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-author" aria-label="Filtro por autor">
+              <div class="author-meta">
+                <div class="author-name">Autor</div>
+              </div>
+              <div class="author-wrapper" #authorBox>
+                <input class="author-input" placeholder="Buscar autor..." [value]="authorQuery" (input)="onAuthorInput($event)" (focus)="showAuthorSuggestions=true" />
+
+                <div class="author-suggestions" *ngIf="showAuthorSuggestions && filteredAuthors().length">
+                  <div class="suggestion-arrow" aria-hidden="true"></div>
+                  <ul>
+                    <li *ngFor="let a of filteredAuthors()" (mousedown)="selectAuthor(a)">{{ a.name }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>

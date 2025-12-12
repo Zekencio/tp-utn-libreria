@@ -149,7 +149,6 @@ public class SaleServiceImpl implements SaleService{
     @Override
     public void sendSaleEmail(String userEmail, String htmlDetails) throws IOException{
 
-        // Uso mi mail como remi
         Email sender = new Email("ezereding420@gmail.com");
         Email addressee = new Email(userEmail);
         Content details = new Content("text/html", htmlDetails);
@@ -166,7 +165,6 @@ public class SaleServiceImpl implements SaleService{
 
             Response response = sg.api(request);
 
-            // Debug info
             System.out.println("Status: " + response.getStatusCode());
             System.out.println("Body: " + response.getBody());
             System.out.println("Headers: " + response.getHeaders());

@@ -18,6 +18,11 @@ export class GenreService {
     return this.http.get<GenreDTO[]>(this.base);
   }
 
+  getAllPublic(): Observable<GenreDTO[]> {
+    const headers = { 'X-Skip-Auth': 'true' } as any;
+    return this.http.get<GenreDTO[]>(this.base, { headers });
+  }
+
   create(payload: { name: string; description?: string }): Observable<GenreDTO> {
     const token = localStorage.getItem('jwtToken');
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;

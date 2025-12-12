@@ -35,4 +35,9 @@ export class AuthorService {
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.delete<void>(`${this.base}/${id}`, headers ? { headers } : {});
   }
+
+  getAllPublic(): Observable<AuthorDTO[]> {
+    const headers = { 'X-Skip-Auth': 'true' } as any;
+    return this.http.get<AuthorDTO[]>(this.base, { headers });
+  }
 }

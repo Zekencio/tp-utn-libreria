@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/books")
@@ -57,9 +57,12 @@ public class BookControler {
 
     @GetMapping("/filter")
     public ResponseEntity<List<BookDTO>> getFiltered(
-        @RequestParam Optional<UUID> genereId,
-        @RequestParam Optional<UUID> authorId){
-        List<BookDTO> books= bookService.getBooksByFilter(genereId, authorId);
+        @RequestParam(required = false) List<Long> genereId,
+        @RequestParam(required = false) Long authorId){
+        List<BookDTO> books= bookService.getBooksByFilterByIdList(
+                Optional.ofNullable(genereId == null ? null : new ArrayList<>(genereId)),
+                Optional.ofNullable(authorId)
+        );
         return ResponseEntity.ok(books);
     }
 

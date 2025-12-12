@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { GenreService, GenreDTO } from '../../services/genre.service';
+import { AuthorService, AuthorDTO } from '../../services/author.service';
+import { BookService } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { ProfileToggleService } from '../../pages/profile/profile-toggle.service';
 import { NavigationEnd } from '@angular/router';
@@ -19,11 +22,22 @@ import { filter } from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
   menuOpen = false;
   @ViewChild('userMenu', { static: false }) userMenu?: ElementRef<HTMLElement>;
+  @ViewChild('genresMenu', { static: false }) genresMenu?: ElementRef<HTMLElement>;
+  @ViewChild('authorBox', { static: false }) authorBox?: ElementRef<HTMLElement>;
   cartCount = 0;
   private cartSub?: Subscription;
-  searchQuery = '';
 
   isDark = false;
+
+  genres: GenreDTO[] = [];
+  authors: AuthorDTO[] = [];
+  authorQuery = '';
+  showAuthorSuggestions = false;
+  // book search query
+  searchQuery = '';
+  selectedGenres = new Set<number>();
+  selectedAuthorId?: number;
+  genresOpen = false;
 
   ngOnInit(): void {
     const saved = localStorage.getItem('theme');
@@ -43,6 +57,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
         try { this.cd.detectChanges(); } catch (e) {}
       });
     } catch (e) {}
+
+    try {
+      this.genreService.getAllPublic().subscribe({
+        next: (g) => {
+          console.debug('[Header] loaded genres count=', (g || []).length, g);
+          this.genres = g || [];
+          try { this.cd.detectChanges(); } catch(e){}
+        },
+        error: (err) => {
+          console.error('[Header] failed loading genres', err);
+        }
+      });
+    } catch (e) { console.error('[Header] genres subscribe failed', e); }
+
+    try {
+      this.authorService.getAllPublic().subscribe({
+        next: (a) => {
+          console.debug('[Header] loaded authors count=', (a || []).length, a);
+          this.authors = a || [];
+          try { this.cd.detectChanges(); } catch(e){}
+        },
+        error: (err) => {
+          console.error('[Header] failed loading authors', err);
+        }
+      });
+    } catch (e) { console.error('[Header] authors subscribe failed', e); }
+
   }
 
   constructor(
@@ -51,6 +92,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private profileToggle: ProfileToggleService,
     private cartService: CartService,
     private cd: ChangeDetectorRef
+    ,
+    private genreService: GenreService,
+    private authorService: AuthorService,
+    private bookService: BookService
   ) {}
   toggleTheme() {
     this.setDark(!this.isDark);
@@ -79,26 +124,109 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.menuOpen = !this.menuOpen;
   }
 
+  toggleGenresMenu(e: MouseEvent) {
+    e.stopPropagation();
+    this.genresOpen = !this.genresOpen;
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(e: MouseEvent) {
-    if (!this.menuOpen) return;
-    try {
-      const target = e.target as Node;
-      if (!this.userMenu || !this.userMenu.nativeElement) {
+    const target = e.target as Node;
+    if (this.menuOpen) {
+      try {
+        if (!this.userMenu || !this.userMenu.nativeElement || !this.userMenu.nativeElement.contains(target)) {
+          this.menuOpen = false;
+        }
+      } catch (err) {
         this.menuOpen = false;
-        return;
       }
-      if (!this.userMenu.nativeElement.contains(target)) {
-        this.menuOpen = false;
+    }
+
+    if (this.genresOpen) {
+      try {
+        if (!this.genresMenu || !this.genresMenu.nativeElement || !this.genresMenu.nativeElement.contains(target)) {
+          this.genresOpen = false;
+        }
+      } catch (err) {
+        this.genresOpen = false;
       }
-    } catch (err) {
-      this.menuOpen = false;
+    }
+
+    if (this.showAuthorSuggestions) {
+      try {
+        if (!this.authorBox || !this.authorBox.nativeElement || !this.authorBox.nativeElement.contains(target)) {
+          this.showAuthorSuggestions = false;
+        }
+      } catch (err) {
+        this.showAuthorSuggestions = false;
+      }
     }
   }
 
   navigateTo(path: string) {
     this.menuOpen = false;
     this.router.navigate([path]);
+  }
+
+  selectedGenresHas(id?: number) {
+    if (!id) return false;
+    return this.selectedGenres.has(id);
+  }
+
+  onToggleGenre(id: number | undefined, event: Event) {
+    if (!id) return;
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) this.selectedGenres.add(id);
+    else this.selectedGenres.delete(id);
+    this.applyFilters();
+  }
+
+  onAuthorInput(e: Event) {
+    const val = (e.target as HTMLInputElement).value || '';
+    this.authorQuery = val;
+    this.showAuthorSuggestions = true;
+    const found = this.authors.find(x => x.name === val);
+    if (found) this.selectedAuthorId = found.id;
+    else this.selectedAuthorId = undefined;
+    this.cd.detectChanges();
+  }
+
+  filteredAuthors(): AuthorDTO[] {
+    const q = (this.authorQuery || '').toLowerCase().trim();
+    if (!q) return this.authors.slice(0, 6);
+    return this.authors.filter(a => (a.name || '').toLowerCase().includes(q)).slice(0, 8);
+  }
+
+  selectAuthor(a: AuthorDTO) {
+    try {
+      this.authorQuery = a.name || '';
+      this.selectedAuthorId = a.id;
+      this.showAuthorSuggestions = false;
+      setTimeout(() => {
+        try { this.applyFilters(); } catch (e) {}
+        try { this.cd.detectChanges(); } catch (e) {}
+      }, 0);
+    } catch (e) {}
+  }
+
+  onBookInput(e: Event) {
+    const val = (e.target as HTMLInputElement).value || '';
+    this.searchQuery = val;
+  }
+
+  onBookSearch() {
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    const genresArray = Array.from(this.selectedGenres);
+    const params: any = {};
+    if (genresArray.length) params.genereId = genresArray.map(g => String(g));
+    if (this.selectedAuthorId) params.authorId = String(this.selectedAuthorId);
+    if (this.searchQuery) params.title = String(this.searchQuery);
+    try {
+      this.router.navigate(['/'], { queryParams: params });
+    } catch (e) {}
   }
 
   goToProfile() {
@@ -295,7 +423,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onCartClick(){
     this.menuOpen = false
-    this.router.navigate(['/cart'])
+    const user = this.auth.userSignal();
+    const tokenPresent = (() => {
+      try { return !!localStorage.getItem('jwtToken'); } catch (e) { return false; }
+    })();
+    if (!user || !tokenPresent) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
+      return;
+    }
+    this.router.navigate(['/cart']);
   }
 
   getLocalPart(value?: string | null) {

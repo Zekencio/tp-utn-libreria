@@ -241,4 +241,28 @@ public class BookServiceImpl implements BookService{
     }
 
 
+    public List<BookDTO> getBooksByFilterByIds(Optional<Long> genreId, Optional<Long> authorId) {
+        List<Long> list = genreId.map(Collections::singletonList).orElse(null);
+        return getBooksByFilterByIdList(Optional.ofNullable(list), authorId);
+    }
+
+    public List<BookDTO> getBooksByFilterByIdList(Optional<List<Long>> genreIdsOpt, Optional<Long> authorId) {
+        List<Book> all = repository.findAll();
+        List<Book> filtered = all.stream().filter(book -> {
+            boolean ok = true;
+            if (genreIdsOpt.isPresent() && genreIdsOpt.get() != null && !genreIdsOpt.get().isEmpty()) {
+                List<Long> gIds = genreIdsOpt.get();
+                ok = ok && book.getGenres() != null && book.getGenres().stream().anyMatch(g -> gIds.contains(g.getId()));
+            }
+            if (authorId.isPresent()) {
+                Long aid = authorId.get();
+                ok = ok && book.getAuthor() != null && book.getAuthor().getId().equals(aid);
+            }
+            return ok;
+        }).collect(Collectors.toList());
+
+        return filtered.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+
 }

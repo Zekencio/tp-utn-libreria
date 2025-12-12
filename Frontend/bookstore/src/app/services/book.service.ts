@@ -81,11 +81,12 @@ export class BookService {
     return this.http.get<BookDTO[]>(`${this.base}/genre/${genreId}`);
   }
 
-  getBooksByFilter(payload: { genereId?: string; authorId?: string }) {
+  getBooksByFilter(payload: { genereId?: string | string[]; authorId?: string }) {
     return this.http.get<BookDTO[]>(`${this.base}/filter`, {
       params: {
         ...(payload.genereId && { genereId: payload.genereId }),
         ...(payload.authorId && { authorId: payload.authorId }),
       }
     });
-  }}
+  }
+}
