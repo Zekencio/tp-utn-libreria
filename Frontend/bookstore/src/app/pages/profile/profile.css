@@ -10,6 +10,27 @@
   width: 100%;
 }
 
+@media (max-width: 768px) {
+  .profile-page{
+    margin-top: 20px;
+    padding: 16px;
+    gap: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .menu-container {
+    min-width: 300px;
+    max-width: var(--container-max, 1200px);
+    margin: 0 auto;
+    box-sizing: border-box;
+    align-items: start;
+    border-right: 2px solid var(--header-border);
+    display: none;
+  }
+}
+
 .menu-container {
   min-width: 300px;
   max-width: var(--container-max, 1200px);
